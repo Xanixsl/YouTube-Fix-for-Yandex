@@ -36,6 +36,7 @@
 - ⚠️ Частичная поддержка других Chromium-браузеров (Chrome, Edge).
 
 ## 📄 Лицензия
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 MIT — свободно используйте, модифицируйте, делитесь.
 
