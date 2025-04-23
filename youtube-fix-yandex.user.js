@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace    https://github.com/Xanixsl
-// @version      4.2.1
+// @version      4.2.2
 // @description  Оптимизация YouTube специально для Яндекс Браузера: исправление сетки видео, производительности и интерфейса
 // @author       Xanix
 // @match        https://www.youtube.com/*
