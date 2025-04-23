@@ -2,6 +2,8 @@
 
 > Улучшает внешний вид и производительность YouTube специально для пользователей **Яндекс.Браузера**.
 
+![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/Xanixsl/YouTube-Fix-for-Yandex&count_bg=%2379C83D&title_bg=%23555555&icon=github.svg&icon_color=%23E7E7E7&title=visits&edge_flat=false)
+
 [![Install Script](https://img.shields.io/badge/Install-UserScript-blue?logo=javascript)](https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js)
 
 ## ✨ Возможности
