@@ -1,8 +1,11 @@
 # 📺 YouTube Fix for Yandex
-![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2FXanixsl%2FYouTube-Fix-for-Yandex&label=Visits&icon=person-fill&color=%238c68cd)
+
+![you-fix](https://github.com/user-attachments/assets/05972b03-8bcd-4eab-a992-6377db5e68ff)
+
 
 > Улучшает внешний вид и производительность YouTube специально для пользователей **Яндекс.Браузера**.
 
+![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2FXanixsl%2FYouTube-Fix-for-Yandex&label=Visits&icon=person-fill&color=%238c68cd)
 [![Downloads](https://img.shields.io/github/downloads/Xanixsl/YouTube-Fix-for-Yandex/fixer/youtube-fix-yandex.user.js?label=Downloads&style=flat-square)](https://github.com/Xanixsl/YouTube-Fix-for-Yandex/releases/download/fixer/youtube-fix-yandex.user.js)
 
 ## ✨ Возможности
@@ -17,9 +20,9 @@
 ## 📸 Скриншоты
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/03749b0e-7983-4d98-a483-542f1008ba2a" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Скриншот 1"/>
-  <img src="https://github.com/user-attachments/assets/82d2d2d8-ffcb-46a8-afd8-cc3544ad716b" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Скриншот 2"/>
-  <img src="https://github.com/user-attachments/assets/1c64a400-e6af-4781-a47f-d0b7d6a9a778" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Скриншот 3"/>
+  <img src="https://github.com/user-attachments/assets/7472f7a3-ba98-4bab-a7e9-bd950029a412" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Скриншот 1"/>
+  <img src="https://github.com/user-attachments/assets/8c781228-100a-436c-8b47-7015023170da" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Скриншот 2"/>
+  <img src="https://github.com/user-attachments/assets/44c6475d-edc4-4278-bab5-ae78d5c45dc8" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Скриншот 3"/>
 </p>
 
 ## 📥 Установка
