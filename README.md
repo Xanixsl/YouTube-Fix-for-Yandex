@@ -31,6 +31,7 @@
 
 ## 📸 Скриншоты
 
+ПОМЕНЯТЬ:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7472f7a3-ba98-4bab-a7e9-bd950029a412" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Основной интерфейс"/>
   <img src="https://github.com/user-attachments/assets/8c781228-100a-436c-8b47-7015023170da" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Настройки"/>
