@@ -11,7 +11,7 @@
 > 📦 Всё, что было в предыдущих версиях, осталось — только стало стабильнее, быстрее и логичнее оформлено.
 
 ![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2FXanixsl%2FYouTube-Fix-for-Yandex&label=Visits&icon=person-fill&color=%238c68cd)
-[![Downloads](https://img.shields.io/github/downloads/Xanixsl/YouTube-Fix-for-Yandex/fixer/youtube-fix-yandex.user.js?label=Downloads&style=flat-square)](https://github.com/Xanixsl/YouTube-Fix-for-Yandex/releases/download/fixer/youtube-fix-yandex.user.js)
+[![Downloads](https://img.shields.io/github/downloads/Xanixsl/YouTube-Fix-for-Yandex/fixer/youtube-fix-yandex.user.js?label=Downloads&style=flat-square)](https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js)
 
 ---
 
