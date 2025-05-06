@@ -6,7 +6,7 @@
 // @author       Xanix
 // @match        https://www.youtube.com/*
 // @match        https://m.youtube.com/*
-// @icon         https://i.postimg.cc/L8mkYgHK/you-fix.png
+// @icon         https://i.postimg.cc/CxVhyKXz/You-Tube-Fix.png
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js
 // @downloadURL  https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js
