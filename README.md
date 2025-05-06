@@ -125,4 +125,3 @@
 
 🛠 Разработчик: [Xanix](https://github.com/Xanixsl)  
 📬 Сообщения об ошибках: [Issues](https://github.com/Xanixsl/YouTube-Fix-for-Yandex/issues)  
-💡 Идеи и предложения: [Discussions](https://github.com/Xanixsl/YouTube-Fix-for-Yandex/discussions)
