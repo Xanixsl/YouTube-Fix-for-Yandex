@@ -31,11 +31,26 @@
 
 ## 📸 Скриншоты
 
-ПОМЕНЯТЬ:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/7472f7a3-ba98-4bab-a7e9-bd950029a412" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Основной интерфейс"/>
-  <img src="https://github.com/user-attachments/assets/8c781228-100a-436c-8b47-7015023170da" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Настройки"/>
-  <img src="https://github.com/user-attachments/assets/44c6475d-edc4-4278-bab5-ae78d5c45dc8" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Темная тема"/>
+  <img src="https://github.com/user-attachments/assets/c34d6782-a4ae-4910-9be0-50273b92cf33" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Основной интерфейс"/>
+  <img src="https://github.com/user-attachments/assets/1b2bc101-3615-42df-8798-bf23e90a1d9f" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Настройки"/>
+  <img src="https://github.com/user-attachments/assets/ed8c655b-d67f-4820-9c3e-5f9546b3467b" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Темная тема"/>
+</p>
+
+### До
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cd21354e-e35b-4c41-ac1e-ac9749f4bfb3" width="250" alt="До 1" />
+  <img src="https://github.com/user-attachments/assets/6ae021f9-8ea7-4cd7-b99d-1a8be52b56fa" width="250" alt="До 2" />
+  <img src="https://github.com/user-attachments/assets/fd92af53-c3fc-4815-afce-ac37d7c325c5" width="250" alt="До 3" />
+</p>
+
+### После
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a987bf4e-9efa-40d2-b0cf-996e5e567acb" width="250" alt="После 1" />
+  <img src="https://github.com/user-attachments/assets/c24fc1e9-7728-4f4a-902b-e84c3cf2f646" width="250" alt="После 2" />
+  <img src="https://github.com/user-attachments/assets/530dc254-8e3a-4d99-b12c-d8123fdb7445" width="250" alt="После 3" />
 </p>
 
 ## 📥 Установка
