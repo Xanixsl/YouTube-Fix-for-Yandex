@@ -31,13 +31,17 @@
 
 ## 📸 Скриншоты
 
+### 🧩 Интерфейс расширения
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c34d6782-a4ae-4910-9be0-50273b92cf33" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Основной интерфейс"/>
-  <img src="https://github.com/user-attachments/assets/1b2bc101-3615-42df-8798-bf23e90a1d9f" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Настройки"/>
-  <img src="https://github.com/user-attachments/assets/ed8c655b-d67f-4820-9c3e-5f9546b3467b" width="300" style="border-radius: 8px; margin: 0 10px;" alt="Темная тема"/>
+  <img src="https://github.com/user-attachments/assets/c34d6782-a4ae-4910-9be0-50273b92cf33" width="300" alt="Основной интерфейс"/>
+  <img src="https://github.com/user-attachments/assets/1b2bc101-3615-42df-8798-bf23e90a1d9f" width="300" alt="Настройки фильтрации"/>
+  <img src="https://github.com/user-attachments/assets/ed8c655b-d67f-4820-9c3e-5f9546b3467b" width="300" alt="Темная тема"/>
 </p>
 
-### До
+---
+
+### 🔁 До изменений
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/cd21354e-e35b-4c41-ac1e-ac9749f4bfb3" width="250" alt="До 1" />
@@ -45,13 +49,16 @@
   <img src="https://github.com/user-attachments/assets/fd92af53-c3fc-4815-afce-ac37d7c325c5" width="250" alt="До 3" />
 </p>
 
-### После
+---
+
+### ✅ После изменений
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/a987bf4e-9efa-40d2-b0cf-996e5e567acb" width="250" alt="После 1" />
   <img src="https://github.com/user-attachments/assets/c24fc1e9-7728-4f4a-902b-e84c3cf2f646" width="250" alt="После 2" />
   <img src="https://github.com/user-attachments/assets/530dc254-8e3a-4d99-b12c-d8123fdb7445" width="250" alt="После 3" />
 </p>
+
 
 ## 📥 Установка
 
