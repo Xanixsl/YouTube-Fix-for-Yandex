@@ -1,17 +1,22 @@
 // ==UserScript==
 // @name         YouTube Fix for Yandex
-// @namespace    https://github.com/Xanixsl
+// @namespace https://github.com/Xanixsl/YouTube-Fix-for-Yandex
 // @version      4.4.2
 // @description  Оптимизация и исправления YouTube: сетка, производительность, интерфейс, фикс карточки канала и чипсов, мультиязычность, современные темы
 // @author       Xanix
 // @match        https://www.youtube.com/*
 // @match        https://m.youtube.com/*
 // @icon         https://i.postimg.cc/CxVhyKXz/You-Tube-Fix.png
+// @icon64       https://i.postimg.cc/CxVhyKXz/You-Tube-Fix.png
 // @grant        none
+// @homepage     https://github.com/Xanixsl
+// @supportURL   https://github.com/Xanixsl/YouTube-Fix-for-Yandex/issues
 // @updateURL    https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js
 // @downloadURL  https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js
 // @run-at       document-start
 // @license      MIT
+// @licenseURL   https://opensource.org/licenses/MIT
+// @contributionURL https://github.com/Xanixsl/YouTube-Fix-for-Yandex/discussions
 // ==/UserScript==
 
 (function() {
