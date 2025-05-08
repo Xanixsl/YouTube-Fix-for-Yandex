@@ -145,15 +145,16 @@
 
 ## 💖 Поддержать проект
 
-Если вам нравится этот скрипт и вы хотите поддержать его развитие, вы можете:  
+Если вам нравится этот скрипт и вы хотите поддержать его развитие, вы можете:
 
-☕ <strong>Купить мне кофе</strong> (любая сумма помогает в разработке):<br>
-- <a href="https://www.donationalerts.com/r/saylont" target="_blank" rel="noopener noreferrer">DonationAlerts</a><br>
-- <a href="https://boosty.to/saylontoff/donate" target="_blank" rel="noopener noreferrer">Boosty</a>  
+[![DonationAlerts](https://img.shields.io/badge/Donate-DonationAlerts-red?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjY0NjIgNi42NDYyNUMxMS44NzUgNi40MTc1IDEyLjEyNSA2LjQxNzUgMTIuMzUzOCA2LjY0NjI1TDE3LjM1MzggMTEuNjQ2M0MxNy41NDYyIDExLjgzODcgMTcuNTQ2MiAxMi4xNjI1IDE3LjM1MzggMTIuMzU1TDEyLjM1MzggMTcuMzU1QzEyLjEyNSAxNy41ODM3IDExLjg3NSAxNy41ODM3IDExLjY0NjIgMTcuMzU1TDYuNjQ2MjUgMTIuMzU1QzYuNDUzNzUgMTIuMTYyNSA2LjQ1Mzc1IDExLjgzODcgNi42NDYyNSAxMS42NDYzTDExLjY0NjIgNi42NDYyNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==)](https://www.donationalerts.com/r/saylont) 
 
-🌟 <strong>Или помочь другими способами</strong>:<br>
-- Рассказать о скрипте друзьям<br>
-- <a href="https://github.com/Xanixsl/YouTube-Fix-for-Yandex/discussions" target="_blank" rel="noopener noreferrer">Оставить отзыв или идею</a><br>
-- Помочь с переводом на другие языки  
+[![Boosty](https://img.shields.io/badge/Donate-Boosty-8A2BE2?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDIyQzE3LjUyMjggMjIgMjIgMTcuNTIyOCAyMiAxMkMyMiA2LjQ3NzE1IDE3LjUyMjggMiAxMiAyQzYuNDc3MTUgMiAyIDYuNDc3MTUgMiAxMkMyIDE3LjUyMjggNi40NzcxNSAyMiAxMiAyMloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xMiAxN0MxNC43NjE0IDE3IDE3IDE0Ljc2MTQgMTcgMTJDMTcgOS4yMzg1OCAxNC43NjE0IDcgMTIgN0M5LjIzODU4IDcgNyA5LjIzODU4IDcgMTJDNyAxNC43NjE0IDkuMjM4NTggMTcgMTIgMTdaIiBmaWxsPSI4QTJCRTIiLz4KPC9zdmc+)](https://boosty.to/saylontoff/donate) 
 
-<em>Даже маленькая поддержка мотивирует на дальнейшее развитие проекта!</em>
+🌟 **Или помочь другими способами**:
+- Рассказать о скрипте друзьям
+- [Оставить отзыв или идею](https://github.com/Xanixsl/YouTube-Fix-for-Yandex/discussions)
+- Помочь с переводом на другие языки
+
+*Даже маленькая поддержка мотивирует на дальнейшее развитие проекта!*
+
