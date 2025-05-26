@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace https://github.com/Xanixsl/YouTube-Fix-for-Yandex
-// @version      4.4.2
+// @version      4.4.3
 // @description  Оптимизация и исправления YouTube: сетка, производительность, интерфейс, фикс карточки канала и чипсов, мультиязычность, современные темы
 // @author       Xanix
 // @match        https://www.youtube.com/*
@@ -45,7 +45,7 @@
     const LANGS = {
         en: {
             title: "YouTube Fix for Yandex",
-            version: "v4.4.2",
+            version: "v4.4.3",
             tabs: ["Main", "Yandex Fixes", "Appearance"],
             tabsNoYandex: ["Main", "Appearance"],
             save: "Save settings",
@@ -117,7 +117,7 @@
         },
         ru: {
             title: "YouTube Fix for Yandex",
-            version: "v4.4.2",
+            version: "v4.4.3",
             tabs: ["Основные", "Яндекс-фиксы", "Внешний вид"],
             tabsNoYandex: ["Основные", "Внешний вид"],
             save: "Сохранить настройки",
@@ -2278,13 +2278,13 @@
             'hideRFSlowWarning', L.hideRFSlowWarning, config.hideRFSlowWarning, L.hideRFSlowWarningDesc
         ));
         mainSection.appendChild(createCheckbox(
-            'fixChannelCard', L.fixChannelCard, config.fixChannelCard, L.fixChannelCardDesc, true
+            'fixChannelCard', L.fixChannelCard, config.fixChannelCard, L.fixChannelCardDesc
         ));
         mainSection.appendChild(createCheckbox(
-            'restoreChips', L.restoreChips, config.restoreChips, L.restoreChipsDesc, true
+            'restoreChips', L.restoreChips, config.restoreChips, L.restoreChipsDesc
         ));
         mainSection.appendChild(createCheckbox(
-            'playlistModeFeature', L.playlistModeFeature, config.playlistModeFeature, L.playlistModeFeatureDesc, true, false
+            'playlistModeFeature', L.playlistModeFeature, config.playlistModeFeature, L.playlistModeFeatureDesc
         ));
 
         container.appendChild(mainSection);
