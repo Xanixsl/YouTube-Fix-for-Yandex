@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace https://github.com/Xanixsl/YouTube-Fix-for-Yandex
-// @version      4.4.3
+// @version      4.4.4
 // @description  Оптимизация и исправления YouTube: сетка, производительность, интерфейс, фикс карточки канала и чипсов, мультиязычность, современные темы
 // @author       Xanix
 // @match        https://www.youtube.com/*
@@ -45,7 +45,7 @@
     const LANGS = {
         en: {
             title: "YouTube Fix for Yandex",
-            version: "v4.4.3",
+            version: "v4.4.4",
             tabs: ["Main", "Yandex Fixes", "Appearance"],
             tabsNoYandex: ["Main", "Appearance"],
             save: "Save settings",
@@ -117,7 +117,7 @@
         },
         ru: {
             title: "YouTube Fix for Yandex",
-            version: "v4.4.3",
+            version: "v4.4.4",
             tabs: ["Основные", "Яндекс-фиксы", "Внешний вид"],
             tabsNoYandex: ["Основные", "Внешний вид"],
             save: "Сохранить настройки",
@@ -2138,21 +2138,27 @@
             const playlistModeCheckbox = dialog.querySelector('#playlistModeFeature');
             if (playlistModeCheckbox) {
                 const perfModeCheckbox = dialog.querySelector('#yandexPerformanceMode');
-                if (playlistModeCheckbox.checked) {
-                    // Если включен режим плейлистов, отключаем режим оптимизации
-                    perfModeCheckbox.checked = false;
-                    perfModeCheckbox.disabled = true;
-                    perfModeCheckbox.parentElement.style.opacity = '0.5';
-                    config.yandexPerformanceMode = false;
-                } else {
-                    // Если выключен режим плейлистов, включаем режим оптимизации
-                    perfModeCheckbox.checked = true;
-                    perfModeCheckbox.disabled = false;
-                    perfModeCheckbox.parentElement.style.opacity = '1';
-                    config.yandexPerformanceMode = true;
+                if (perfModeCheckbox) {
+                    if (playlistModeCheckbox.checked) {
+                        // Если включен режим плейлистов, отключаем режим оптимизации
+                        perfModeCheckbox.checked = false;
+                        perfModeCheckbox.disabled = true;
+                        if (perfModeCheckbox.parentElement) {
+                            perfModeCheckbox.parentElement.style.opacity = '0.5';
+                        }
+                        config.yandexPerformanceMode = false;
+                    } else {
+                        // Если выключен режим плейлистов, включаем режим оптимизации
+                        perfModeCheckbox.checked = true;
+                        perfModeCheckbox.disabled = false;
+                        if (perfModeCheckbox.parentElement) {
+                            perfModeCheckbox.parentElement.style.opacity = '1';
+                        }
+                        config.yandexPerformanceMode = true;
+                    }
                 }
             }
-
+          
             storage.set('ytEnhancerConfig', config);
             applyStyles();
             applyMainFeatures();
