@@ -1,0 +1,6 @@
+# Эти ссылки будут отображаться в разделе финансирования вашего проекта
+
+github: Xanixsl
+custom: 
+  - 'https://www.donationalerts.com/r/saylont'
+  - 'https://boosty.to/saylontoff/donate'
