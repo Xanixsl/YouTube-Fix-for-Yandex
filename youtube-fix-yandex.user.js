@@ -1336,6 +1336,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 --enhancer-tab-active: var(--yt-spec-brand-button-background, #065fd4);
                 --enhancer-tab-inactive: var(--yt-spec-text-secondary, #b0b8c9);
                 --enhancer-font: 'Roboto', 'Segoe UI', Arial, sans-serif;
+                --enhancer-primary: var(--yt-spec-brand-button-background, #065fd4);
+                --enhancer-transition: all 0.2s ease;
+                --enhancer-divider: var(--yt-spec-10-percent-layer, #e5e7eb);
+                --enhancer-select-bg: var(--yt-spec-badge-chip-background, #f8fafc);
+                --enhancer-select-fg: var(--yt-spec-text-primary, #030303);
+                --enhancer-select-border: var(--yt-spec-10-percent-layer, #e5e7eb);
             }
             /* Версия сверху */
             #yt-enhancer-version {
@@ -1810,7 +1816,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         title.textContent = L.title;
         title.style.margin = '0';
         title.style.fontSize = '1.5em';
-        title.style.color = 'var(--yt-spec-text-primary, #030303)';
+        title.style.color = 'var(--enhancer-fg, #030303)';
         title.style.fontWeight = 'bold';
         // GitHub link icon
         const ghLink = document.createElement('a');
@@ -1842,7 +1848,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             -webkit-backdrop-filter: none !important;
             font-size: 2em;
             cursor: pointer;
-            color: var(--yt-spec-text-secondary, #606060);
+            color: var(--enhancer-tab-inactive, #606060);
             padding: 0 8px;
             line-height: 1;
         `;
@@ -1853,7 +1859,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             const warning = document.createElement('div');
             warning.style.padding = '12px';
             warning.style.marginBottom = '20px';
-            warning.style.backgroundColor = 'var(--yt-spec-badge-chip-background, #f8f9fa)';
+            warning.style.backgroundColor = 'var(--enhancer-badge-bg, #f3f6fa)';
             warning.style.borderRadius = '8px';
             warning.style.textAlign = 'center';
             setInnerHTML(warning, L.warning);
@@ -1863,7 +1869,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const tabs = document.createElement('div');
         tabs.style.display = 'flex';
         tabs.style.marginBottom = '20px';
-        tabs.style.borderBottom = '1px solid var(--yt-spec-10-percent-layer, #ddd)';
+        tabs.style.borderBottom = '1px solid var(--enhancer-border, #ddd)';
         const tabNames = isYandexBrowser() ? L.tabs : L.tabsNoYandex;
         const tabContents = [];
         tabNames.forEach((name, i) => {
@@ -1877,23 +1883,23 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 border-bottom: 2.5px solid transparent;
                 cursor: pointer;
                 font-weight: 600;
-                color: var(--yt-spec-text-secondary, #606060);
+                color: var(--enhancer-tab-inactive, #606060);
                 margin-right: 8px;
                 font-size: 1em;
                 transition: color 0.15s, border-bottom-color 0.15s;
                 border-radius: 0;
             `;
             if (i === 0) {
-                tab.style.color = 'var(--yt-spec-text-primary, #030303)';
-                tab.style.borderBottomColor = 'var(--yt-spec-brand-button-background, #065fd4)';
+                tab.style.color = 'var(--enhancer-fg, #030303)';
+                tab.style.borderBottomColor = 'var(--enhancer-primary, #065fd4)';
             }
             tab.addEventListener('click', () => {
                 tabs.querySelectorAll('button').forEach(t => {
-                    t.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                    t.style.color = 'var(--enhancer-tab-inactive, #606060)';
                     t.style.borderBottomColor = 'transparent';
                 });
-                tab.style.color = 'var(--yt-spec-text-primary, #030303)';
-                tab.style.borderBottomColor = 'var(--yt-spec-brand-button-background, #065fd4)';
+                tab.style.color = 'var(--enhancer-fg, #030303)';
+                tab.style.borderBottomColor = 'var(--enhancer-primary, #065fd4)';
                 tabContents.forEach((content, j) => {
                     content.style.display = i === j ? 'block' : 'none';
                 });
@@ -1925,26 +1931,28 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         saveBtn.textContent = L.save;
         saveBtn.style.cssText = `
             padding: 12px 24px;
-            background: var(--yt-spec-brand-button-background, #065fd4);
-            color: white;
+            background: var(--enhancer-primary, #065fd4);
+            color: var(--enhancer-btn-hover-fg, white);
             border: none;
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             flex: 1;
             margin-right: 10px;
+            transition: opacity 0.18s;
         `;
         const resetBtn = document.createElement('button');
         resetBtn.textContent = L.reset;
         resetBtn.style.cssText = `
             padding: 12px 24px;
-            background: var(--yt-spec-10-percent-layer, #f1f1f1);
-            color: var(--yt-spec-text-primary, #030303);
-            border: none;
+            background: var(--enhancer-input-bg, #f1f1f1);
+            color: var(--enhancer-fg, #030303);
+            border: 1.5px solid var(--enhancer-border, #e5e7eb);
             border-radius: 12px;
             cursor: pointer;
             flex: 1;
             font-weight: 600;
+            transition: background 0.18s, color 0.18s;
         `;
         buttons.appendChild(saveBtn);
         buttons.appendChild(resetBtn);
@@ -2031,17 +2039,17 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             h3.textContent = title;
             h3.style.margin = '16px 0 8px 0';
             h3.style.fontSize = '1.1em';
-            h3.style.color = 'var(--yt-spec-text-primary, #030303)';
+            h3.style.color = 'var(--enhancer-fg, #030303)';
             h3.style.fontWeight = 'bold';
+            sectionDiv.appendChild(h3);
             if (description) {
                 const desc = document.createElement('p');
                 desc.textContent = description;
                 desc.style.margin = '4px 0 8px 0';
                 desc.style.fontSize = '0.9em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
                 sectionDiv.appendChild(desc);
             }
-            sectionDiv.appendChild(h3);
             return sectionDiv;
         };
         const mainSection = section(L.mainSection, L.mainDesc);
@@ -2079,7 +2087,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 const desc = document.createElement('div');
                 desc.textContent = description;
                 desc.style.fontSize = '0.85em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
                 desc.style.marginTop = '4px';
                 labelDiv.appendChild(desc);
             }
@@ -2124,7 +2132,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             h3.textContent = title;
             h3.style.margin = '16px 0 8px 0';
             h3.style.fontSize = '1.1em';
-            h3.style.color = 'var(--yt-spec-text-primary, #030303)';
+            h3.style.color = 'var(--enhancer-fg, #030303)';
             h3.style.fontWeight = 'bold';
             sectionDiv.appendChild(h3);
             if (description) {
@@ -2132,7 +2140,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 desc.textContent = description;
                 desc.style.margin = '4px 0 8px 0';
                 desc.style.fontSize = '0.9em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
                 sectionDiv.appendChild(desc);
             }
             return sectionDiv;
@@ -2172,7 +2180,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 const desc = document.createElement('div');
                 desc.textContent = description;
                 desc.style.fontSize = '0.85em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
                 desc.style.marginTop = '4px';
                 labelDiv.appendChild(desc);
             }
@@ -2214,7 +2222,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             h3.textContent = title;
             h3.style.margin = '16px 0 8px 0';
             h3.style.fontSize = '1.1em';
-            h3.style.color = 'var(--yt-spec-text-primary, #030303)';
+            h3.style.color = 'var(--enhancer-fg, #030303)';
             h3.style.fontWeight = 'bold';
             sectionDiv.appendChild(h3);
             if (description) {
@@ -2222,7 +2230,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 desc.textContent = description;
                 desc.style.margin = '4px 0 8px 0';
                 desc.style.fontSize = '0.9em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
                 sectionDiv.appendChild(desc);
             }
             return sectionDiv;
@@ -2261,7 +2269,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 const desc = document.createElement('div');
                 desc.textContent = description;
                 desc.style.fontSize = '0.85em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
                 desc.style.marginTop = '4px';
                 labelDiv.appendChild(desc);
             }
@@ -2323,7 +2331,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             input.style.width = '50%';
             input.style.padding = '8px';
             input.style.borderRadius = '10px';
-            input.style.border = '1px solid var(--yt-spec-10-percent-layer, #ddd)';
+            input.style.border = '1px solid var(--enhancer-input-border, #ddd)';
             div.appendChild(input);
             return div;
         };
@@ -2397,7 +2405,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             h3.textContent = title;
             h3.style.margin = '16px 0 8px 0';
             h3.style.fontSize = '1.1em';
-            h3.style.color = 'var(--yt-spec-text-primary, #030303)';
+            h3.style.color = 'var(--enhancer-fg, #030303)';
             h3.style.fontWeight = 'bold';
             sectionDiv.appendChild(h3);
             if (description) {
@@ -2405,7 +2413,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 desc.textContent = description;
                 desc.style.margin = '4px 0 8px 0';
                 desc.style.fontSize = '0.9em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
                 sectionDiv.appendChild(desc);
             }
             return sectionDiv;
@@ -2433,7 +2441,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 const desc = document.createElement('div');
                 desc.textContent = description;
                 desc.style.fontSize = '0.85em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
+                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
                 desc.style.marginTop = '4px';
                 labelDiv.appendChild(desc);
             }
@@ -2452,7 +2460,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         thumbSelect.style.padding = '8px';
         thumbSelect.style.borderRadius = '10px';
         thumbSelect.style.marginBottom = '16px';
-        thumbSelect.style.border = '1px solid var(--yt-spec-10-percent-layer, #ddd)';
+        thumbSelect.style.border = '1px solid var(--enhancer-input-border, #ddd)';
+        thumbSelect.style.background = 'var(--enhancer-select-bg, #f8fafc)';
+        thumbSelect.style.color = 'var(--enhancer-select-fg, #030303)';
         [
             {value: 'default', label: L.thumbDefault},
             {value: 'small', label: L.thumbSmall},
@@ -2475,7 +2485,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         langSelect.style.padding = '8px';
         langSelect.style.borderRadius = '10px';
         langSelect.style.marginBottom = '16px';
-        langSelect.style.border = '1px solid var(--yt-spec-10-percent-layer, #ddd)';
+        langSelect.style.border = '1px solid var(--enhancer-input-border, #ddd)';
+        langSelect.style.background = 'var(--enhancer-select-bg, #f8fafc)';
+        langSelect.style.color = 'var(--enhancer-select-fg, #030303)';
         [
             {value: 'auto', label: L.langAuto},
             {value: 'ru', label: L.ru},
@@ -2496,7 +2508,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         themeSelect.style.padding = '8px';
         themeSelect.style.borderRadius = '10px';
         themeSelect.style.marginBottom = '16px';
-        themeSelect.style.border = '1px solid var(--yt-spec-10-percent-layer, #ddd)';
+        themeSelect.style.border = '1px solid var(--enhancer-input-border, #ddd)';
+        themeSelect.style.background = 'var(--enhancer-select-bg, #f8fafc)';
+        themeSelect.style.color = 'var(--enhancer-select-fg, #030303)';
         [
             {value: 'auto', label: L.themeAuto},
             {value: 'light', label: L.themeLight},
@@ -3230,7 +3244,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--yt-spec-brand-button-background, #065fd4);
+            background: var(--enhancer-primary, #065fd4);
             color: white;
             padding: 12px 24px;
             border-radius: 12px;
