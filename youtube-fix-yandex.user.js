@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace https://github.com/Xanixsl/test-123-123
-// @version      4.6.0
+// @version      4.4.5
 // @description  Оптимизация и исправления YouTube для Яндекс Браузера: сетка, производительность, интерфейс, фикс пустых блоков, кодеков, авто-паузы, скролла, нативный YouTube UI
 // @author       Xanix
 // @match        https://www.youtube.com/*
@@ -46,7 +46,7 @@
     // --- Мультиязычность (встроенные данные + опциональное обновление из @resource / GitHub API) ---
     const _BUILTIN_LANGS = {
         en: {
-            title: "YouTube Fix for Yandex", version: "v4.6.0",
+            title: "YouTube Fix for Yandex", version: "v4.4.5",
             tabs: ["General", "Fixes", "Yandex Browser", "Appearance"], tabsNoYandex: ["General", "Fixes", "Appearance"],
             save: "Save settings", reset: "Reset settings",
             saved: "Settings saved! Page will reload...", reseted: "Settings reset! Page will reload...",
@@ -123,7 +123,7 @@
             exitPlaylistModeNotification: "Extension will reload in {seconds} seconds to restore functionality"
         },
         ru: {
-            title: "YouTube Fix for Yandex", version: "v4.6.0",
+            title: "YouTube Fix for Yandex", version: "v4.4.5",
             tabs: ["Общие", "Исправления", "Яндекс Браузер", "Оформление"], tabsNoYandex: ["Общие", "Исправления", "Оформление"],
             save: "Сохранить настройки", reset: "Сбросить настройки",
             saved: "Настройки сохранены! Страница будет перезагружена...", reseted: "Настройки сброшены! Страница будет перезагружена...",
@@ -3469,6 +3469,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     function applyFixDarkFlash() {
         if (!config.fixDarkFlash || (isPlaylistModeActive && config.playlistModeFeature)) return;
         addStyles(`
+            /* Фиксируем фон страницы — предотвращаем белую вспышку */
             html[dark], html[dark] body,
             ytd-app[is-dark-theme], [dark] ytd-app {
                 background-color: var(--yt-spec-base-background, #0f0f0f) !important;
@@ -3482,6 +3483,13 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             html[dark] #content.ytd-app,
             html[dark] #page-manager.ytd-app {
                 background-color: var(--yt-spec-base-background, #0f0f0f) !important;
+            }
+            /* Мастхед (верхняя полоса: поиск, лого, кнопки) — фиксируем фон и убираем мерцание при скролле */
+            html[dark] #masthead-container,
+            html[dark] ytd-masthead,
+            html[dark] #masthead {
+                background-color: var(--yt-spec-base-background, #0f0f0f) !important;
+                will-change: auto !important;
             }
             /* Предотвращаем мерцание при SPA-навигации */
             html[dark] #content.ytd-app > :not(ytd-masthead):not(ytd-mini-guide-renderer) {
