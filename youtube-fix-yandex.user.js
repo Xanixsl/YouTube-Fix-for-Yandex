@@ -1,8 +1,8 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace https://github.com/Xanixsl/test-123-123
-// @version      4.4.7
-// @description  Оптимизация и исправления YouTube для Яндекс Браузера: сетка, производительность, интерфейс, фикс пустых блоков, кодеков, авто-паузы, скролла, нативный YouTube UI
+// @version      4.4.8
+// @description  РћРїС‚РёРјРёР·Р°С†РёСЏ Рё РёСЃРїСЂР°РІР»РµРЅРёСЏ YouTube РґР»СЏ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂР°: СЃРµС‚РєР°, РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚СЊ, РёРЅС‚РµСЂС„РµР№СЃ, С„РёРєСЃ РїСѓСЃС‚С‹С… Р±Р»РѕРєРѕРІ, РєРѕРґРµРєРѕРІ, Р°РІС‚Рѕ-РїР°СѓР·С‹, СЃРєСЂРѕР»Р»Р°, РЅР°С‚РёРІРЅС‹Р№ YouTube UI
 // @author       Xanix
 // @match        https://www.youtube.com/*
 // @match        https://m.youtube.com/*
@@ -29,10 +29,10 @@
 (function() {
     'use strict';
 
-    // --- Доступ к реальному window (sandbox-safe) ---
+    // --- Р”РѕСЃС‚СѓРї Рє СЂРµР°Р»СЊРЅРѕРјСѓ window (sandbox-safe) ---
     const _unsafeWin = typeof unsafeWindow !== 'undefined' ? unsafeWindow : window;
 
-    // --- Константы для режима плейлистов ---
+    // --- РљРѕРЅСЃС‚Р°РЅС‚С‹ РґР»СЏ СЂРµР¶РёРјР° РїР»РµР№Р»РёСЃС‚РѕРІ ---
     const PLAYLIST_MODE_CLASS = 'yt-enhancer-playlist-mode';
     const PLAYLIST_URL_REGEX = /^\/@[^/]+\/playlists\/?$/;
     let isPlaylistModeActive = false;
@@ -42,13 +42,13 @@
     const _managedStyles = new Map();
     const _observers = [];
 
-    // --- Автоматический редирект на /featured для каналов (отключён: YouTube убрал /featured, вызывает бесконечный цикл редиректов) ---
+    // --- РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ СЂРµРґРёСЂРµРєС‚ РЅР° /featured РґР»СЏ РєР°РЅР°Р»РѕРІ (РѕС‚РєР»СЋС‡С‘РЅ: YouTube СѓР±СЂР°Р» /featured, РІС‹Р·С‹РІР°РµС‚ Р±РµСЃРєРѕРЅРµС‡РЅС‹Р№ С†РёРєР» СЂРµРґРёСЂРµРєС‚РѕРІ) ---
     // (function autoRedirectToFeatured() { ... })();
 
-    // --- Мультиязычность (встроенные данные + опциональное обновление из @resource / GitHub API) ---
+    // --- РњСѓР»СЊС‚РёСЏР·С‹С‡РЅРѕСЃС‚СЊ (РІСЃС‚СЂРѕРµРЅРЅС‹Рµ РґР°РЅРЅС‹Рµ + РѕРїС†РёРѕРЅР°Р»СЊРЅРѕРµ РѕР±РЅРѕРІР»РµРЅРёРµ РёР· @resource / GitHub API) ---
     const _BUILTIN_LANGS = {
         en: {
-            title: "YouTube Fix for Yandex", version: "v4.4.7",
+            title: "YouTube Fix for Yandex", version: "v4.4.8",
             tabs: ["General", "Yandex Fixes", "Settings"], tabsNoYandex: ["General", "Settings"],
             save: "Save settings", reset: "Reset settings",
             saved: "Settings saved! Page will reload...", reseted: "Settings reset! Page will reload...",
@@ -125,87 +125,87 @@
             exitPlaylistModeNotification: "Extension will reload in {seconds} seconds to restore functionality"
         },
         ru: {
-            title: "YouTube Fix for Yandex", version: "v4.4.7",
-            tabs: ["Общее", "Яндекс-Фиксы", "Настройки"], tabsNoYandex: ["Общее", "Настройки"],
-            save: "Сохранить настройки", reset: "Сбросить настройки",
-            saved: "Настройки сохранены! Страница будет перезагружена...", reseted: "Настройки сброшены! Страница будет перезагружена...",
-            confirmReset: "Вы уверены, что хотите сбросить все настройки к значениям по умолчанию?",
-            mainSection: "Интерфейс", mainDesc: "Параметры отображения и навигации для всех браузеров",
-            hideChips: "Скрыть чипсы (фильтры)", hideChipsDesc: "Скрывает полосу с фильтрами только на главной странице и разделах (на страницах каналов чипсы всегда сохраняются)",
-            compactMode: "Компактный режим", compactModeDesc: "Уменьшает отступы между видео для более плотного расположения",
-            hideShorts: "Скрыть Shorts", hideShortsDesc: "Убирает раздел Shorts и рекомендации коротких видео",
-            hideTopicShelves: "Скрыть \"Ещё темы\"", hideTopicShelvesDesc: "Убирает секции с тематическими подборками видео (\"Ещё темы\") на главной странице",
-            hideRFSlowWarning: "Скрыть предупреждение о замедлении", hideRFSlowWarningDesc: "Убирает уведомление о возможных замедлениях работы YouTube в РФ",
-            fixChannelCard: "Фикс карточки канала на вкладках", fixChannelCardDesc: "Исправляет \"съезжающую\" карточку канала на всех вкладках канала",
-            restoreChips: "Восстановить быстрые сортировки (чипсы) на вкладке Videos", restoreChipsDesc: "Гарантирует отображение чипсов сортировки видео на странице канала",
-            playlistModeFeature: "Плейлисты на каналах", playlistModeFeatureDesc: "Возвращает плейлисты на каналы (отключает оптимизацию яндекс браузера)",
-            playlistModeWarning: "Внимание: Страница плейлистов может отображаться некорректно. Включите функцию 'Плейлисты на каналах' в настройках, чтобы исправить.",
-            forceH264: "Принудительный кодек H264", forceH264Desc: "Отключает VP9/AV1 кодеки для устранения подтормаживаний и зависаний видео",
-            fixAutoPause: "Авто-закрытие 'Видео приостановлено'", fixAutoPauseDesc: "Автоматически нажимает продолжить, когда YouTube ставит видео на паузу",
-            fixDarkFlash: "Фикс вспышки темной темы", fixDarkFlashDesc: "Устраняет белую вспышку при навигации в темной теме",
-            fixSearchGrid: "Фикс сетки поиска", fixSearchGridDesc: "Исправляет сетку видео на странице результатов поиска",
-            fixMiniPlayer: "Фикс мини-плеера", fixMiniPlayerDesc: "Исправляет проблемы наложения мини-плеера",
-            scrollOptimization: "Оптимизация скролла", scrollOptimizationDesc: "Уменьшает подтормаживания при прокрутке ленты",
-            fixSidebar: "Фикс боковой панели", fixSidebarDesc: "Устраняет глитчи боковой панели при навигации",
-            hideEmptyBlocks: "Скрыть пустые блоки", hideEmptyBlocksDesc: "Скрывает пустые плейсхолдеры видео и сломанные промо-блоки в ленте",
-            fixRussiaThrottle: "Обход замедления YouTube в РФ", fixRussiaThrottleDesc: "Экспериментальный фикс: перенаправляет video-запросы через альтернативный CDN для попытки обхода искусственного замедления YouTube российскими провайдерами (ТСПУ/DPI)",
-            fixesSection: "Исправления багов", fixesDesc: "Общие исправления для YouTube во всех браузерах",
-            langSection: "Язык интерфейса", langDesc: "Выберите язык интерфейса расширения", langAuto: "Автоматически (по браузеру)",
-            yandexFixesSection: "Фиксы Яндекс Браузера", yandexFixesDesc: "Исправления проблем, специфичных для Яндекс Браузера",
-            yandexFixNavigation: "Фикс SPA-навигации", yandexFixNavigationDesc: "Исправляет проблемы с кнопкой Назад и переходами между страницами в Яндекс Браузере",
-            yandexFixScrollbar: "Фикс переполнения страницы", yandexFixScrollbarDesc: "Устраняет двойную прокрутку и переполнение контента, вызванные оптимизациями Яндекса",
-            yandexFixFullscreen: "Фикс полноэкранного режима", yandexFixFullscreenDesc: "Устраняет артефакты панелей и проблемы наложения в полноэкранном режиме видео",
-            yandexFixPlayerControls: "Фикс управления плеером", yandexFixPlayerControlsDesc: "Исправляет рендеринг элементов управления видеоплеера в Яндекс Браузере",
-            yandexSection: "Настройки сетки видео", yandexDesc: "Оптимизация отображения видео в Яндекс Браузере",
-            yandexVideoCount: "Количество видео в строке", yandexChipbarMargin: "Сдвиг Chipbar (px)", yandexVideoMargin: "Сдвиг блока видео (px)",
-            yandexExpSection: "Экспериментальные функции", yandexExpDesc: "Используйте с осторожностью, могут быть нестабильными",
-            yandexGridFix: "Исправить сетку видео", yandexGridFixDesc: "Фиксит проблему с отображением 3 видео в строке",
-            yandexPerf: "Режим оптимизации", yandexPerfDesc: "Улучшает производительность в Яндекс Браузере",
-            yandexExpFix: "Экспериментальный фикс сдвига", yandexExpFixDesc: "Альтернативный метод исправления интерфейса", yandexSiteShift: "Величина сдвига (px)",
-            appearanceSection: "Темный режим", appearanceDesc: "Настройки внешнего вида интерфейса",
-            darkModeSupport: "Поддержка темной темы", darkModeSupportDesc: "Автоматическое переключение между светлой и темной темой",
-            thumbSection: "Размер миниатюр видео", thumbDesc: "Изменение размера и пропорций превью видео",
-            thumbDefault: "По умолчанию (16:9)", thumbSmall: "Маленькие (16:9)", thumbMedium: "Средние (4:3)", thumbLarge: "Большие (1:1)",
-            themeSection: "Тема окна настроек", themeDesc: "Внешний вид этого окна с настройками",
-            themeAuto: "Авто (система)", themeLight: "Светлая", themeDark: "Тёмная", fontSize: "Размер шрифта:",
-            styleSection: "Цветовая схема", styleDesc: "Палитра цветов и стиль окна настроек",
-            styleYoutube: "YouTube", styleImproved: "Улучшенная (glass + выпадающие)", styleMidnight: "Полночь", styleSunset: "Закат", styleCustom: "Своя",
-            customColorsSection: "Тонкая настройка цветов", customColorsDesc: "Ручная настройка отдельных цветов (переопределяет текущую схему)",
-            customColorEnabled: "Включить свои цвета", customColorBg: "Фон", customColorFg: "Текст",
-            customColorPrimary: "Акцентный цвет", customColorBorder: "Рамки", customColorBtnBorder: "Рамка кнопки",
-            customColorBtnFg: "Текст кнопки", customColorBtnHoverBg: "Кнопка при наведении", customColorBtnHoverFg: "Текст кнопки при наведении",
-            customColorBadgeBg: "Фон бейджа", customColorBadgeFg: "Текст бейджа",
-            customColorInputBg: "Фон ввода", customColorInputFg: "Текст ввода", customColorInputBorder: "Рамка ввода",
-            customColorSelectBg: "Фон списка", customColorSelectFg: "Текст списка", customColorSelectBorder: "Рамка списка",
-            customColorReset: "Сбросить свои цвета",
-            styleEditorBtn: "Открыть редактор стилей", styleEditorTitle: "Редактор стилей",
-            styleEditorPresets: "Пресеты", styleEditorColors: "Цвета", styleEditorBackground: "Фон", styleEditorCSS: "Свой CSS",
-            presetSave: "Сохранить пресет", presetLoad: "Загрузить", presetDelete: "Удалить", presetExport: "Экспорт", presetImport: "Импорт",
-            presetName: "Имя пресета", presetNamePlaceholder: "Моя тема...", presetSaved: "Пресет сохранён!",
-            presetDeleted: "Пресет удалён", presetExported: "Пресет скопирован в буфер обмена!",
-            presetImportPrompt: "Вставьте JSON пресета:", presetImported: "Пресет импортирован!",
-            builtinPresets: "Встроенные темы", colorScheme: "Цветовая схема",
-            presetImportError: "Неверный формат пресета", presetNoPresets: "Нет сохранённых пресетов",
-            bgSection: "Фоновое изображение", bgDesc: "Установить фоновое изображение для окна настроек или страницы YouTube",
-            bgUrl: "URL изображения", bgUrlPlaceholder: "https://example.com/image.jpg",
-            bgApply: "Применить", bgClear: "Очистить", bgTarget: "Применить к",
-            bgTargetSettings: "Окно настроек", bgTargetPage: "Страница YouTube",
-            bgOpacity: "Прозрачность", bgBlur: "Размытие (px)", bgSize: "Размер",
-            bgSizeCover: "Заполнить", bgSizeContain: "Вписать", bgSizeAuto: "Авто",
-            cssSection: "Свой CSS для YouTube", cssDesc: "Напишите CSS правила для стилизации страницы YouTube",
-            cssPlaceholder: "/* Пример: скрыть боковую панель */\nytd-mini-guide-renderer {\n  display: none !important;\n}",
-            cssApply: "Применить CSS", cssClear: "Очистить CSS", cssApplied: "Свой CSS применён!",
-            styleEditorClose: "Закрыть",
-            warning: 'Полная версия расширения доступна только в <a href="https://browser.yandex.com/?lang=ru" target="_blank" style="color: var(--yt-spec-brand-button-background, #065fd4); text-decoration: none; font-weight: bold;">Яндекс Браузере</a>.',
-            languageButton: "Язык", ru: "Русский", en: "Английский", newMark: "новое", expMark: "эксп",
-            playlistModeNotification: "Включена функция Плейлисты на каналах, оптимизация браузера отключена!",
-            exitPlaylistModeNotification: "Расширение перезагрузится через {seconds} секунды для восстановления функций"
+            title: "YouTube Fix for Yandex", version: "v4.4.8",
+            tabs: ["РћР±С‰РµРµ", "РЇРЅРґРµРєСЃ-Р¤РёРєСЃС‹", "РќР°СЃС‚СЂРѕР№РєРё"], tabsNoYandex: ["РћР±С‰РµРµ", "РќР°СЃС‚СЂРѕР№РєРё"],
+            save: "РЎРѕС…СЂР°РЅРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё", reset: "РЎР±СЂРѕСЃРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё",
+            saved: "РќР°СЃС‚СЂРѕР№РєРё СЃРѕС…СЂР°РЅРµРЅС‹! РЎС‚СЂР°РЅРёС†Р° Р±СѓРґРµС‚ РїРµСЂРµР·Р°РіСЂСѓР¶РµРЅР°...", reseted: "РќР°СЃС‚СЂРѕР№РєРё СЃР±СЂРѕС€РµРЅС‹! РЎС‚СЂР°РЅРёС†Р° Р±СѓРґРµС‚ РїРµСЂРµР·Р°РіСЂСѓР¶РµРЅР°...",
+            confirmReset: "Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ СЃР±СЂРѕСЃРёС‚СЊ РІСЃРµ РЅР°СЃС‚СЂРѕР№РєРё Рє Р·РЅР°С‡РµРЅРёСЏРј РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ?",
+            mainSection: "РРЅС‚РµСЂС„РµР№СЃ", mainDesc: "РџР°СЂР°РјРµС‚СЂС‹ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ Рё РЅР°РІРёРіР°С†РёРё РґР»СЏ РІСЃРµС… Р±СЂР°СѓР·РµСЂРѕРІ",
+            hideChips: "РЎРєСЂС‹С‚СЊ С‡РёРїСЃС‹ (С„РёР»СЊС‚СЂС‹)", hideChipsDesc: "РЎРєСЂС‹РІР°РµС‚ РїРѕР»РѕСЃСѓ СЃ С„РёР»СЊС‚СЂР°РјРё С‚РѕР»СЊРєРѕ РЅР° РіР»Р°РІРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ Рё СЂР°Р·РґРµР»Р°С… (РЅР° СЃС‚СЂР°РЅРёС†Р°С… РєР°РЅР°Р»РѕРІ С‡РёРїСЃС‹ РІСЃРµРіРґР° СЃРѕС…СЂР°РЅСЏСЋС‚СЃСЏ)",
+            compactMode: "РљРѕРјРїР°РєС‚РЅС‹Р№ СЂРµР¶РёРј", compactModeDesc: "РЈРјРµРЅСЊС€Р°РµС‚ РѕС‚СЃС‚СѓРїС‹ РјРµР¶РґСѓ РІРёРґРµРѕ РґР»СЏ Р±РѕР»РµРµ РїР»РѕС‚РЅРѕРіРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёСЏ",
+            hideShorts: "РЎРєСЂС‹С‚СЊ Shorts", hideShortsDesc: "РЈР±РёСЂР°РµС‚ СЂР°Р·РґРµР» Shorts Рё СЂРµРєРѕРјРµРЅРґР°С†РёРё РєРѕСЂРѕС‚РєРёС… РІРёРґРµРѕ",
+            hideTopicShelves: "РЎРєСЂС‹С‚СЊ \"Р•С‰С‘ С‚РµРјС‹\"", hideTopicShelvesDesc: "РЈР±РёСЂР°РµС‚ СЃРµРєС†РёРё СЃ С‚РµРјР°С‚РёС‡РµСЃРєРёРјРё РїРѕРґР±РѕСЂРєР°РјРё РІРёРґРµРѕ (\"Р•С‰С‘ С‚РµРјС‹\") РЅР° РіР»Р°РІРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ",
+            hideRFSlowWarning: "РЎРєСЂС‹С‚СЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ Рѕ Р·Р°РјРµРґР»РµРЅРёРё", hideRFSlowWarningDesc: "РЈР±РёСЂР°РµС‚ СѓРІРµРґРѕРјР»РµРЅРёРµ Рѕ РІРѕР·РјРѕР¶РЅС‹С… Р·Р°РјРµРґР»РµРЅРёСЏС… СЂР°Р±РѕС‚С‹ YouTube РІ Р Р¤",
+            fixChannelCard: "Р¤РёРєСЃ РєР°СЂС‚РѕС‡РєРё РєР°РЅР°Р»Р° РЅР° РІРєР»Р°РґРєР°С…", fixChannelCardDesc: "РСЃРїСЂР°РІР»СЏРµС‚ \"СЃСЉРµР·Р¶Р°СЋС‰СѓСЋ\" РєР°СЂС‚РѕС‡РєСѓ РєР°РЅР°Р»Р° РЅР° РІСЃРµС… РІРєР»Р°РґРєР°С… РєР°РЅР°Р»Р°",
+            restoreChips: "Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р±С‹СЃС‚СЂС‹Рµ СЃРѕСЂС‚РёСЂРѕРІРєРё (С‡РёРїСЃС‹) РЅР° РІРєР»Р°РґРєРµ Videos", restoreChipsDesc: "Р“Р°СЂР°РЅС‚РёСЂСѓРµС‚ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ С‡РёРїСЃРѕРІ СЃРѕСЂС‚РёСЂРѕРІРєРё РІРёРґРµРѕ РЅР° СЃС‚СЂР°РЅРёС†Рµ РєР°РЅР°Р»Р°",
+            playlistModeFeature: "РџР»РµР№Р»РёСЃС‚С‹ РЅР° РєР°РЅР°Р»Р°С…", playlistModeFeatureDesc: "Р’РѕР·РІСЂР°С‰Р°РµС‚ РїР»РµР№Р»РёСЃС‚С‹ РЅР° РєР°РЅР°Р»С‹ (РѕС‚РєР»СЋС‡Р°РµС‚ РѕРїС‚РёРјРёР·Р°С†РёСЋ СЏРЅРґРµРєСЃ Р±СЂР°СѓР·РµСЂР°)",
+            playlistModeWarning: "Р’РЅРёРјР°РЅРёРµ: РЎС‚СЂР°РЅРёС†Р° РїР»РµР№Р»РёСЃС‚РѕРІ РјРѕР¶РµС‚ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊСЃСЏ РЅРµРєРѕСЂСЂРµРєС‚РЅРѕ. Р’РєР»СЋС‡РёС‚Рµ С„СѓРЅРєС†РёСЋ 'РџР»РµР№Р»РёСЃС‚С‹ РЅР° РєР°РЅР°Р»Р°С…' РІ РЅР°СЃС‚СЂРѕР№РєР°С…, С‡С‚РѕР±С‹ РёСЃРїСЂР°РІРёС‚СЊ.",
+            forceH264: "РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅС‹Р№ РєРѕРґРµРє H264", forceH264Desc: "РћС‚РєР»СЋС‡Р°РµС‚ VP9/AV1 РєРѕРґРµРєРё РґР»СЏ СѓСЃС‚СЂР°РЅРµРЅРёСЏ РїРѕРґС‚РѕСЂРјР°Р¶РёРІР°РЅРёР№ Рё Р·Р°РІРёСЃР°РЅРёР№ РІРёРґРµРѕ",
+            fixAutoPause: "РђРІС‚Рѕ-Р·Р°РєСЂС‹С‚РёРµ 'Р’РёРґРµРѕ РїСЂРёРѕСЃС‚Р°РЅРѕРІР»РµРЅРѕ'", fixAutoPauseDesc: "РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РЅР°Р¶РёРјР°РµС‚ РїСЂРѕРґРѕР»Р¶РёС‚СЊ, РєРѕРіРґР° YouTube СЃС‚Р°РІРёС‚ РІРёРґРµРѕ РЅР° РїР°СѓР·Сѓ",
+            fixDarkFlash: "Р¤РёРєСЃ РІСЃРїС‹С€РєРё С‚РµРјРЅРѕР№ С‚РµРјС‹", fixDarkFlashDesc: "РЈСЃС‚СЂР°РЅСЏРµС‚ Р±РµР»СѓСЋ РІСЃРїС‹С€РєСѓ РїСЂРё РЅР°РІРёРіР°С†РёРё РІ С‚РµРјРЅРѕР№ С‚РµРјРµ",
+            fixSearchGrid: "Р¤РёРєСЃ СЃРµС‚РєРё РїРѕРёСЃРєР°", fixSearchGridDesc: "РСЃРїСЂР°РІР»СЏРµС‚ СЃРµС‚РєСѓ РІРёРґРµРѕ РЅР° СЃС‚СЂР°РЅРёС†Рµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РїРѕРёСЃРєР°",
+            fixMiniPlayer: "Р¤РёРєСЃ РјРёРЅРё-РїР»РµРµСЂР°", fixMiniPlayerDesc: "РСЃРїСЂР°РІР»СЏРµС‚ РїСЂРѕР±Р»РµРјС‹ РЅР°Р»РѕР¶РµРЅРёСЏ РјРёРЅРё-РїР»РµРµСЂР°",
+            scrollOptimization: "РћРїС‚РёРјРёР·Р°С†РёСЏ СЃРєСЂРѕР»Р»Р°", scrollOptimizationDesc: "РЈРјРµРЅСЊС€Р°РµС‚ РїРѕРґС‚РѕСЂРјР°Р¶РёРІР°РЅРёСЏ РїСЂРё РїСЂРѕРєСЂСѓС‚РєРµ Р»РµРЅС‚С‹",
+            fixSidebar: "Р¤РёРєСЃ Р±РѕРєРѕРІРѕР№ РїР°РЅРµР»Рё", fixSidebarDesc: "РЈСЃС‚СЂР°РЅСЏРµС‚ РіР»РёС‚С‡Рё Р±РѕРєРѕРІРѕР№ РїР°РЅРµР»Рё РїСЂРё РЅР°РІРёРіР°С†РёРё",
+            hideEmptyBlocks: "РЎРєСЂС‹С‚СЊ РїСѓСЃС‚С‹Рµ Р±Р»РѕРєРё", hideEmptyBlocksDesc: "РЎРєСЂС‹РІР°РµС‚ РїСѓСЃС‚С‹Рµ РїР»РµР№СЃС…РѕР»РґРµСЂС‹ РІРёРґРµРѕ Рё СЃР»РѕРјР°РЅРЅС‹Рµ РїСЂРѕРјРѕ-Р±Р»РѕРєРё РІ Р»РµРЅС‚Рµ",
+            fixRussiaThrottle: "РћР±С…РѕРґ Р·Р°РјРµРґР»РµРЅРёСЏ YouTube РІ Р Р¤", fixRussiaThrottleDesc: "Р­РєСЃРїРµСЂРёРјРµРЅС‚Р°Р»СЊРЅС‹Р№ С„РёРєСЃ: РїРµСЂРµРЅР°РїСЂР°РІР»СЏРµС‚ video-Р·Р°РїСЂРѕСЃС‹ С‡РµСЂРµР· Р°Р»СЊС‚РµСЂРЅР°С‚РёРІРЅС‹Р№ CDN РґР»СЏ РїРѕРїС‹С‚РєРё РѕР±С…РѕРґР° РёСЃРєСѓСЃСЃС‚РІРµРЅРЅРѕРіРѕ Р·Р°РјРµРґР»РµРЅРёСЏ YouTube СЂРѕСЃСЃРёР№СЃРєРёРјРё РїСЂРѕРІР°Р№РґРµСЂР°РјРё (РўРЎРџРЈ/DPI)",
+            fixesSection: "РСЃРїСЂР°РІР»РµРЅРёСЏ Р±Р°РіРѕРІ", fixesDesc: "РћР±С‰РёРµ РёСЃРїСЂР°РІР»РµРЅРёСЏ РґР»СЏ YouTube РІРѕ РІСЃРµС… Р±СЂР°СѓР·РµСЂР°С…",
+            langSection: "РЇР·С‹Рє РёРЅС‚РµСЂС„РµР№СЃР°", langDesc: "Р’С‹Р±РµСЂРёС‚Рµ СЏР·С‹Рє РёРЅС‚РµСЂС„РµР№СЃР° СЂР°СЃС€РёСЂРµРЅРёСЏ", langAuto: "РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё (РїРѕ Р±СЂР°СѓР·РµСЂСѓ)",
+            yandexFixesSection: "Р¤РёРєСЃС‹ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂР°", yandexFixesDesc: "РСЃРїСЂР°РІР»РµРЅРёСЏ РїСЂРѕР±Р»РµРј, СЃРїРµС†РёС„РёС‡РЅС‹С… РґР»СЏ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂР°",
+            yandexFixNavigation: "Р¤РёРєСЃ SPA-РЅР°РІРёРіР°С†РёРё", yandexFixNavigationDesc: "РСЃРїСЂР°РІР»СЏРµС‚ РїСЂРѕР±Р»РµРјС‹ СЃ РєРЅРѕРїРєРѕР№ РќР°Р·Р°Рґ Рё РїРµСЂРµС…РѕРґР°РјРё РјРµР¶РґСѓ СЃС‚СЂР°РЅРёС†Р°РјРё РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ",
+            yandexFixScrollbar: "Р¤РёРєСЃ РїРµСЂРµРїРѕР»РЅРµРЅРёСЏ СЃС‚СЂР°РЅРёС†С‹", yandexFixScrollbarDesc: "РЈСЃС‚СЂР°РЅСЏРµС‚ РґРІРѕР№РЅСѓСЋ РїСЂРѕРєСЂСѓС‚РєСѓ Рё РїРµСЂРµРїРѕР»РЅРµРЅРёРµ РєРѕРЅС‚РµРЅС‚Р°, РІС‹Р·РІР°РЅРЅС‹Рµ РѕРїС‚РёРјРёР·Р°С†РёСЏРјРё РЇРЅРґРµРєСЃР°",
+            yandexFixFullscreen: "Р¤РёРєСЃ РїРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРіРѕ СЂРµР¶РёРјР°", yandexFixFullscreenDesc: "РЈСЃС‚СЂР°РЅСЏРµС‚ Р°СЂС‚РµС„Р°РєС‚С‹ РїР°РЅРµР»РµР№ Рё РїСЂРѕР±Р»РµРјС‹ РЅР°Р»РѕР¶РµРЅРёСЏ РІ РїРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРј СЂРµР¶РёРјРµ РІРёРґРµРѕ",
+            yandexFixPlayerControls: "Р¤РёРєСЃ СѓРїСЂР°РІР»РµРЅРёСЏ РїР»РµРµСЂРѕРј", yandexFixPlayerControlsDesc: "РСЃРїСЂР°РІР»СЏРµС‚ СЂРµРЅРґРµСЂРёРЅРі СЌР»РµРјРµРЅС‚РѕРІ СѓРїСЂР°РІР»РµРЅРёСЏ РІРёРґРµРѕРїР»РµРµСЂР° РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ",
+            yandexSection: "РќР°СЃС‚СЂРѕР№РєРё СЃРµС‚РєРё РІРёРґРµРѕ", yandexDesc: "РћРїС‚РёРјРёР·Р°С†РёСЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РІРёРґРµРѕ РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ",
+            yandexVideoCount: "РљРѕР»РёС‡РµСЃС‚РІРѕ РІРёРґРµРѕ РІ СЃС‚СЂРѕРєРµ", yandexChipbarMargin: "РЎРґРІРёРі Chipbar (px)", yandexVideoMargin: "РЎРґРІРёРі Р±Р»РѕРєР° РІРёРґРµРѕ (px)",
+            yandexExpSection: "Р­РєСЃРїРµСЂРёРјРµРЅС‚Р°Р»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё", yandexExpDesc: "РСЃРїРѕР»СЊР·СѓР№С‚Рµ СЃ РѕСЃС‚РѕСЂРѕР¶РЅРѕСЃС‚СЊСЋ, РјРѕРіСѓС‚ Р±С‹С‚СЊ РЅРµСЃС‚Р°Р±РёР»СЊРЅС‹РјРё",
+            yandexGridFix: "РСЃРїСЂР°РІРёС‚СЊ СЃРµС‚РєСѓ РІРёРґРµРѕ", yandexGridFixDesc: "Р¤РёРєСЃРёС‚ РїСЂРѕР±Р»РµРјСѓ СЃ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµРј 3 РІРёРґРµРѕ РІ СЃС‚СЂРѕРєРµ",
+            yandexPerf: "Р РµР¶РёРј РѕРїС‚РёРјРёР·Р°С†РёРё", yandexPerfDesc: "РЈР»СѓС‡С€Р°РµС‚ РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚СЊ РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ",
+            yandexExpFix: "Р­РєСЃРїРµСЂРёРјРµРЅС‚Р°Р»СЊРЅС‹Р№ С„РёРєСЃ СЃРґРІРёРіР°", yandexExpFixDesc: "РђР»СЊС‚РµСЂРЅР°С‚РёРІРЅС‹Р№ РјРµС‚РѕРґ РёСЃРїСЂР°РІР»РµРЅРёСЏ РёРЅС‚РµСЂС„РµР№СЃР°", yandexSiteShift: "Р’РµР»РёС‡РёРЅР° СЃРґРІРёРіР° (px)",
+            appearanceSection: "РўРµРјРЅС‹Р№ СЂРµР¶РёРј", appearanceDesc: "РќР°СЃС‚СЂРѕР№РєРё РІРЅРµС€РЅРµРіРѕ РІРёРґР° РёРЅС‚РµСЂС„РµР№СЃР°",
+            darkModeSupport: "РџРѕРґРґРµСЂР¶РєР° С‚РµРјРЅРѕР№ С‚РµРјС‹", darkModeSupportDesc: "РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ РїРµСЂРµРєР»СЋС‡РµРЅРёРµ РјРµР¶РґСѓ СЃРІРµС‚Р»РѕР№ Рё С‚РµРјРЅРѕР№ С‚РµРјРѕР№",
+            thumbSection: "Р Р°Р·РјРµСЂ РјРёРЅРёР°С‚СЋСЂ РІРёРґРµРѕ", thumbDesc: "РР·РјРµРЅРµРЅРёРµ СЂР°Р·РјРµСЂР° Рё РїСЂРѕРїРѕСЂС†РёР№ РїСЂРµРІСЊСЋ РІРёРґРµРѕ",
+            thumbDefault: "РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ (16:9)", thumbSmall: "РњР°Р»РµРЅСЊРєРёРµ (16:9)", thumbMedium: "РЎСЂРµРґРЅРёРµ (4:3)", thumbLarge: "Р‘РѕР»СЊС€РёРµ (1:1)",
+            themeSection: "РўРµРјР° РѕРєРЅР° РЅР°СЃС‚СЂРѕРµРє", themeDesc: "Р’РЅРµС€РЅРёР№ РІРёРґ СЌС‚РѕРіРѕ РѕРєРЅР° СЃ РЅР°СЃС‚СЂРѕР№РєР°РјРё",
+            themeAuto: "РђРІС‚Рѕ (СЃРёСЃС‚РµРјР°)", themeLight: "РЎРІРµС‚Р»Р°СЏ", themeDark: "РўС‘РјРЅР°СЏ", fontSize: "Р Р°Р·РјРµСЂ С€СЂРёС„С‚Р°:",
+            styleSection: "Р¦РІРµС‚РѕРІР°СЏ СЃС…РµРјР°", styleDesc: "РџР°Р»РёС‚СЂР° С†РІРµС‚РѕРІ Рё СЃС‚РёР»СЊ РѕРєРЅР° РЅР°СЃС‚СЂРѕРµРє",
+            styleYoutube: "YouTube", styleImproved: "РЈР»СѓС‡С€РµРЅРЅР°СЏ (glass + РІС‹РїР°РґР°СЋС‰РёРµ)", styleMidnight: "РџРѕР»РЅРѕС‡СЊ", styleSunset: "Р—Р°РєР°С‚", styleCustom: "РЎРІРѕСЏ",
+            customColorsSection: "РўРѕРЅРєР°СЏ РЅР°СЃС‚СЂРѕР№РєР° С†РІРµС‚РѕРІ", customColorsDesc: "Р СѓС‡РЅР°СЏ РЅР°СЃС‚СЂРѕР№РєР° РѕС‚РґРµР»СЊРЅС‹С… С†РІРµС‚РѕРІ (РїРµСЂРµРѕРїСЂРµРґРµР»СЏРµС‚ С‚РµРєСѓС‰СѓСЋ СЃС…РµРјСѓ)",
+            customColorEnabled: "Р’РєР»СЋС‡РёС‚СЊ СЃРІРѕРё С†РІРµС‚Р°", customColorBg: "Р¤РѕРЅ", customColorFg: "РўРµРєСЃС‚",
+            customColorPrimary: "РђРєС†РµРЅС‚РЅС‹Р№ С†РІРµС‚", customColorBorder: "Р Р°РјРєРё", customColorBtnBorder: "Р Р°РјРєР° РєРЅРѕРїРєРё",
+            customColorBtnFg: "РўРµРєСЃС‚ РєРЅРѕРїРєРё", customColorBtnHoverBg: "РљРЅРѕРїРєР° РїСЂРё РЅР°РІРµРґРµРЅРёРё", customColorBtnHoverFg: "РўРµРєСЃС‚ РєРЅРѕРїРєРё РїСЂРё РЅР°РІРµРґРµРЅРёРё",
+            customColorBadgeBg: "Р¤РѕРЅ Р±РµР№РґР¶Р°", customColorBadgeFg: "РўРµРєСЃС‚ Р±РµР№РґР¶Р°",
+            customColorInputBg: "Р¤РѕРЅ РІРІРѕРґР°", customColorInputFg: "РўРµРєСЃС‚ РІРІРѕРґР°", customColorInputBorder: "Р Р°РјРєР° РІРІРѕРґР°",
+            customColorSelectBg: "Р¤РѕРЅ СЃРїРёСЃРєР°", customColorSelectFg: "РўРµРєСЃС‚ СЃРїРёСЃРєР°", customColorSelectBorder: "Р Р°РјРєР° СЃРїРёСЃРєР°",
+            customColorReset: "РЎР±СЂРѕСЃРёС‚СЊ СЃРІРѕРё С†РІРµС‚Р°",
+            styleEditorBtn: "РћС‚РєСЂС‹С‚СЊ СЂРµРґР°РєС‚РѕСЂ СЃС‚РёР»РµР№", styleEditorTitle: "Р РµРґР°РєС‚РѕСЂ СЃС‚РёР»РµР№",
+            styleEditorPresets: "РџСЂРµСЃРµС‚С‹", styleEditorColors: "Р¦РІРµС‚Р°", styleEditorBackground: "Р¤РѕРЅ", styleEditorCSS: "РЎРІРѕР№ CSS",
+            presetSave: "РЎРѕС…СЂР°РЅРёС‚СЊ РїСЂРµСЃРµС‚", presetLoad: "Р—Р°РіСЂСѓР·РёС‚СЊ", presetDelete: "РЈРґР°Р»РёС‚СЊ", presetExport: "Р­РєСЃРїРѕСЂС‚", presetImport: "РРјРїРѕСЂС‚",
+            presetName: "РРјСЏ РїСЂРµСЃРµС‚Р°", presetNamePlaceholder: "РњРѕСЏ С‚РµРјР°...", presetSaved: "РџСЂРµСЃРµС‚ СЃРѕС…СЂР°РЅС‘РЅ!",
+            presetDeleted: "РџСЂРµСЃРµС‚ СѓРґР°Р»С‘РЅ", presetExported: "РџСЂРµСЃРµС‚ СЃРєРѕРїРёСЂРѕРІР°РЅ РІ Р±СѓС„РµСЂ РѕР±РјРµРЅР°!",
+            presetImportPrompt: "Р’СЃС‚Р°РІСЊС‚Рµ JSON РїСЂРµСЃРµС‚Р°:", presetImported: "РџСЂРµСЃРµС‚ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅ!",
+            builtinPresets: "Р’СЃС‚СЂРѕРµРЅРЅС‹Рµ С‚РµРјС‹", colorScheme: "Р¦РІРµС‚РѕРІР°СЏ СЃС…РµРјР°",
+            presetImportError: "РќРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ РїСЂРµСЃРµС‚Р°", presetNoPresets: "РќРµС‚ СЃРѕС…СЂР°РЅС‘РЅРЅС‹С… РїСЂРµСЃРµС‚РѕРІ",
+            bgSection: "Р¤РѕРЅРѕРІРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ", bgDesc: "РЈСЃС‚Р°РЅРѕРІРёС‚СЊ С„РѕРЅРѕРІРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ РґР»СЏ РѕРєРЅР° РЅР°СЃС‚СЂРѕРµРє РёР»Рё СЃС‚СЂР°РЅРёС†С‹ YouTube",
+            bgUrl: "URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ", bgUrlPlaceholder: "https://example.com/image.jpg",
+            bgApply: "РџСЂРёРјРµРЅРёС‚СЊ", bgClear: "РћС‡РёСЃС‚РёС‚СЊ", bgTarget: "РџСЂРёРјРµРЅРёС‚СЊ Рє",
+            bgTargetSettings: "РћРєРЅРѕ РЅР°СЃС‚СЂРѕРµРє", bgTargetPage: "РЎС‚СЂР°РЅРёС†Р° YouTube",
+            bgOpacity: "РџСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ", bgBlur: "Р Р°Р·РјС‹С‚РёРµ (px)", bgSize: "Р Р°Р·РјРµСЂ",
+            bgSizeCover: "Р—Р°РїРѕР»РЅРёС‚СЊ", bgSizeContain: "Р’РїРёСЃР°С‚СЊ", bgSizeAuto: "РђРІС‚Рѕ",
+            cssSection: "РЎРІРѕР№ CSS РґР»СЏ YouTube", cssDesc: "РќР°РїРёС€РёС‚Рµ CSS РїСЂР°РІРёР»Р° РґР»СЏ СЃС‚РёР»РёР·Р°С†РёРё СЃС‚СЂР°РЅРёС†С‹ YouTube",
+            cssPlaceholder: "/* РџСЂРёРјРµСЂ: СЃРєСЂС‹С‚СЊ Р±РѕРєРѕРІСѓСЋ РїР°РЅРµР»СЊ */\nytd-mini-guide-renderer {\n  display: none !important;\n}",
+            cssApply: "РџСЂРёРјРµРЅРёС‚СЊ CSS", cssClear: "РћС‡РёСЃС‚РёС‚СЊ CSS", cssApplied: "РЎРІРѕР№ CSS РїСЂРёРјРµРЅС‘РЅ!",
+            styleEditorClose: "Р—Р°РєСЂС‹С‚СЊ",
+            warning: 'РџРѕР»РЅР°СЏ РІРµСЂСЃРёСЏ СЂР°СЃС€РёСЂРµРЅРёСЏ РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РІ <a href="https://browser.yandex.com/?lang=ru" target="_blank" style="color: var(--yt-spec-brand-button-background, #065fd4); text-decoration: none; font-weight: bold;">РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ</a>.',
+            languageButton: "РЇР·С‹Рє", ru: "Р СѓСЃСЃРєРёР№", en: "РђРЅРіР»РёР№СЃРєРёР№", newMark: "РЅРѕРІРѕРµ", expMark: "СЌРєСЃРї",
+            playlistModeNotification: "Р’РєР»СЋС‡РµРЅР° С„СѓРЅРєС†РёСЏ РџР»РµР№Р»РёСЃС‚С‹ РЅР° РєР°РЅР°Р»Р°С…, РѕРїС‚РёРјРёР·Р°С†РёСЏ Р±СЂР°СѓР·РµСЂР° РѕС‚РєР»СЋС‡РµРЅР°!",
+            exitPlaylistModeNotification: "Р Р°СЃС€РёСЂРµРЅРёРµ РїРµСЂРµР·Р°РіСЂСѓР·РёС‚СЃСЏ С‡РµСЂРµР· {seconds} СЃРµРєСѓРЅРґС‹ РґР»СЏ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ С„СѓРЅРєС†РёР№"
         }
     };
 
-    // Встроенные темы (dark/light/common) — используются если @resource не загрузился
+    // Р’СЃС‚СЂРѕРµРЅРЅС‹Рµ С‚РµРјС‹ (dark/light/common) вЂ” РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ РµСЃР»Рё @resource РЅРµ Р·Р°РіСЂСѓР·РёР»СЃСЏ
     const _BUILTIN_THEMES = {
-        // --- Тема YouTube (авто) ---
+        // --- РўРµРјР° YouTube (Р°РІС‚Рѕ) ---
         youtube: `/* @base */
 :root {
     --enhancer-radius: 12px !important;
@@ -307,7 +307,7 @@
 #yt-enhancer-settings button:hover {
     background: var(--enhancer-btn-hover-bg) !important;
 }`,
-        // --- Улучшенная тема (glass + стилизованные YouTube-выпадающие) ---
+        // --- РЈР»СѓС‡С€РµРЅРЅР°СЏ С‚РµРјР° (glass + СЃС‚РёР»РёР·РѕРІР°РЅРЅС‹Рµ YouTube-РІС‹РїР°РґР°СЋС‰РёРµ) ---
         improved: `/* @base */
 :root {
     --enhancer-radius: 20px !important;
@@ -504,7 +504,7 @@ iron-dropdown .dropdown-content {
 ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     transition: background 0.2s ease, color 0.2s ease !important;
 }`,
-        // --- Тема Midnight (фиолетовая ночь) ---
+        // --- РўРµРјР° Midnight (С„РёРѕР»РµС‚РѕРІР°СЏ РЅРѕС‡СЊ) ---
         midnight: `/* @base */
 :root {
     --enhancer-radius: 18px !important;
@@ -606,7 +606,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 #yt-enhancer-settings button:hover {
     transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
 }`,
-        // --- Тема Sunset (тёплый закат) ---
+        // --- РўРµРјР° Sunset (С‚С‘РїР»С‹Р№ Р·Р°РєР°С‚) ---
         sunset: `/* @base */
 :root {
     --enhancer-radius: 16px !important;
@@ -711,7 +711,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     };
     const _BUILTIN_THEME_CSS = _BUILTIN_THEMES.youtube;
 
-    // Загрузка: @resource → встроенные данные
+    // Р—Р°РіСЂСѓР·РєР°: @resource в†’ РІСЃС‚СЂРѕРµРЅРЅС‹Рµ РґР°РЅРЅС‹Рµ
     function _loadResource(name) {
         try {
             if (typeof GM_getResourceText === 'function') {
@@ -764,12 +764,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         };
     })();
 
-    // Тема: выбор по settingsStyle, @resource → встроенная
+    // РўРµРјР°: РІС‹Р±РѕСЂ РїРѕ settingsStyle, @resource в†’ РІСЃС‚СЂРѕРµРЅРЅР°СЏ
     function _getThemeRaw(styleName) {
         return _BUILTIN_THEMES[styleName] || _BUILTIN_THEMES.youtube;
     }
 
-    // --- Язык интерфейса ---
+    // --- РЇР·С‹Рє РёРЅС‚РµСЂС„РµР№СЃР° ---
 
     function getBrowserLang() {
         const navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
@@ -816,7 +816,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             : htmlString;
     }
 
-    // --- Расширенное определение Яндекс.Браузера (с кэшированием) ---
+    // --- Р Р°СЃС€РёСЂРµРЅРЅРѕРµ РѕРїСЂРµРґРµР»РµРЅРёРµ РЇРЅРґРµРєСЃ.Р‘СЂР°СѓР·РµСЂР° (СЃ РєСЌС€РёСЂРѕРІР°РЅРёРµРј) ---
 
     function isYandexBrowser() {
         if (_isYandex !== null) return _isYandex;
@@ -829,7 +829,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         return false;
     }
 
-    // --- Проверка ОС ---
+    // --- РџСЂРѕРІРµСЂРєР° РћРЎ ---
 
     function getOS() {
         const userAgent = _unsafeWin.navigator.userAgent;
@@ -842,7 +842,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         return 'Unknown';
     }
 
-    // --- Конфигурация по умолчанию ---
+    // --- РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ ---
     const defaultConfig = {
         hideChips: false,
         compactMode: false,
@@ -896,7 +896,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         stylePresets: {}
     };
 
-    // --- Безопасное хранилище для настроек ---
+    // --- Р‘РµР·РѕРїР°СЃРЅРѕРµ С…СЂР°РЅРёР»РёС‰Рµ РґР»СЏ РЅР°СЃС‚СЂРѕРµРє ---
     const storage = {
         get: (key) => {
             try {
@@ -922,7 +922,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
     };
 
-    // --- Загрузка конфигурации ---
+    // --- Р—Р°РіСЂСѓР·РєР° РєРѕРЅС„РёРіСѓСЂР°С†РёРё ---
     let config = (function() {
         try {
             const saved = storage.get('ytEnhancerConfig');
@@ -932,7 +932,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
     })();
 
-    // --- Фиксы для Яндекс Браузера ---
+    // --- Р¤РёРєСЃС‹ РґР»СЏ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂР° ---
 
     function applyYandexFixes() {
         if (!isYandexBrowser() || !config.yandexBrowserFix || (isPlaylistModeActive && config.playlistModeFeature)) return;
@@ -991,7 +991,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
     }
 
-    // --- Скрытие уведомления о замедлении YouTube в РФ ---
+    // --- РЎРєСЂС‹С‚РёРµ СѓРІРµРґРѕРјР»РµРЅРёСЏ Рѕ Р·Р°РјРµРґР»РµРЅРёРё YouTube РІ Р Р¤ ---
 
     function hideRFSlowWarning() {
         if (!config.hideRFSlowWarning || (isPlaylistModeActive && config.playlistModeFeature)) return;
@@ -1004,14 +1004,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         `, 'yt-enhancer-rf-warning');
     }
 
-    // --- Основные функции ---
+    // --- РћСЃРЅРѕРІРЅС‹Рµ С„СѓРЅРєС†РёРё ---
 
     function applyMainFeatures() {
         if (isPlaylistModeActive && config.playlistModeFeature) {
             return;
         }
         let mainCSS = '';
-        // Скрывать чипсы только на главной странице и в разделах, но не на вкладке Videos
+        // РЎРєСЂС‹РІР°С‚СЊ С‡РёРїСЃС‹ С‚РѕР»СЊРєРѕ РЅР° РіР»Р°РІРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ Рё РІ СЂР°Р·РґРµР»Р°С…, РЅРѕ РЅРµ РЅР° РІРєР»Р°РґРєРµ Videos
         if (config.hideChips && /^\/$/.test(location.pathname)) {
             mainCSS += `
                 ytd-feed-filter-chip-bar-renderer,
@@ -1022,7 +1022,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 }
             `;
         }
-        // Принудительно показываем чипсы на вкладке Videos
+        // РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РїРѕРєР°Р·С‹РІР°РµРј С‡РёРїСЃС‹ РЅР° РІРєР»Р°РґРєРµ Videos
         if (/\/@[^/]+\/videos/.test(location.pathname)) {
             mainCSS += `
                 #chips,
@@ -1045,7 +1045,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
         if (config.hideTopicShelves) {
             mainCSS += `
-                /* Скрываем секции "Ещё темы" (topic shelves с чипсами) */
+                /* РЎРєСЂС‹РІР°РµРј СЃРµРєС†РёРё "Р•С‰С‘ С‚РµРјС‹" (topic shelves СЃ С‡РёРїСЃР°РјРё) */
                 ytd-rich-section-renderer:has(ytd-chips-shelf-with-video-shelf-renderer),
                 ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-inner-shelf]) {
                     display: none !important;
@@ -1061,7 +1061,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 ytd-mini-guide-entry-renderer[title="Shorts"],
                 ytd-rich-shelf-renderer[is-shorts],
                 ytd-rich-section-renderer[section-identifier="shorts-shelf"],
-                /* Доп. селекторы для новых версий YouTube */
+                /* Р”РѕРї. СЃРµР»РµРєС‚РѕСЂС‹ РґР»СЏ РЅРѕРІС‹С… РІРµСЂСЃРёР№ YouTube */
                 ytd-rich-section-renderer[is-shorts],
                 [is-shorts].ytd-rich-section-renderer,
                 ytd-reel-shelf-renderer.ytd-item-section-renderer {
@@ -1077,7 +1077,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         restoreChipsOnVideosTab();
     }
 
-    // --- Фикс карточки канала на всех вкладках ---
+    // --- Р¤РёРєСЃ РєР°СЂС‚РѕС‡РєРё РєР°РЅР°Р»Р° РЅР° РІСЃРµС… РІРєР»Р°РґРєР°С… ---
 
     function fixChannelCardOnChannelTabs() {
         if ((isPlaylistModeActive && config.playlistModeFeature)) return;
@@ -1085,7 +1085,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const mainTabRegex = /^\/@[^\/]+\/?$/;
         if (!channelUrlRegex.test(location.pathname)) return;
         addStyles(`
-            /* Универсальный фикс для шапки канала */
+            /* РЈРЅРёРІРµСЂСЃР°Р»СЊРЅС‹Р№ С„РёРєСЃ РґР»СЏ С€Р°РїРєРё РєР°РЅР°Р»Р° */
             ytd-c4-tabbed-header-renderer,
             ytd-channel-header-renderer,
             #channel-header-container {
@@ -1108,13 +1108,13 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             #primary.ytd-two-column-browse-results-renderer {
                 margin-top: 0 !important;
             }
-            /* Дополнительные стили для мобильной версии */
+            /* Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ СЃС‚РёР»Рё РґР»СЏ РјРѕР±РёР»СЊРЅРѕР№ РІРµСЂСЃРёРё */
             ytd-page-manager[page-subtype="channels"] #header.ytd-rich-grid-renderer {
                 position: sticky !important;
                 top: 48px !important;
                 z-index: 1002 !important;
             }
-            /* Усиленный фикс для главной вкладки канала */
+            /* РЈСЃРёР»РµРЅРЅС‹Р№ С„РёРєСЃ РґР»СЏ РіР»Р°РІРЅРѕР№ РІРєР»Р°РґРєРё РєР°РЅР°Р»Р° */
             ytd-browse[page-subtype="channels"] #primary.ytd-two-column-browse-results-renderer {
                 margin-top: 0 !important;
                 padding-top: 0 !important;
@@ -1188,7 +1188,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }, 500);
     }
 
-    // --- Принудительно восстанавливаем чипсы на videos ---
+    // --- РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј С‡РёРїСЃС‹ РЅР° videos ---
 
     function restoreChipsOnVideosTab() {
         if ((isPlaylistModeActive && config.playlistModeFeature)) return;
@@ -1233,7 +1233,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         `, 'yt-enhancer-chips-restore');
     }
 
-    // --- Добавление стилей в DOM (оптимизированное) ---
+    // --- Р”РѕР±Р°РІР»РµРЅРёРµ СЃС‚РёР»РµР№ РІ DOM (РѕРїС‚РёРјРёР·РёСЂРѕРІР°РЅРЅРѕРµ) ---
 
     function addStyles(css, id) {
         if (id) {
@@ -1266,7 +1266,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
     }
 
-    // --- Утилита дебаунса ---
+    // --- РЈС‚РёР»РёС‚Р° РґРµР±Р°СѓРЅСЃР° ---
 
     function debounce(fn, delay) {
         let timer;
@@ -1276,7 +1276,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         };
     }
 
-    // --- Управляемый MutationObserver ---
+    // --- РЈРїСЂР°РІР»СЏРµРјС‹Р№ MutationObserver ---
 
     function createManagedObserver(target, callback, options) {
         const observer = new MutationObserver(callback);
@@ -1285,7 +1285,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         return observer;
     }
 
-    // --- Применение стилей ---
+    // --- РџСЂРёРјРµРЅРµРЅРёРµ СЃС‚РёР»РµР№ ---
 
     function applyGlobalStyles() {
         const styles = generateStyles();
@@ -1293,7 +1293,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         cleanupSpacing();
     }
 
-    // --- Очистка пробелов ---
+    // --- РћС‡РёСЃС‚РєР° РїСЂРѕР±РµР»РѕРІ ---
 
     function cleanupSpacing() {
         if (!isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
@@ -1353,7 +1353,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 --enhancer-select-fg: var(--yt-spec-text-primary, #030303);
                 --enhancer-select-border: var(--yt-spec-10-percent-layer, #e5e7eb);
             }
-            /* Версия сверху */
+            /* Р’РµСЂСЃРёСЏ СЃРІРµСЂС…Сѓ */
             #yt-enhancer-version {
                 position: absolute;
                 top: 5px;
@@ -1366,7 +1366,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             #yt-enhancer-version:hover {
                 opacity: 1;
             }
-            /* Кнопка закрытия (крестик) — только вращение, без смены цвета и фона */
+            /* РљРЅРѕРїРєР° Р·Р°РєСЂС‹С‚РёСЏ (РєСЂРµСЃС‚РёРє) вЂ” С‚РѕР»СЊРєРѕ РІСЂР°С‰РµРЅРёРµ, Р±РµР· СЃРјРµРЅС‹ С†РІРµС‚Р° Рё С„РѕРЅР° */
             #yt-enhancer-settings .yt-enhancer-close-btn {
                 background: none !important;
                 border: none !important;
@@ -1380,7 +1380,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 line-height: 1 !important;
                 transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
                 transform-origin: center;
-                color: inherit !important; /* Наследует цвет, не меняет его */
+                color: inherit !important; /* РќР°СЃР»РµРґСѓРµС‚ С†РІРµС‚, РЅРµ РјРµРЅСЏРµС‚ РµРіРѕ */
             }
             #yt-enhancer-settings .yt-enhancer-close-btn:hover,
             #yt-enhancer-settings .yt-enhancer-close-btn:focus {
@@ -1429,7 +1429,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             .yt-enhancer-badge-exp:hover {
                 animation: pulseExp 0.8s ease;
             }
-            /* Стили для уведомления о плейлистах */
+            /* РЎС‚РёР»Рё РґР»СЏ СѓРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РїР»РµР№Р»РёСЃС‚Р°С… */
             .yt-enhancer-playlist-warning {
                 position: fixed;
                 bottom: 20px;
@@ -1685,7 +1685,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 to { opacity: 0; transform: translateY(10px);}
             }
         `;
-        // --- THEME: загрузка из внешнего CSS или встроенных тем ---
+        // --- THEME: Р·Р°РіСЂСѓР·РєР° РёР· РІРЅРµС€РЅРµРіРѕ CSS РёР»Рё РІСЃС‚СЂРѕРµРЅРЅС‹С… С‚РµРј ---
         const themeMode = config.enhancerTheme || 'auto';
         const themeStyle = config.settingsStyle || 'youtube';
         const darkOpen = themeMode === 'auto' ? '@media (prefers-color-scheme: dark) {\n' : '';
@@ -1823,7 +1823,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         return css;
     }
 
-    // --- Вспомогательные функции ---
+    // --- Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё ---
 
     function getThumbnailAspectRatio() {
         switch(config.customThumbnailSize) {
@@ -1843,7 +1843,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
     }
 
-    // --- UI настроек ---
+    // --- UI РЅР°СЃС‚СЂРѕРµРє ---
 
     function createSettingsUI() {
         if (document.getElementById('yt-enhancer-settings')) return;
@@ -1870,12 +1870,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
             border: 2px solid var(--yt-spec-10-percent-layer, #ddd);
         `;
-        // --- Версия сверху ---
+        // --- Р’РµСЂСЃРёСЏ СЃРІРµСЂС…Сѓ ---
         const versionDiv = document.createElement('div');
         versionDiv.id = 'yt-enhancer-version';
         versionDiv.textContent = L.version;
         dialog.appendChild(versionDiv);
-        // --- Заголовок и крестик ---
+        // --- Р—Р°РіРѕР»РѕРІРѕРє Рё РєСЂРµСЃС‚РёРє ---
         const header = document.createElement('div');
         header.style.display = 'flex';
         header.style.justifyContent = 'space-between';
@@ -1934,7 +1934,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             setInnerHTML(warning, L.warning);
             dialog.appendChild(warning);
         }
-        // --- Вкладки ---
+        // --- Р’РєР»Р°РґРєРё ---
         const tabs = document.createElement('div');
         tabs.style.display = 'flex';
         tabs.style.marginBottom = '20px';
@@ -1989,7 +1989,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             createAppearanceTab(tabContents[1]);
         }
         tabContents.forEach(content => dialog.appendChild(content));
-        // --- Кнопки сохранения/сброса ---
+        // --- РљРЅРѕРїРєРё СЃРѕС…СЂР°РЅРµРЅРёСЏ/СЃР±СЂРѕСЃР° ---
         const buttons = document.createElement('div');
         buttons.style.display = 'flex';
         buttons.style.justifyContent = 'space-between';
@@ -2038,13 +2038,13 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                     config[input.id] = input.value;
                 }
             });
-            // Автоматическое управление режимом оптимизации
+            // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ СѓРїСЂР°РІР»РµРЅРёРµ СЂРµР¶РёРјРѕРј РѕРїС‚РёРјРёР·Р°С†РёРё
             const playlistModeCheckbox = dialog.querySelector('#playlistModeFeature');
             if (playlistModeCheckbox) {
                 const perfModeCheckbox = dialog.querySelector('#yandexPerformanceMode');
                 if (perfModeCheckbox) {
                     if (playlistModeCheckbox.checked) {
-                        // Если включен режим плейлистов, отключаем режим оптимизации
+                        // Р•СЃР»Рё РІРєР»СЋС‡РµРЅ СЂРµР¶РёРј РїР»РµР№Р»РёСЃС‚РѕРІ, РѕС‚РєР»СЋС‡Р°РµРј СЂРµР¶РёРј РѕРїС‚РёРјРёР·Р°С†РёРё
                         perfModeCheckbox.checked = false;
                         perfModeCheckbox.disabled = true;
                         if (perfModeCheckbox.parentElement) {
@@ -2052,7 +2052,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                         }
                         config.yandexPerformanceMode = false;
                     } else {
-                        // Если выключен режим плейлистов, включаем режим оптимизации
+                        // Р•СЃР»Рё РІС‹РєР»СЋС‡РµРЅ СЂРµР¶РёРј РїР»РµР№Р»РёСЃС‚РѕРІ, РІРєР»СЋС‡Р°РµРј СЂРµР¶РёРј РѕРїС‚РёРјРёР·Р°С†РёРё
                         perfModeCheckbox.checked = true;
                         perfModeCheckbox.disabled = false;
                         if (perfModeCheckbox.parentElement) {
@@ -2096,7 +2096,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         dialog.addEventListener('click', e => e.stopPropagation());
     }
 
-    // --- Основная вкладка ---
+    // --- РћСЃРЅРѕРІРЅР°СЏ РІРєР»Р°РґРєР° ---
 
     function createGeneralTab(container) {
         const section = (title, description = '') => {
@@ -2185,7 +2185,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         container.appendChild(fixesSection);
     }
 
-    // --- Яндекс вкладка (Яндекс-Фиксы) ---
+    // --- РЇРЅРґРµРєСЃ РІРєР»Р°РґРєР° (РЇРЅРґРµРєСЃ-Р¤РёРєСЃС‹) ---
 
     function createYandexTab(container) {
         const section = (title, description = '') => {
@@ -2251,7 +2251,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             return div;
         };
 
-        // --- Секция: Фиксы Яндекс Браузера ---
+        // --- РЎРµРєС†РёСЏ: Р¤РёРєСЃС‹ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂР° ---
         const fixesSection = section(L.yandexFixesSection, L.yandexFixesDesc);
         fixesSection.appendChild(createCheckbox(
             'fixSearchGrid', L.fixSearchGrid, config.fixSearchGrid, L.fixSearchGridDesc, true
@@ -2273,7 +2273,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         ));
         container.appendChild(fixesSection);
 
-        // --- Секция: Настройки сетки ---
+        // --- РЎРµРєС†РёСЏ: РќР°СЃС‚СЂРѕР№РєРё СЃРµС‚РєРё ---
         const gridSection = section(L.yandexSection, L.yandexDesc);
         const createNumberInput = (id, label, value, min, max, description = '') => {
             const div = document.createElement('div');
@@ -2323,7 +2323,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
         gridSection.appendChild(videoMarginInput);
         container.appendChild(gridSection);
-        // --- Секция: Экспериментальные ---
+        // --- РЎРµРєС†РёСЏ: Р­РєСЃРїРµСЂРёРјРµРЅС‚Р°Р»СЊРЅС‹Рµ ---
         const expSection = section(L.yandexExpSection, L.yandexExpDesc);
         expSection.appendChild(createCheckbox(
             'yandexGridFix', L.yandexGridFix, config.yandexGridFix, L.yandexGridFixDesc
@@ -2331,7 +2331,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const perfModeCheckbox = createCheckbox(
             'yandexPerformanceMode', L.yandexPerf, config.yandexPerformanceMode, L.yandexPerfDesc
         );
-        // Добавляем обработчик изменения для чекбокса плейлистов
+        // Р”РѕР±Р°РІР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡РёРє РёР·РјРµРЅРµРЅРёСЏ РґР»СЏ С‡РµРєР±РѕРєСЃР° РїР»РµР№Р»РёСЃС‚РѕРІ
         const playlistModeCheckbox = document.querySelector('#playlistModeFeature');
         if (playlistModeCheckbox) {
             if (playlistModeCheckbox.checked) {
@@ -2368,7 +2368,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         container.appendChild(expSection);
     }
 
-    // --- Внешний вид вкладка ---
+    // --- Р’РЅРµС€РЅРёР№ РІРёРґ РІРєР»Р°РґРєР° ---
 
     function createAppearanceTab(container) {
         const section = (title, description = '') => {
@@ -2450,7 +2450,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         });
         thumbSection.appendChild(thumbSelect);
         container.appendChild(thumbSection);
-        // --- Язык интерфейса выпадающим списком ---
+        // --- РЇР·С‹Рє РёРЅС‚РµСЂС„РµР№СЃР° РІС‹РїР°РґР°СЋС‰РёРј СЃРїРёСЃРєРѕРј ---
         const langSection = section(L.langSection, L.langDesc);
         const langSelect = document.createElement('select');
         langSelect.id = 'ytEnhancerUILang';
@@ -2538,7 +2538,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         fontSizeDiv.appendChild(fontSizeValue);
         themeSection.appendChild(fontSizeDiv);
         container.appendChild(themeSection);
-        // --- Смена языка при выборе ---
+        // --- РЎРјРµРЅР° СЏР·С‹РєР° РїСЂРё РІС‹Р±РѕСЂРµ ---
         langSelect.addEventListener('change', () => {
             setSavedUILang(langSelect.value);
             uiLang = getCurrentUILang();
@@ -2553,7 +2553,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         });
     }
 
-    // --- Style Editor (полный редактор стилей) ---
+    // --- Style Editor (РїРѕР»РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ СЃС‚РёР»РµР№) ---
 
     function createStyleEditor() {
         if (document.getElementById('yt-style-editor')) {
@@ -3219,7 +3219,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         container.appendChild(btnRow);
     }
 
-    // --- Показать уведомление ---
+    // --- РџРѕРєР°Р·Р°С‚СЊ СѓРІРµРґРѕРјР»РµРЅРёРµ ---
 
     function showNotification(message, duration = 3000) {
         const oldNotifications = document.querySelectorAll('.yt-enhancer-notification');
@@ -3263,7 +3263,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         return notification;
     }
 
-    // --- Показать предупреждение о плейлистах ---
+    // --- РџРѕРєР°Р·Р°С‚СЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ Рѕ РїР»РµР№Р»РёСЃС‚Р°С… ---
 
     function showPlaylistWarning() {
         if (config.playlistModeFeature || !PLAYLIST_URL_REGEX.test(location.pathname)) return;
@@ -3272,20 +3272,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         setInnerHTML(warning, L.playlistModeWarning);
         document.body.appendChild(warning);
         setTimeout(() => warning.classList.add('show'), 1000);
-        // Добавляем обработчик клика для открытия настроек
+        // Р”РѕР±Р°РІР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡РёРє РєР»РёРєР° РґР»СЏ РѕС‚РєСЂС‹С‚РёСЏ РЅР°СЃС‚СЂРѕРµРє
         warning.addEventListener('click', () => {
             createSettingsUI();
             const mainTab = document.querySelector('#yt-enhancer-settings .yt-enhancer-tab[data-tab="0"]');
             if (mainTab) mainTab.click();
         });
-        // Автоматическое скрытие через 10 секунд
+        // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ СЃРєСЂС‹С‚РёРµ С‡РµСЂРµР· 10 СЃРµРєСѓРЅРґ
         setTimeout(() => {
             warning.classList.remove('show');
             setTimeout(() => warning.remove(), 300);
         }, 10000);
     }
 
-    // --- Добавить кнопку в интерфейс YouTube ---
+    // --- Р”РѕР±Р°РІРёС‚СЊ РєРЅРѕРїРєСѓ РІ РёРЅС‚РµСЂС„РµР№СЃ YouTube ---
 
     function createEnhancerButton() {
         const header = document.querySelector('ytd-masthead #end');
@@ -3327,7 +3327,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         setTimeout(createEnhancerButton, 1000);
     }
 
-    // --- Проверка и активация режима плейлистов ---
+    // --- РџСЂРѕРІРµСЂРєР° Рё Р°РєС‚РёРІР°С†РёСЏ СЂРµР¶РёРјР° РїР»РµР№Р»РёСЃС‚РѕРІ ---
 
     function checkPlaylistMode() {
         const isPlaylistPage = PLAYLIST_URL_REGEX.test(location.pathname);
@@ -3342,15 +3342,15 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
     }
 
-    // --- Активация режима плейлистов ---
+    // --- РђРєС‚РёРІР°С†РёСЏ СЂРµР¶РёРјР° РїР»РµР№Р»РёСЃС‚РѕРІ ---
 
     function activatePlaylistMode() {
         if (!config.playlistModeFeature) return;
         isPlaylistModeActive = true;
         document.documentElement.classList.add(PLAYLIST_MODE_CLASS);
-        // Показываем уведомление
+        // РџРѕРєР°Р·С‹РІР°РµРј СѓРІРµРґРѕРјР»РµРЅРёРµ
         showNotification(L.playlistModeNotification, 5000);
-        // Добавляем стили для режима плейлистов
+        // Р”РѕР±Р°РІР»СЏРµРј СЃС‚РёР»Рё РґР»СЏ СЂРµР¶РёРјР° РїР»РµР№Р»РёСЃС‚РѕРІ
         addStyles(`
             .${PLAYLIST_MODE_CLASS} #yt-enhancer-settings .yt-enhancer-section:not(.playlist-mode-exception),
             .${PLAYLIST_MODE_CLASS} #yt-enhancer-settings .yt-enhancer-tab:not(.playlist-mode-exception),
@@ -3366,18 +3366,18 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         `);
     }
 
-    // --- Деактивация режима плейлистов ---
+    // --- Р”РµР°РєС‚РёРІР°С†РёСЏ СЂРµР¶РёРјР° РїР»РµР№Р»РёСЃС‚РѕРІ ---
 
     function deactivatePlaylistMode() {
         if (!config.playlistModeFeature) return;
         isPlaylistModeActive = false;
         document.documentElement.classList.remove(PLAYLIST_MODE_CLASS);
-        // Показываем уведомление о перезагрузке
+        // РџРѕРєР°Р·С‹РІР°РµРј СѓРІРµРґРѕРјР»РµРЅРёРµ Рѕ РїРµСЂРµР·Р°РіСЂСѓР·РєРµ
         const notification = showNotification(
             L.exitPlaylistModeNotification.replace('{seconds}', '2'),
             2000
         );
-        // Добавляем отсчет времени в уведомление
+        // Р”РѕР±Р°РІР»СЏРµРј РѕС‚СЃС‡РµС‚ РІСЂРµРјРµРЅРё РІ СѓРІРµРґРѕРјР»РµРЅРёРµ
         let secondsLeft = 2;
         const interval = setInterval(() => {
             secondsLeft--;
@@ -3385,15 +3385,15 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 notification.textContent = L.exitPlaylistModeNotification.replace('{seconds}', secondsLeft);
             }
         }, 1000);
-        // Перезагружаем страницу через 2 секунды
+        // РџРµСЂРµР·Р°РіСЂСѓР¶Р°РµРј СЃС‚СЂР°РЅРёС†Сѓ С‡РµСЂРµР· 2 СЃРµРєСѓРЅРґС‹
         setTimeout(() => {
             clearInterval(interval);
             location.reload();
         }, 2000);
     }
 
-    // --- Новые фиксы YouTube в Яндекс Браузере ---
-    // Принудительный H264 кодек (отключает VP9/AV1 для стабильности)
+    // --- РќРѕРІС‹Рµ С„РёРєСЃС‹ YouTube РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ ---
+    // РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅС‹Р№ H264 РєРѕРґРµРє (РѕС‚РєР»СЋС‡Р°РµС‚ VP9/AV1 РґР»СЏ СЃС‚Р°Р±РёР»СЊРЅРѕСЃС‚Рё)
 
     function applyForceH264() {
         if (!config.forceH264 || (isPlaylistModeActive && config.playlistModeFeature)) return;
@@ -3416,14 +3416,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             };
         }
     }
-    // Авто-закрытие попапа "Видео приостановлено"
+    // РђРІС‚Рѕ-Р·Р°РєСЂС‹С‚РёРµ РїРѕРїР°РїР° "Р’РёРґРµРѕ РїСЂРёРѕСЃС‚Р°РЅРѕРІР»РµРЅРѕ"
 
     function applyFixAutoPause() {
         if (!config.fixAutoPause || (isPlaylistModeActive && config.playlistModeFeature)) return;
         if (_unsafeWin.__ytEnhancerAutoPauseApplied) return;
         _unsafeWin.__ytEnhancerAutoPauseApplied = true;
         const dismissPause = debounce(() => {
-            // Кнопка "Да" / "Yes" в попапе "Видео приостановлено. Продолжить просмотр?"
+            // РљРЅРѕРїРєР° "Р”Р°" / "Yes" РІ РїРѕРїР°РїРµ "Р’РёРґРµРѕ РїСЂРёРѕСЃС‚Р°РЅРѕРІР»РµРЅРѕ. РџСЂРѕРґРѕР»Р¶РёС‚СЊ РїСЂРѕСЃРјРѕС‚СЂ?"
             const confirmBtns = document.querySelectorAll(
                 'yt-confirm-dialog-renderer #confirm-button, ' +
                 '.yt-confirm-dialog-renderer #confirm-button, ' +
@@ -3435,7 +3435,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                     btn.click();
                 }
             });
-            // Скрыть "Все еще смотрите?" / "Still watching?"
+            // РЎРєСЂС‹С‚СЊ "Р’СЃРµ РµС‰Рµ СЃРјРѕС‚СЂРёС‚Рµ?" / "Still watching?"
             const overlays = document.querySelectorAll(
                 'ytd-enforcement-message-view-model, ' +
                 '.ytp-pause-overlay, ' +
@@ -3450,12 +3450,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }, 500);
         createManagedObserver(document.body, dismissPause, { childList: true, subtree: true });
     }
-    // Фикс белой вспышки при навигации в темной теме
+    // Р¤РёРєСЃ Р±РµР»РѕР№ РІСЃРїС‹С€РєРё РїСЂРё РЅР°РІРёРіР°С†РёРё РІ С‚РµРјРЅРѕР№ С‚РµРјРµ
 
     function applyFixDarkFlash() {
         if (!config.fixDarkFlash || (isPlaylistModeActive && config.playlistModeFeature)) return;
         addStyles(`
-            /* Фиксируем фон страницы — предотвращаем белую вспышку */
+            /* Р¤РёРєСЃРёСЂСѓРµРј С„РѕРЅ СЃС‚СЂР°РЅРёС†С‹ вЂ” РїСЂРµРґРѕС‚РІСЂР°С‰Р°РµРј Р±РµР»СѓСЋ РІСЃРїС‹С€РєСѓ */
             html[dark], html[dark] body,
             ytd-app[is-dark-theme], [dark] ytd-app {
                 background-color: var(--yt-spec-base-background, #0f0f0f) !important;
@@ -3470,20 +3470,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             html[dark] #page-manager.ytd-app {
                 background-color: var(--yt-spec-base-background, #0f0f0f) !important;
             }
-            /* Мастхед (верхняя полоса: поиск, лого, кнопки) — фиксируем фон и убираем мерцание при скролле */
+            /* РњР°СЃС‚С…РµРґ (РІРµСЂС…РЅСЏСЏ РїРѕР»РѕСЃР°: РїРѕРёСЃРє, Р»РѕРіРѕ, РєРЅРѕРїРєРё) вЂ” С„РёРєСЃРёСЂСѓРµРј С„РѕРЅ Рё СѓР±РёСЂР°РµРј РјРµСЂС†Р°РЅРёРµ РїСЂРё СЃРєСЂРѕР»Р»Рµ */
             html[dark] #masthead-container,
             html[dark] ytd-masthead,
             html[dark] #masthead {
                 background-color: var(--yt-spec-base-background, #0f0f0f) !important;
                 will-change: auto !important;
             }
-            /* Предотвращаем мерцание при SPA-навигации */
+            /* РџСЂРµРґРѕС‚РІСЂР°С‰Р°РµРј РјРµСЂС†Р°РЅРёРµ РїСЂРё SPA-РЅР°РІРёРіР°С†РёРё */
             html[dark] #content.ytd-app > :not(ytd-masthead):not(ytd-mini-guide-renderer) {
                 transition: none !important;
             }
         `, 'yt-enhancer-dark-flash');
     }
-    // Фикс сетки на странице поиска
+    // Р¤РёРєСЃ СЃРµС‚РєРё РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕРёСЃРєР°
 
     function applyFixSearchGrid() {
         if (!config.fixSearchGrid || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
@@ -3512,7 +3512,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
         `, 'yt-enhancer-search-grid');
     }
-    // Фикс мини-плеера
+    // Р¤РёРєСЃ РјРёРЅРё-РїР»РµРµСЂР°
 
     function applyFixMiniPlayer() {
         if (!config.fixMiniPlayer || (isPlaylistModeActive && config.playlistModeFeature)) return;
@@ -3526,18 +3526,18 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             .ytd-miniplayer .ytp-miniplayer-controls {
                 z-index: 2021 !important;
             }
-            /* Правильное отображение мини-плеера поверх контента */
+            /* РџСЂР°РІРёР»СЊРЅРѕРµ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РјРёРЅРё-РїР»РµРµСЂР° РїРѕРІРµСЂС… РєРѕРЅС‚РµРЅС‚Р° */
             ytd-miniplayer[active] .miniplayer {
                 box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
             }
         `, 'yt-enhancer-miniplayer');
     }
-    // Оптимизация скролла
+    // РћРїС‚РёРјРёР·Р°С†РёСЏ СЃРєСЂРѕР»Р»Р°
 
     function applyScrollOptimization() {
         if (!config.scrollOptimization || (isPlaylistModeActive && config.playlistModeFeature)) return;
         addStyles(`
-            /* Оптимизация рендеринга при скролле */
+            /* РћРїС‚РёРјРёР·Р°С†РёСЏ СЂРµРЅРґРµСЂРёРЅРіР° РїСЂРё СЃРєСЂРѕР»Р»Рµ */
             ytd-rich-item-renderer,
             ytd-video-renderer,
             ytd-compact-video-renderer,
@@ -3545,28 +3545,28 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 content-visibility: auto;
                 contain-intrinsic-size: 0 500px;
             }
-            /* Оптимизация миниатюр */
+            /* РћРїС‚РёРјРёР·Р°С†РёСЏ РјРёРЅРёР°С‚СЋСЂ */
             ytd-thumbnail img,
             yt-image img {
                 content-visibility: auto;
             }
-            /* Исправление подергивания при прокрутке */
+            /* РСЃРїСЂР°РІР»РµРЅРёРµ РїРѕРґРµСЂРіРёРІР°РЅРёСЏ РїСЂРё РїСЂРѕРєСЂСѓС‚РєРµ */
             #page-manager {
                 overflow-anchor: none;
             }
-            /* GPU-ускорение для плавного скролла */
+            /* GPU-СѓСЃРєРѕСЂРµРЅРёРµ РґР»СЏ РїР»Р°РІРЅРѕРіРѕ СЃРєСЂРѕР»Р»Р° */
             #contents.ytd-rich-grid-renderer {
                 transform: translateZ(0);
                 backface-visibility: hidden;
             }
         `, 'yt-enhancer-scroll');
     }
-    // Фикс боковой панели
+    // Р¤РёРєСЃ Р±РѕРєРѕРІРѕР№ РїР°РЅРµР»Рё
 
     function applyFixSidebar() {
         if (!config.fixSidebar || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
         addStyles(`
-            /* Фикс пропадания/мерцания боковой панели */
+            /* Р¤РёРєСЃ РїСЂРѕРїР°РґР°РЅРёСЏ/РјРµСЂС†Р°РЅРёСЏ Р±РѕРєРѕРІРѕР№ РїР°РЅРµР»Рё */
             app-drawer#guide {
                 transform: none !important;
                 transition: visibility 0.2s, width 0.2s !important;
@@ -3574,37 +3574,37 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             tp-yt-app-drawer#guide[opened] {
                 visibility: visible !important;
             }
-            /* Фикс наложения боковой панели на контент */
+            /* Р¤РёРєСЃ РЅР°Р»РѕР¶РµРЅРёСЏ Р±РѕРєРѕРІРѕР№ РїР°РЅРµР»Рё РЅР° РєРѕРЅС‚РµРЅС‚ */
             ytd-mini-guide-renderer {
                 z-index: 2000 !important;
             }
-            /* Правильное отображение при схлопывании */
+            /* РџСЂР°РІРёР»СЊРЅРѕРµ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РїСЂРё СЃС…Р»РѕРїС‹РІР°РЅРёРё */
             ytd-guide-renderer {
                 z-index: 2000 !important;
             }
-            /* Фикс z-index для мастхеда */
+            /* Р¤РёРєСЃ z-index РґР»СЏ РјР°СЃС‚С…РµРґР° */
             #masthead-container {
                 z-index: 2050 !important;
             }
         `, 'yt-enhancer-sidebar');
     }
 
-    // Фикс SPA-навигации в Яндекс Браузере
+    // Р¤РёРєСЃ SPA-РЅР°РІРёРіР°С†РёРё РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ
     function applyYandexFixNavigation() {
         if (!config.yandexFixNavigation || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
         if (_unsafeWin.__ytEnhancerNavFixApplied) return;
         _unsafeWin.__ytEnhancerNavFixApplied = true;
 
-        // Яндекс Браузер иногда ломает SPA-навигацию YouTube, вызывая пропущенные popstate.
-        // Слушаем yt-navigate-finish и проверяем, что URL в address bar совпадает с YouTube state.
+        // РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂ РёРЅРѕРіРґР° Р»РѕРјР°РµС‚ SPA-РЅР°РІРёРіР°С†РёСЋ YouTube, РІС‹Р·С‹РІР°СЏ РїСЂРѕРїСѓС‰РµРЅРЅС‹Рµ popstate.
+        // РЎР»СѓС€Р°РµРј yt-navigate-finish Рё РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ URL РІ address bar СЃРѕРІРїР°РґР°РµС‚ СЃ YouTube state.
         document.addEventListener('yt-navigate-finish', () => {
             try {
                 const ytApp = document.querySelector('ytd-app');
                 if (!ytApp) return;
-                // Форсируем обновление page-manager, если навигация залипла
+                // Р¤РѕСЂСЃРёСЂСѓРµРј РѕР±РЅРѕРІР»РµРЅРёРµ page-manager, РµСЃР»Рё РЅР°РІРёРіР°С†РёСЏ Р·Р°Р»РёРїР»Р°
                 const pm = document.querySelector('ytd-page-manager');
                 if (pm && pm.getCurrentPage && !pm.getCurrentPage()) {
-                    // Принудительный re-render при застрявшей навигации
+                    // РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅС‹Р№ re-render РїСЂРё Р·Р°СЃС‚СЂСЏРІС€РµР№ РЅР°РІРёРіР°С†РёРё
                     pm.style.display = 'none';
                     pm.offsetHeight; // force reflow
                     pm.style.display = '';
@@ -3612,12 +3612,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             } catch (e) { /* safe fallback */ }
         });
 
-        // Фикс для кнопки «Назад» — убеждаемся, что YouTube корректно обрабатывает popstate
+        // Р¤РёРєСЃ РґР»СЏ РєРЅРѕРїРєРё В«РќР°Р·Р°РґВ» вЂ” СѓР±РµР¶РґР°РµРјСЃСЏ, С‡С‚Рѕ YouTube РєРѕСЂСЂРµРєС‚РЅРѕ РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚ popstate
         _unsafeWin.addEventListener('popstate', () => {
             setTimeout(() => {
                 const ytApp = document.querySelector('ytd-app');
                 if (ytApp && ytApp.data && ytApp.data.url !== location.pathname + location.search) {
-                    // YouTube state рассинхронизирован — мягкий перезапрос
+                    // YouTube state СЂР°СЃСЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅ вЂ” РјСЏРіРєРёР№ РїРµСЂРµР·Р°РїСЂРѕСЃ
                     try {
                         const evt = document.createEvent('CustomEvent');
                         evt.initCustomEvent('yt-navigate', true, true, { href: location.href });
@@ -3628,11 +3628,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         });
     }
 
-    // Фикс двойной прокрутки / overflow в Яндекс Браузере
+    // Р¤РёРєСЃ РґРІРѕР№РЅРѕР№ РїСЂРѕРєСЂСѓС‚РєРё / overflow РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ
     function applyYandexFixScrollbar() {
         if (!config.yandexFixScrollbar || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
         addStyles(`
-            /* Устранение двойного скроллбара от инъекций Яндекс Браузера */
+            /* РЈСЃС‚СЂР°РЅРµРЅРёРµ РґРІРѕР№РЅРѕРіРѕ СЃРєСЂРѕР»Р»Р±Р°СЂР° РѕС‚ РёРЅСЉРµРєС†РёР№ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂР° */
             html {
                 overflow-y: auto !important;
                 overflow-x: hidden !important;
@@ -3642,49 +3642,49 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 width: 100% !important;
                 max-width: 100vw !important;
             }
-            /* Фикс горизонтального overflow на странице видео */
+            /* Р¤РёРєСЃ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕРіРѕ overflow РЅР° СЃС‚СЂР°РЅРёС†Рµ РІРёРґРµРѕ */
             ytd-watch-flexy {
                 overflow-x: hidden !important;
                 max-width: 100vw !important;
             }
-            /* Фикс overflow в page-manager */
+            /* Р¤РёРєСЃ overflow РІ page-manager */
             ytd-page-manager {
                 overflow-x: hidden !important;
             }
         `, 'yt-enhancer-yandex-scrollbar');
     }
 
-    // Фикс полноэкранного режима в Яндекс Браузере
+    // Р¤РёРєСЃ РїРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРіРѕ СЂРµР¶РёРјР° РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ
     function applyYandexFixFullscreen() {
         if (!config.yandexFixFullscreen || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
         addStyles(`
-            /* Максимальный z-index для полноэкранного плеера */
+            /* РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ z-index РґР»СЏ РїРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРіРѕ РїР»РµРµСЂР° */
             .html5-video-player.ytp-fullscreen {
                 z-index: 2147483647 !important;
                 position: fixed !important;
             }
-            /* Скрываем навигационные подсказки Яндекса в fullscreen */
+            /* РЎРєСЂС‹РІР°РµРј РЅР°РІРёРіР°С†РёРѕРЅРЅС‹Рµ РїРѕРґСЃРєР°Р·РєРё РЇРЅРґРµРєСЃР° РІ fullscreen */
             .ytp-fullscreen-navbar-hint,
             .video-stream-host__fullscreen-hint {
                 display: none !important;
             }
-            /* Фикс: Яндекс иногда оставляет masthead поверх fullscreen */
+            /* Р¤РёРєСЃ: РЇРЅРґРµРєСЃ РёРЅРѕРіРґР° РѕСЃС‚Р°РІР»СЏРµС‚ masthead РїРѕРІРµСЂС… fullscreen */
             .html5-video-player.ytp-fullscreen ~ #masthead-container,
             ytd-app[masthead-hidden_] #masthead-container {
                 z-index: -1 !important;
             }
-            /* Фикс мерцания при входе/выходе из fullscreen */
+            /* Р¤РёРєСЃ РјРµСЂС†Р°РЅРёСЏ РїСЂРё РІС…РѕРґРµ/РІС‹С…РѕРґРµ РёР· fullscreen */
             .html5-video-player {
                 transition: none !important;
             }
         `, 'yt-enhancer-yandex-fullscreen');
     }
 
-    // Фикс элементов управления плеера в Яндекс Браузере
+    // Р¤РёРєСЃ СЌР»РµРјРµРЅС‚РѕРІ СѓРїСЂР°РІР»РµРЅРёСЏ РїР»РµРµСЂР° РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ
     function applyYandexFixPlayerControls() {
         if (!config.yandexFixPlayerControls || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
         addStyles(`
-            /* Фикс рендеринга нижней панели управления плеера */
+            /* Р¤РёРєСЃ СЂРµРЅРґРµСЂРёРЅРіР° РЅРёР¶РЅРµР№ РїР°РЅРµР»Рё СѓРїСЂР°РІР»РµРЅРёСЏ РїР»РµРµСЂР° */
             .ytp-chrome-bottom {
                 transform: translateZ(0) !important;
                 backface-visibility: hidden !important;
@@ -3692,43 +3692,43 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             .html5-video-player:not(.ytp-autohide) .ytp-chrome-bottom {
                 opacity: 1 !important;
             }
-            /* Фикс прогресс-бара — иногда не рендерится в Яндексе */
+            /* Р¤РёРєСЃ РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂР° вЂ” РёРЅРѕРіРґР° РЅРµ СЂРµРЅРґРµСЂРёС‚СЃСЏ РІ РЇРЅРґРµРєСЃРµ */
             .ytp-progress-bar-container {
                 transform: translateZ(0) !important;
                 will-change: transform !important;
             }
-            /* Фикс кнопки громкости */
+            /* Р¤РёРєСЃ РєРЅРѕРїРєРё РіСЂРѕРјРєРѕСЃС‚Рё */
             .ytp-volume-panel {
                 overflow: visible !important;
             }
-            /* Фикс таймкода — иногда обрезается */
+            /* Р¤РёРєСЃ С‚Р°Р№РјРєРѕРґР° вЂ” РёРЅРѕРіРґР° РѕР±СЂРµР·Р°РµС‚СЃСЏ */
             .ytp-time-display {
                 overflow: visible !important;
                 white-space: nowrap !important;
             }
-            /* Фикс кнопок настроек и субтитров */
+            /* Р¤РёРєСЃ РєРЅРѕРїРѕРє РЅР°СЃС‚СЂРѕРµРє Рё СЃСѓР±С‚РёС‚СЂРѕРІ */
             .ytp-settings-button,
             .ytp-subtitles-button,
             .ytp-size-button {
                 transform: translateZ(0) !important;
             }
-            /* Фикс hover-эффектов на контролах */
+            /* Р¤РёРєСЃ hover-СЌС„С„РµРєС‚РѕРІ РЅР° РєРѕРЅС‚СЂРѕР»Р°С… */
             .ytp-button:hover {
                 opacity: 1 !important;
             }
         `, 'yt-enhancer-yandex-controls');
     }
 
-    // Дополнительные фиксы для YouTube в Яндекс Браузере
+    // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ С„РёРєСЃС‹ РґР»СЏ YouTube РІ РЇРЅРґРµРєСЃ Р‘СЂР°СѓР·РµСЂРµ
 
     function applyExtraYandexFixes() {
         if (!isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
         addStyles(`
-            /* Фикс поломанного Polymer-рендеринга */
+            /* Р¤РёРєСЃ РїРѕР»РѕРјР°РЅРЅРѕРіРѕ Polymer-СЂРµРЅРґРµСЂРёРЅРіР° */
             ytd-app {
                 overflow: visible !important;
             }
-            /* Фикс некорректного отображения комментариев */
+            /* Р¤РёРєСЃ РЅРµРєРѕСЂСЂРµРєС‚РЅРѕРіРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ */
             ytd-comments#comments {
                 display: block !important;
                 visibility: visible !important;
@@ -3736,20 +3736,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             ytd-comments ytd-item-section-renderer {
                 display: block !important;
             }
-            /* Фикс промо-баннеров и оверлеев */
+            /* Р¤РёРєСЃ РїСЂРѕРјРѕ-Р±Р°РЅРЅРµСЂРѕРІ Рё РѕРІРµСЂР»РµРµРІ */
             ytd-banner-promo-renderer,
             ytd-statement-banner-renderer,
             ytd-mealbar-promo-renderer {
                 display: none !important;
             }
-            /* Фикс отображения плеера */
+            /* Р¤РёРєСЃ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РїР»РµРµСЂР° */
             .html5-video-player {
                 overflow: visible !important;
             }
             .html5-video-player:not(.ytp-autohide) .ytp-chrome-bottom {
                 opacity: 1 !important;
             }
-            /* Фикс залипания элементов управления плеера */
+            /* Р¤РёРєСЃ Р·Р°Р»РёРїР°РЅРёСЏ СЌР»РµРјРµРЅС‚РѕРІ СѓРїСЂР°РІР»РµРЅРёСЏ РїР»РµРµСЂР° */
             .html5-video-player.ytp-autohide .ytp-chrome-bottom,
             .html5-video-player.ytp-autohide .ytp-chrome-top,
             .html5-video-player.ytp-autohide .ytp-gradient-top,
@@ -3760,20 +3760,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             .html5-video-player.ytp-autohide {
                 cursor: none !important;
             }
-            /* Фикс кнопки "Skip" в рекламе */
+            /* Р¤РёРєСЃ РєРЅРѕРїРєРё "Skip" РІ СЂРµРєР»Р°РјРµ */
             .ytp-ad-skip-button-container {
                 z-index: 1000 !important;
                 opacity: 1 !important;
             }
-            /* Фикс прозрачности подсказок */
+            /* Р¤РёРєСЃ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё РїРѕРґСЃРєР°Р·РѕРє */
             ytd-engagement-panel-section-list-renderer {
                 z-index: 1003 !important;
             }
-            /* Фикс прокрутки комментариев в режиме театра */
+            /* Р¤РёРєСЃ РїСЂРѕРєСЂСѓС‚РєРё РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ РІ СЂРµР¶РёРјРµ С‚РµР°С‚СЂР° */
             ytd-watch-flexy[theater] #below {
                 scroll-behavior: smooth;
             }
-            /* Фикс поведения hover preview */
+            /* Р¤РёРєСЃ РїРѕРІРµРґРµРЅРёСЏ hover preview */
             ytd-thumbnail #mouseover-overlay,
             ytd-thumbnail #hover-overlays {
                 will-change: opacity;
@@ -3781,12 +3781,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         `, 'yt-enhancer-extra-yandex');
     }
 
-    // Скрытие пустых блоков (контейнеры, опустошённые uBlock Origin и другими адблокерами)
+    // РЎРєСЂС‹С‚РёРµ РїСѓСЃС‚С‹С… Р±Р»РѕРєРѕРІ (РєРѕРЅС‚РµР№РЅРµСЂС‹, РѕРїСѓСЃС‚РѕС€С‘РЅРЅС‹Рµ uBlock Origin Рё РґСЂСѓРіРёРјРё Р°РґР±Р»РѕРєРµСЂР°РјРё)
     function applyHideEmptyBlocks() {
         if (!config.hideEmptyBlocks || (isPlaylistModeActive && config.playlistModeFeature)) return;
-        // CSS: :has() — скрываем контейнеры, внутри которых реклама заблокирована адблокером
+        // CSS: :has() вЂ” СЃРєСЂС‹РІР°РµРј РєРѕРЅС‚РµР№РЅРµСЂС‹, РІРЅСѓС‚СЂРё РєРѕС‚РѕСЂС‹С… СЂРµРєР»Р°РјР° Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅР° Р°РґР±Р»РѕРєРµСЂРѕРј
         addStyles(`
-            /* Контейнеры с рекламными рендерерами (прямые + заблокированные uBlock Origin через [hidden] / display:none) */
+            /* РљРѕРЅС‚РµР№РЅРµСЂС‹ СЃ СЂРµРєР»Р°РјРЅС‹РјРё СЂРµРЅРґРµСЂРµСЂР°РјРё (РїСЂСЏРјС‹Рµ + Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹Рµ uBlock Origin С‡РµСЂРµР· [hidden] / display:none) */
             ytd-rich-item-renderer:has(> ytd-ad-slot-renderer),
             ytd-rich-item-renderer:has(> ytd-display-ad-renderer),
             ytd-rich-item-renderer:has(> ytd-in-feed-ad-layout-renderer),
@@ -3800,13 +3800,13 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             ytd-item-section-renderer:has(> #contents > ytd-promoted-sparkles-web-renderer) {
                 display: none !important;
             }
-            /* Контейнеры, где uBlock спрятал содержимое через [hidden] */
+            /* РљРѕРЅС‚РµР№РЅРµСЂС‹, РіРґРµ uBlock СЃРїСЂСЏС‚Р°Р» СЃРѕРґРµСЂР¶РёРјРѕРµ С‡РµСЂРµР· [hidden] */
             ytd-rich-item-renderer:has(> [hidden]:only-child),
             ytd-rich-section-renderer:has(> #content > [hidden]:only-child),
             ytd-item-section-renderer:has(> #contents > [hidden]:only-child) {
                 display: none !important;
             }
-            /* Прямое скрытие рекламных элементов */
+            /* РџСЂСЏРјРѕРµ СЃРєСЂС‹С‚РёРµ СЂРµРєР»Р°РјРЅС‹С… СЌР»РµРјРµРЅС‚РѕРІ */
             ytd-ad-slot-renderer,
             ytd-promoted-sparkles-web-renderer,
             ytd-display-ad-renderer,
@@ -3817,7 +3817,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             ytd-statement-banner-renderer {
                 display: none !important;
             }
-            /* Полностью пустые элементы */
+            /* РџРѕР»РЅРѕСЃС‚СЊСЋ РїСѓСЃС‚С‹Рµ СЌР»РµРјРµРЅС‚С‹ */
             ytd-rich-item-renderer:empty,
             ytd-rich-section-renderer:empty,
             ytd-item-section-renderer:empty,
@@ -3826,7 +3826,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
         `, 'yt-enhancer-hide-empty');
 
-        // JS-очистка — удаляем контейнеры, которые не поймал CSS
+        // JS-РѕС‡РёСЃС‚РєР° вЂ” СѓРґР°Р»СЏРµРј РєРѕРЅС‚РµР№РЅРµСЂС‹, РєРѕС‚РѕСЂС‹Рµ РЅРµ РїРѕР№РјР°Р» CSS
         if (_unsafeWin.__ytEnhancerEmptyBlocksApplied) return;
         _unsafeWin.__ytEnhancerEmptyBlocksApplied = true;
 
@@ -3837,18 +3837,18 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             'ytd-brand-video-singleton-renderer', 'ytd-statement-banner-renderer'
         ].join(',');
 
-        // Проверка: контейнер визуально пуст (uBlock скрыл всё через style/hidden/class)
+        // РџСЂРѕРІРµСЂРєР°: РєРѕРЅС‚РµР№РЅРµСЂ РІРёР·СѓР°Р»СЊРЅРѕ РїСѓСЃС‚ (uBlock СЃРєСЂС‹Р» РІСЃС‘ С‡РµСЂРµР· style/hidden/class)
         const isVisuallyEmpty = (el) => {
             const children = el.children;
             if (!children.length) return true;
             for (let i = 0; i < children.length; i++) {
                 const ch = children[i];
-                // Ребёнок скрыт uBlock через hidden атрибут или display:none в style
+                // Р РµР±С‘РЅРѕРє СЃРєСЂС‹С‚ uBlock С‡РµСЂРµР· hidden Р°С‚СЂРёР±СѓС‚ РёР»Рё display:none РІ style
                 if (ch.hidden) continue;
                 if (ch.style && ch.style.display === 'none') continue;
-                // Ребёнок имеет нулевую высоту (uBlock cosmetic filtering)
+                // Р РµР±С‘РЅРѕРє РёРјРµРµС‚ РЅСѓР»РµРІСѓСЋ РІС‹СЃРѕС‚Сѓ (uBlock cosmetic filtering)
                 if (ch.offsetHeight === 0 && ch.offsetWidth === 0) continue;
-                // Ребёнок — это контейнер #content/#contents, проверяем его детей
+                // Р РµР±С‘РЅРѕРє вЂ” СЌС‚Рѕ РєРѕРЅС‚РµР№РЅРµСЂ #content/#contents, РїСЂРѕРІРµСЂСЏРµРј РµРіРѕ РґРµС‚РµР№
                 if (ch.id === 'content' || ch.id === 'contents') {
                     if (isVisuallyEmpty(ch)) continue;
                 }
@@ -3858,24 +3858,24 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         };
 
         const cleanEmptyRenderers = debounce(() => {
-            // 1) Скрываем контейнеры с рекламными рендерерами внутри
+            // 1) РЎРєСЂС‹РІР°РµРј РєРѕРЅС‚РµР№РЅРµСЂС‹ СЃ СЂРµРєР»Р°РјРЅС‹РјРё СЂРµРЅРґРµСЂРµСЂР°РјРё РІРЅСѓС‚СЂРё
             document.querySelectorAll('ytd-rich-item-renderer, ytd-rich-section-renderer, ytd-item-section-renderer').forEach(el => {
                 if (el.querySelector(adSelectors)) {
                     el.style.display = 'none';
                     return;
                 }
             });
-            // 2) Скрываем rich-item без видеоконтента (пустые плейсхолдеры / заблокированные uBlock)
+            // 2) РЎРєСЂС‹РІР°РµРј rich-item Р±РµР· РІРёРґРµРѕРєРѕРЅС‚РµРЅС‚Р° (РїСѓСЃС‚С‹Рµ РїР»РµР№СЃС…РѕР»РґРµСЂС‹ / Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹Рµ uBlock)
             document.querySelectorAll('ytd-rich-item-renderer').forEach(el => {
                 if (el.style.display === 'none') return;
-                // Есть видео — пропускаем (включая новый yt-lockup-view-model)
+                // Р•СЃС‚СЊ РІРёРґРµРѕ вЂ” РїСЂРѕРїСѓСЃРєР°РµРј (РІРєР»СЋС‡Р°СЏ РЅРѕРІС‹Р№ yt-lockup-view-model)
                 if (el.querySelector('ytd-rich-grid-media, a#thumbnail, #video-title-link, ytd-rich-grid-slim-media, yt-lockup-view-model')) return;
-                // Проверяем визуальную пустоту (uBlock спрятал контент)
+                // РџСЂРѕРІРµСЂСЏРµРј РІРёР·СѓР°Р»СЊРЅСѓСЋ РїСѓСЃС‚РѕС‚Сѓ (uBlock СЃРїСЂСЏС‚Р°Р» РєРѕРЅС‚РµРЅС‚)
                 if (isVisuallyEmpty(el)) {
                     el.style.display = 'none';
                     return;
                 }
-                // Если элемент только появился — даём 3 сек на загрузку
+                // Р•СЃР»Рё СЌР»РµРјРµРЅС‚ С‚РѕР»СЊРєРѕ РїРѕСЏРІРёР»СЃСЏ вЂ” РґР°С‘Рј 3 СЃРµРє РЅР° Р·Р°РіСЂСѓР·РєСѓ
                 if (!el.dataset.ytEnhancerTs) {
                     el.dataset.ytEnhancerTs = Date.now();
                     return;
@@ -3884,7 +3884,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                     el.style.display = 'none';
                 }
             });
-            // 3) Скрываем rich-section/item-section, визуально пустые после uBlock
+            // 3) РЎРєСЂС‹РІР°РµРј rich-section/item-section, РІРёР·СѓР°Р»СЊРЅРѕ РїСѓСЃС‚С‹Рµ РїРѕСЃР»Рµ uBlock
             document.querySelectorAll('ytd-rich-section-renderer, ytd-item-section-renderer').forEach(el => {
                 if (el.style.display === 'none') return;
                 if (isVisuallyEmpty(el)) {
@@ -3897,19 +3897,19 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         createManagedObserver(document.body, cleanEmptyRenderers, { childList: true, subtree: true });
     }
 
-    // Обход замедления YouTube в РФ
-    // Основной механизм: n-parameter deobfuscation — YouTube сам замедляет видео
-    // до ~50-100 КБ/с если параметр 'n' в videoplayback URL не трансформирован.
-    // Дополнительно: перехват /youtubei/v1/player ответа для патча n до плеера,
-    // очистка URL от ТСПУ-идентификаторов, preconnect к CDN.
-    // Примечание: для полного обхода ТСПУ (DPI Роскомнадзора) необходимы
-    // системные утилиты (GoodbyeDPI, zapret) — userscript не может влиять на TLS.
+    // РћР±С…РѕРґ Р·Р°РјРµРґР»РµРЅРёСЏ YouTube РІ Р Р¤
+    // РћСЃРЅРѕРІРЅРѕР№ РјРµС…Р°РЅРёР·Рј: n-parameter deobfuscation вЂ” YouTube СЃР°Рј Р·Р°РјРµРґР»СЏРµС‚ РІРёРґРµРѕ
+    // РґРѕ ~50-100 РљР‘/СЃ РµСЃР»Рё РїР°СЂР°РјРµС‚СЂ 'n' РІ videoplayback URL РЅРµ С‚СЂР°РЅСЃС„РѕСЂРјРёСЂРѕРІР°РЅ.
+    // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ: РїРµСЂРµС…РІР°С‚ /youtubei/v1/player РѕС‚РІРµС‚Р° РґР»СЏ РїР°С‚С‡Р° n РґРѕ РїР»РµРµСЂР°,
+    // РѕС‡РёСЃС‚РєР° URL РѕС‚ РўРЎРџРЈ-РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ, preconnect Рє CDN.
+    // РџСЂРёРјРµС‡Р°РЅРёРµ: РґР»СЏ РїРѕР»РЅРѕРіРѕ РѕР±С…РѕРґР° РўРЎРџРЈ (DPI Р РѕСЃРєРѕРјРЅР°РґР·РѕСЂР°) РЅРµРѕР±С…РѕРґРёРјС‹
+    // СЃРёСЃС‚РµРјРЅС‹Рµ СѓС‚РёР»РёС‚С‹ (GoodbyeDPI, zapret) вЂ” userscript РЅРµ РјРѕР¶РµС‚ РІР»РёСЏС‚СЊ РЅР° TLS.
     function applyFixRussiaThrottle() {
         if (!config.fixRussiaThrottle || (isPlaylistModeActive && config.playlistModeFeature)) return;
         if (_unsafeWin.__ytEnhancerThrottleFixApplied) return;
         _unsafeWin.__ytEnhancerThrottleFixApplied = true;
 
-        // --- 1. Предварительное подключение к CDN ---
+        // --- 1. РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅРѕРµ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє CDN ---
         const preconnectHosts = [
             'www.youtube.com', 'i.ytimg.com', 'yt3.ggpht.com',
             'redirector.googlevideo.com', 'manifest.googlevideo.com'
@@ -3925,11 +3925,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             (document.head || document.documentElement).append(pc, dns);
         });
 
-        // --- 2. Отключение SABR через ytcfg ---
-        // SABR (Server ABR) — протокол YouTube 2024+, где плеер делает POST-запросы
-        // к CDN нодам напрямую. ТСПУ блокирует эти запросы → видео зависает.
-        // Решение: убираем SABR-флаги из EXPERIMENT_FLAGS чтобы плеер не включал SABR,
-        // и перехватываем ytcfg.set для повторного применения при каждом обновлении конфига.
+        // --- 2. РћС‚РєР»СЋС‡РµРЅРёРµ SABR С‡РµСЂРµР· ytcfg ---
+        // SABR (Server ABR) вЂ” РїСЂРѕС‚РѕРєРѕР» YouTube 2024+, РіРґРµ РїР»РµРµСЂ РґРµР»Р°РµС‚ POST-Р·Р°РїСЂРѕСЃС‹
+        // Рє CDN РЅРѕРґР°Рј РЅР°РїСЂСЏРјСѓСЋ. РўРЎРџРЈ Р±Р»РѕРєРёСЂСѓРµС‚ СЌС‚Рё Р·Р°РїСЂРѕСЃС‹ в†’ РІРёРґРµРѕ Р·Р°РІРёСЃР°РµС‚.
+        // Р РµС€РµРЅРёРµ: СѓР±РёСЂР°РµРј SABR-С„Р»Р°РіРё РёР· EXPERIMENT_FLAGS С‡С‚РѕР±С‹ РїР»РµРµСЂ РЅРµ РІРєР»СЋС‡Р°Р» SABR,
+        // Рё РїРµСЂРµС…РІР°С‚С‹РІР°РµРј ytcfg.set РґР»СЏ РїРѕРІС‚РѕСЂРЅРѕРіРѕ РїСЂРёРјРµРЅРµРЅРёСЏ РїСЂРё РєР°Р¶РґРѕРј РѕР±РЅРѕРІР»РµРЅРёРё РєРѕРЅС„РёРіР°.
         const _disableSabrInFlags = (flags) => {
             if (!flags || typeof flags !== 'object') return;
             Object.keys(flags).forEach(k => {
@@ -3942,7 +3942,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 _disableSabrInFlags(_unsafeWin.ytcfg.get('EXPERIMENT_FLAGS'));
             } catch(e) {}
         };
-        // Хукаем ytcfg.set — применяем патч при каждом вызове
+        // РҐСѓРєР°РµРј ytcfg.set вЂ” РїСЂРёРјРµРЅСЏРµРј РїР°С‚С‡ РїСЂРё РєР°Р¶РґРѕРј РІС‹Р·РѕРІРµ
         try {
             if (_unsafeWin.ytcfg && _unsafeWin.ytcfg.set) {
                 const _origYtcfgSet = _unsafeWin.ytcfg.set;
@@ -3953,13 +3953,13 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 };
             }
         } catch(e) {}
-        _applyYtcfgSabrPatch(); // применяем немедленно если ytcfg уже инициализирован
+        _applyYtcfgSabrPatch(); // РїСЂРёРјРµРЅСЏРµРј РЅРµРјРµРґР»РµРЅРЅРѕ РµСЃР»Рё ytcfg СѓР¶Рµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ
 
-        // --- 3. Извлечение n-transform функции из player base.js ---
-        // YouTube использует параметр 'n' в videoplayback URLs как throttle-токен.
-        // Плеер должен трансформировать его через специальную функцию из base.js.
-        // Если трансформация не произошла (баг плеера, Yandex Browser JS engine) —
-        // YouTube throttles видео. Мы извлекаем эту функцию и применяем сами.
+        // --- 3. РР·РІР»РµС‡РµРЅРёРµ n-transform С„СѓРЅРєС†РёРё РёР· player base.js ---
+        // YouTube РёСЃРїРѕР»СЊР·СѓРµС‚ РїР°СЂР°РјРµС‚СЂ 'n' РІ videoplayback URLs РєР°Рє throttle-С‚РѕРєРµРЅ.
+        // РџР»РµРµСЂ РґРѕР»Р¶РµРЅ С‚СЂР°РЅСЃС„РѕСЂРјРёСЂРѕРІР°С‚СЊ РµРіРѕ С‡РµСЂРµР· СЃРїРµС†РёР°Р»СЊРЅСѓСЋ С„СѓРЅРєС†РёСЋ РёР· base.js.
+        // Р•СЃР»Рё С‚СЂР°РЅСЃС„РѕСЂРјР°С†РёСЏ РЅРµ РїСЂРѕРёР·РѕС€Р»Р° (Р±Р°Рі РїР»РµРµСЂР°, Yandex Browser JS engine) вЂ”
+        // YouTube throttles РІРёРґРµРѕ. РњС‹ РёР·РІР»РµРєР°РµРј СЌС‚Сѓ С„СѓРЅРєС†РёСЋ Рё РїСЂРёРјРµРЅСЏРµРј СЃР°РјРё.
         let _nTransformFn = null;
         let _nExtractInProgress = false;
         let _nExtractAttempts = 0;
@@ -3972,16 +3972,16 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             _nExtractAttempts++;
             let success = false;
             try {
-                // Находим URL player base.js
+                // РќР°С…РѕРґРёРј URL player base.js
                 let baseJsUrl = null;
 
-                // Метод 1: из ytcfg (самый надёжный — приоритет)
+                // РњРµС‚РѕРґ 1: РёР· ytcfg (СЃР°РјС‹Р№ РЅР°РґС‘Р¶РЅС‹Р№ вЂ” РїСЂРёРѕСЂРёС‚РµС‚)
                 if (_unsafeWin.ytcfg && _unsafeWin.ytcfg.get) {
                     const jsPath = _unsafeWin.ytcfg.get('PLAYER_JS_URL');
                     if (jsPath) baseJsUrl = jsPath.charAt(0) === '/' ? location.origin + jsPath : jsPath;
                 }
 
-                // Метод 2: из <script> тега
+                // РњРµС‚РѕРґ 2: РёР· <script> С‚РµРіР°
                 if (!baseJsUrl) {
                     const scriptEls = document.querySelectorAll('script[src*="/base.js"]');
                     for (let i = 0; i < scriptEls.length; i++) {
@@ -3992,7 +3992,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                     }
                 }
 
-                // Метод 3: из HTML страницы
+                // РњРµС‚РѕРґ 3: РёР· HTML СЃС‚СЂР°РЅРёС†С‹
                 if (!baseJsUrl) {
                     const htmlMatch = document.documentElement.innerHTML.match(/"(?:jsUrl|PLAYER_JS_URL)"\s*:\s*"([^"]*?base\.js[^"]*)"/);
                     if (htmlMatch) {
@@ -4006,21 +4006,21 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 const resp = await _unsafeWin.fetch(baseJsUrl);
                 const playerCode = await resp.text();
 
-                // Паттерны для поиска функции n-трансформации (обновлено 2025).
-                // YouTube регулярно меняет имена переменных, поэтому пробуем несколько.
+                // РџР°С‚С‚РµСЂРЅС‹ РґР»СЏ РїРѕРёСЃРєР° С„СѓРЅРєС†РёРё n-С‚СЂР°РЅСЃС„РѕСЂРјР°С†РёРё (РѕР±РЅРѕРІР»РµРЅРѕ 2025).
+                // YouTube СЂРµРіСѓР»СЏСЂРЅРѕ РјРµРЅСЏРµС‚ РёРјРµРЅР° РїРµСЂРµРјРµРЅРЅС‹С…, РїРѕСЌС‚РѕРјСѓ РїСЂРѕР±СѓРµРј РЅРµСЃРєРѕР»СЊРєРѕ.
                 const namePatterns = [
-                    // 2024-2025: основной формат
+                    // 2024-2025: РѕСЃРЅРѕРІРЅРѕР№ С„РѕСЂРјР°С‚
                     /\.get\("n"\)\)&&\(b=([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\(b\)/,
-                    // Вариант с одиночными буквами переменных
+                    // Р’Р°СЂРёР°РЅС‚ СЃ РѕРґРёРЅРѕС‡РЅС‹РјРё Р±СѓРєРІР°РјРё РїРµСЂРµРјРµРЅРЅС‹С…
                     /\.get\("n"\)\)&&\([a-z]=([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\([a-z]\)/,
-                    // С явным encodeURIComponent
+                    // РЎ СЏРІРЅС‹Рј encodeURIComponent
                     /[a-z]&&[a-z]\.set\("n",\s*encodeURIComponent\(([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\([a-z]\)\)\)/,
                     /\.set\([^,]+,\s*encodeURIComponent\(([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\([a-z]\)\)\)/,
-                    // Более широкие паттерны (устаревшие версии плеера)
+                    // Р‘РѕР»РµРµ С€РёСЂРѕРєРёРµ РїР°С‚С‚РµСЂРЅС‹ (СѓСЃС‚Р°СЂРµРІС€РёРµ РІРµСЂСЃРёРё РїР»РµРµСЂР°)
                     /\bc\s*&&\s*d\.set\([^,]+\s*,\s*encodeURIComponent\(([a-zA-Z0-9$]+)\(/,
                     /\bc\s*&&\s*[a-z]\.set\([^,]+\s*,\s*encodeURIComponent\(([a-zA-Z0-9$]+)\(/,
                     /\b[cs]\s*&&\s*[adf]\.set\([^,]+\s*,\s*encodeURIComponent\(([a-zA-Z0-9$]+)\(/,
-                    // Конец 2024 — начало 2025
+                    // РљРѕРЅРµС† 2024 вЂ” РЅР°С‡Р°Р»Рѕ 2025
                     /\([a-z]\)=[a-z]&&[a-z]\.get\("n"\)\)&&\([a-z]=([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\(/,
                     /;[a-z]=([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\([a-z]\);[a-z]\.set\("n"/
                 ];
@@ -4037,26 +4037,26 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 }
                 if (!funcName) { _nExtractInProgress = false; scheduleRetry(); return; }
 
-                // Извлекаем тело функции из player code
+                // РР·РІР»РµРєР°РµРј С‚РµР»Рѕ С„СѓРЅРєС†РёРё РёР· player code
                 const escName = funcName.replace(/[$^.*+?{}()|[\]\\]/g, '\\$&');
                 let funcBody = null;
                 let funcStartIdx = -1;
 
-                // Паттерн: var FUNC=[function(a){...}];
+                // РџР°С‚С‚РµСЂРЅ: var FUNC=[function(a){...}];
                 if (arrayIdx !== null) {
                     const arrRe = new RegExp('var\\s+' + escName + '\\s*=\\s*\\[');
                     const arrMatch = arrRe.exec(playerCode);
                     if (arrMatch) funcStartIdx = arrMatch.index;
                 }
 
-                // Паттерн: var FUNC=function(a){...}  или  FUNC=function(a){...}
+                // РџР°С‚С‚РµСЂРЅ: var FUNC=function(a){...}  РёР»Рё  FUNC=function(a){...}
                 if (funcStartIdx === -1) {
                     const varRe = new RegExp('(?:var\\s+)?' + escName + '\\s*=\\s*function\\s*\\(');
                     const varMatch = varRe.exec(playerCode);
                     if (varMatch) funcStartIdx = varMatch.index;
                 }
 
-                // Паттерн: function FUNC(a){...}
+                // РџР°С‚С‚РµСЂРЅ: function FUNC(a){...}
                 if (funcStartIdx === -1) {
                     const fnRe = new RegExp('function\\s+' + escName + '\\s*\\(');
                     const fnMatch = fnRe.exec(playerCode);
@@ -4065,7 +4065,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
                 if (funcStartIdx === -1) { _nExtractInProgress = false; scheduleRetry(); return; }
 
-                // Находим закрывающую скобку
+                // РќР°С…РѕРґРёРј Р·Р°РєСЂС‹РІР°СЋС‰СѓСЋ СЃРєРѕР±РєСѓ
                 let ci = funcStartIdx;
                 while (ci < playerCode.length && playerCode.charAt(ci) !== '{' && playerCode.charAt(ci) !== '[') ci++;
                 const openCh = playerCode.charAt(ci);
@@ -4077,8 +4077,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 }
                 funcBody = playerCode.substring(funcStartIdx, ci + 1) + ';';
 
-                // Извлекаем вспомогательные объекты, на которые ссылается функция
-                // Ищем паттерны вида OBJNAME.method( внутри тела функции
+                // РР·РІР»РµРєР°РµРј РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ РѕР±СЉРµРєС‚С‹, РЅР° РєРѕС‚РѕСЂС‹Рµ СЃСЃС‹Р»Р°РµС‚СЃСЏ С„СѓРЅРєС†РёСЏ
+                // РС‰РµРј РїР°С‚С‚РµСЂРЅС‹ РІРёРґР° OBJNAME.method( РІРЅСѓС‚СЂРё С‚РµР»Р° С„СѓРЅРєС†РёРё
                 const helperRe = /\b([a-zA-Z_$][a-zA-Z0-9_$]{1,6})\.[a-zA-Z_$]\w*\s*\(/g;
                 const knownGlobals = ['window','document','console','Math','String','Array','Object',
                     'Number','parseInt','parseFloat','RegExp','JSON','Date','Error','undefined',
@@ -4108,11 +4108,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                     }
                 });
 
-                // Собираем и выполняем функцию
+                // РЎРѕР±РёСЂР°РµРј Рё РІС‹РїРѕР»РЅСЏРµРј С„СѓРЅРєС†РёСЋ
                 const returnExpr = arrayIdx !== null ? funcName + '[' + arrayIdx + ']' : funcName;
                 const fn = new Function(helperCode + funcBody + '\nreturn ' + returnExpr + ';')();
 
-                // Валидация: функция должна возвращать строку, отличную от входной
+                // Р’Р°Р»РёРґР°С†РёСЏ: С„СѓРЅРєС†РёСЏ РґРѕР»Р¶РЅР° РІРѕР·РІСЂР°С‰Р°С‚СЊ СЃС‚СЂРѕРєСѓ, РѕС‚Р»РёС‡РЅСѓСЋ РѕС‚ РІС…РѕРґРЅРѕР№
                 if (typeof fn !== 'function') { _nExtractInProgress = false; scheduleRetry(); return; }
                 const testResult = fn('tQ6oLS-i_e8');
                 if (typeof testResult !== 'string' || testResult === 'tQ6oLS-i_e8') { _nExtractInProgress = false; scheduleRetry(); return; }
@@ -4120,7 +4120,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 _nTransformFn = fn;
                 success = true;
             } catch (e) {
-                // Извлечение не удалось — повторим позже
+                // РР·РІР»РµС‡РµРЅРёРµ РЅРµ СѓРґР°Р»РѕСЃСЊ вЂ” РїРѕРІС‚РѕСЂРёРј РїРѕР·Р¶Рµ
             }
             _nExtractInProgress = false;
             if (!success) scheduleRetry();
@@ -4131,7 +4131,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             setTimeout(extractNTransform, 1500 * _nExtractAttempts);
         };
 
-        // Применение n-трансформации к URL
+        // РџСЂРёРјРµРЅРµРЅРёРµ n-С‚СЂР°РЅСЃС„РѕСЂРјР°С†РёРё Рє URL
         const applyNTransform = (url) => {
             if (!_nTransformFn) return url;
             try {
@@ -4151,7 +4151,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             } catch (e) { return url; }
         };
 
-        // --- 3. Модификация videoplayback URL ---
+        // --- 3. РњРѕРґРёС„РёРєР°С†РёСЏ videoplayback URL ---
         const isVideoPlayback = (url) => {
             return typeof url === 'string' && url.indexOf('googlevideo.com/videoplayback') !== -1;
         };
@@ -4161,7 +4161,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 if (!url || !isVideoPlayback(url)) return url;
                 let patched = applyNTransform(url);
                 const u = new URL(patched);
-                // Удаление параметров, используемых ТСПУ для идентификации потока
+                // РЈРґР°Р»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ, РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РўРЎРџРЈ РґР»СЏ РёРґРµРЅС‚РёС„РёРєР°С†РёРё РїРѕС‚РѕРєР°
                 u.searchParams.delete('rbuf');
                 return u.toString();
             } catch (e) {
@@ -4169,16 +4169,13 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
         };
 
-        // Патч streamingData из ответа /youtubei/v1/player.
-        // 1. Всегда удаляем serverAbrStreamingUrl — отключаем SABR.
-        //    SABR использует POST к CDN, которые ТСПУ блокирует (CORS/ERR_FAILED).
-        //    Без него плеер переключается на обычный adaptive streaming (GET-запросы).
-        // 2. Если n-transform готов — патчим n-параметры в formats/adaptiveFormats.
+        // РџР°С‚С‡ streamingData РёР· РѕС‚РІРµС‚Р° /youtubei/v1/player.
+        // РџР°С‚С‡РёРј n-РїР°СЂР°РјРµС‚СЂС‹ РІ formats/adaptiveFormats РµСЃР»Рё n-transform РіРѕС‚РѕРІ.
+        // serverAbrStreamingUrl РќР• СѓРґР°Р»СЏРµРј вЂ” Р±РµР· РЅРµРіРѕ РїР»РµРµСЂ РїР°РґР°РµС‚ СЃ missabrurl.1.
+        // SABR POST Р·Р°РїСЂРѕСЃС‹ РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‚СЃСЏ РЅРёР¶Рµ РІ fetch-С…СѓРєРµ (bypass preflight).
         const patchStreamingData = (streamingData) => {
             if (!streamingData) return;
-            // Отключаем SABR — плеер упадёт на обычный DASH/adaptive
-            delete streamingData.serverAbrStreamingUrl;
-            // Патчим n-параметры во всех форматах
+            // РџР°С‚С‡РёРј n-РїР°СЂР°РјРµС‚СЂС‹ РІРѕ РІСЃРµС… С„РѕСЂРјР°С‚Р°С…
             if (_nTransformFn) {
                 ['formats', 'adaptiveFormats'].forEach(key => {
                     if (!Array.isArray(streamingData[key])) return;
@@ -4190,9 +4187,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
         };
 
-        // --- 4. Перехват fetch: videoplayback URLs + /youtubei/v1/player ответ ---
-        // Используем синхронный wrapper с .then() — не async, чтобы не менять
-        // поведение плеера и не добавлять лишние Promise-микрозадачи.
+        // --- 4. РџРµСЂРµС…РІР°С‚ fetch: videoplayback URLs + /youtubei/v1/player РѕС‚РІРµС‚ ---
+        // РСЃРїРѕР»СЊР·СѓРµРј СЃРёРЅС…СЂРѕРЅРЅС‹Р№ wrapper СЃ .then() вЂ” РЅРµ async, С‡С‚РѕР±С‹ РЅРµ РјРµРЅСЏС‚СЊ
+        // РїРѕРІРµРґРµРЅРёРµ РїР»РµРµСЂР° Рё РЅРµ РґРѕР±Р°РІР»СЏС‚СЊ Р»РёС€РЅРёРµ Promise-РјРёРєСЂРѕР·Р°РґР°С‡Рё.
         const _origFetch = _unsafeWin.fetch;
         _unsafeWin.fetch = function(input, init) {
             var patchedInput = input;
@@ -4208,7 +4205,17 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             var reqUrl = typeof patchedInput === 'string'
                 ? patchedInput
                 : (patchedInput && patchedInput.url ? patchedInput.url : '');
-            // Перехватываем ответ player API — удаляем SABR + патчим n-параметры
+            // SABR POST Рє CDN: СѓР±РёСЂР°РµРј РЅРµСЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ Р·Р°РіРѕР»РѕРІРєРё в†’ simple request в†’ РЅРµС‚ CORS preflight.
+            // РўРЎРџРЈ Р±Р»РѕРєРёСЂСѓРµС‚ OPTIONS preflight, РЅРѕ РЅРµ СЃР°Рј POST. text/plain = simple Content-Type.
+            // CDN googlevelideo.com РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚ protobuf-body РїРѕ СЃРѕРґРµСЂР¶РёРјРѕРјСѓ, РёРіРЅРѕСЂРёСЂСѓСЏ Content-Type.
+            if (isVideoPlayback(reqUrl) && init && init.method && init.method.toUpperCase() === 'POST') {
+                return _origFetch.call(_unsafeWin, patchedInput, {
+                    method: 'POST',
+                    body: init.body,
+                    headers: { 'Content-Type': 'text/plain; charset=UTF-8' }
+                });
+            }
+            // РџРµСЂРµС…РІР°С‚С‹РІР°РµРј РѕС‚РІРµС‚ player API вЂ” РїР°С‚С‡РёРј n-РїР°СЂР°РјРµС‚СЂС‹ РІ streamingData
             if (reqUrl.indexOf('/youtubei/v1/player') !== -1) {
                 return _origFetch.call(_unsafeWin, patchedInput, init).then(function(response) {
                     return response.clone().json().then(function(json) {
@@ -4227,7 +4234,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             return _origFetch.call(_unsafeWin, patchedInput, init);
         };
 
-        // --- 5. Перехват XHR.open (только videoplayback, без send/setRequestHeader) ---
+        // --- 5. РџРµСЂРµС…РІР°С‚ XHR.open (С‚РѕР»СЊРєРѕ videoplayback, Р±РµР· send/setRequestHeader) ---
         const _origXhrOpen = _unsafeWin.XMLHttpRequest.prototype.open;
         _unsafeWin.XMLHttpRequest.prototype.open = function(method, url) {
             if (typeof url === 'string' && isVideoPlayback(url)) {
@@ -4236,23 +4243,23 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             return _origXhrOpen.apply(this, [method, url].concat(Array.prototype.slice.call(arguments, 2)));
         };
 
-        // --- 6. Запуск извлечения n-функции ---
+        // --- 6. Р—Р°РїСѓСЃРє РёР·РІР»РµС‡РµРЅРёСЏ n-С„СѓРЅРєС†РёРё ---
         if (_unsafeWin.ytcfg && _unsafeWin.ytcfg.get && _unsafeWin.ytcfg.get('PLAYER_JS_URL')) {
-            // ytcfg уже доступен — начинаем немедленно
+            // ytcfg СѓР¶Рµ РґРѕСЃС‚СѓРїРµРЅ вЂ” РЅР°С‡РёРЅР°РµРј РЅРµРјРµРґР»РµРЅРЅРѕ
             setTimeout(extractNTransform, 0);
         } else if (document.readyState === 'complete') {
             setTimeout(extractNTransform, 500);
         } else {
             _unsafeWin.addEventListener('load', () => setTimeout(extractNTransform, 500));
         }
-        // При SPA-навигации — сбрасываем счётчик попыток и пробуем снова
+        // РџСЂРё SPA-РЅР°РІРёРіР°С†РёРё вЂ” СЃР±СЂР°СЃС‹РІР°РµРј СЃС‡С‘С‚С‡РёРє РїРѕРїС‹С‚РѕРє Рё РїСЂРѕР±СѓРµРј СЃРЅРѕРІР°
         document.addEventListener('yt-navigate-finish', () => {
             if (!_nTransformFn) {
                 _nExtractAttempts = 0;
                 setTimeout(extractNTransform, 400);
             }
         });
-        // Раннее событие при смене видео (срабатывает раньше yt-navigate-finish)
+        // Р Р°РЅРЅРµРµ СЃРѕР±С‹С‚РёРµ РїСЂРё СЃРјРµРЅРµ РІРёРґРµРѕ (СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ СЂР°РЅСЊС€Рµ yt-navigate-finish)
         document.addEventListener('yt-page-data-updated', () => {
             if (!_nTransformFn) {
                 _nExtractAttempts = 0;
@@ -4261,7 +4268,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         });
     }
 
-    // Применение всех новых фиксов
+    // РџСЂРёРјРµРЅРµРЅРёРµ РІСЃРµС… РЅРѕРІС‹С… С„РёРєСЃРѕРІ
 
     function applyNewFixes() {
         applyForceH264();
@@ -4280,7 +4287,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         applyFixRussiaThrottle();
     }
 
-    // --- Инициализация ---
+    // --- РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ ---
 
     function init() {
         if (_initDone) return;
@@ -4292,7 +4299,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         hideRFSlowWarning();
         addYouTubeButton();
         checkPlaylistMode();
-        // Оптимизированный наблюдатель для SPA-навигации
+        // РћРїС‚РёРјРёР·РёСЂРѕРІР°РЅРЅС‹Р№ РЅР°Р±Р»СЋРґР°С‚РµР»СЊ РґР»СЏ SPA-РЅР°РІРёРіР°С†РёРё
         let lastUrl = location.href;
         const debouncedSpaHandler = debounce(() => {
             checkPlaylistMode();
@@ -4314,7 +4321,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             attributes: false,
             characterData: false
         });
-        // Периодическая проверка только для Яндекс сетки
+        // РџРµСЂРёРѕРґРёС‡РµСЃРєР°СЏ РїСЂРѕРІРµСЂРєР° С‚РѕР»СЊРєРѕ РґР»СЏ РЇРЅРґРµРєСЃ СЃРµС‚РєРё
         if (isYandexBrowser() && config.yandexGridFix) {
             setInterval(cleanupSpacing, 30000);
         }
