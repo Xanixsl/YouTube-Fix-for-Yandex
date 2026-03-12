@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace https://github.com/Xanixsl/test-123-123
-// @version      4.4.6
+// @version      4.4.7
 // @description  Оптимизация и исправления YouTube для Яндекс Браузера: сетка, производительность, интерфейс, фикс пустых блоков, кодеков, авто-паузы, скролла, нативный YouTube UI
 // @author       Xanix
 // @match        https://www.youtube.com/*
@@ -48,7 +48,7 @@
     // --- Мультиязычность (встроенные данные + опциональное обновление из @resource / GitHub API) ---
     const _BUILTIN_LANGS = {
         en: {
-            title: "YouTube Fix for Yandex", version: "v4.4.6",
+            title: "YouTube Fix for Yandex", version: "v4.4.7",
             tabs: ["General", "Yandex Fixes", "Settings"], tabsNoYandex: ["General", "Settings"],
             save: "Save settings", reset: "Reset settings",
             saved: "Settings saved! Page will reload...", reseted: "Settings reset! Page will reload...",
@@ -125,7 +125,7 @@
             exitPlaylistModeNotification: "Extension will reload in {seconds} seconds to restore functionality"
         },
         ru: {
-            title: "YouTube Fix for Yandex", version: "v4.4.6",
+            title: "YouTube Fix for Yandex", version: "v4.4.7",
             tabs: ["Общее", "Яндекс-Фиксы", "Настройки"], tabsNoYandex: ["Общее", "Настройки"],
             save: "Сохранить настройки", reset: "Сбросить настройки",
             saved: "Настройки сохранены! Страница будет перезагружена...", reseted: "Настройки сброшены! Страница будет перезагружена...",
@@ -3925,7 +3925,37 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             (document.head || document.documentElement).append(pc, dns);
         });
 
-        // --- 2. Извлечение n-transform функции из player base.js ---
+        // --- 2. Отключение SABR через ytcfg ---
+        // SABR (Server ABR) — протокол YouTube 2024+, где плеер делает POST-запросы
+        // к CDN нодам напрямую. ТСПУ блокирует эти запросы → видео зависает.
+        // Решение: убираем SABR-флаги из EXPERIMENT_FLAGS чтобы плеер не включал SABR,
+        // и перехватываем ytcfg.set для повторного применения при каждом обновлении конфига.
+        const _disableSabrInFlags = (flags) => {
+            if (!flags || typeof flags !== 'object') return;
+            Object.keys(flags).forEach(k => {
+                if (/sabr/i.test(k)) flags[k] = false;
+            });
+        };
+        const _applyYtcfgSabrPatch = () => {
+            try {
+                if (!_unsafeWin.ytcfg || !_unsafeWin.ytcfg.get) return;
+                _disableSabrInFlags(_unsafeWin.ytcfg.get('EXPERIMENT_FLAGS'));
+            } catch(e) {}
+        };
+        // Хукаем ytcfg.set — применяем патч при каждом вызове
+        try {
+            if (_unsafeWin.ytcfg && _unsafeWin.ytcfg.set) {
+                const _origYtcfgSet = _unsafeWin.ytcfg.set;
+                _unsafeWin.ytcfg.set = function() {
+                    const ret = _origYtcfgSet.apply(this, arguments);
+                    _applyYtcfgSabrPatch();
+                    return ret;
+                };
+            }
+        } catch(e) {}
+        _applyYtcfgSabrPatch(); // применяем немедленно если ytcfg уже инициализирован
+
+        // --- 3. Извлечение n-transform функции из player base.js ---
         // YouTube использует параметр 'n' в videoplayback URLs как throttle-токен.
         // Плеер должен трансформировать его через специальную функцию из base.js.
         // Если трансформация не произошла (баг плеера, Yandex Browser JS engine) —
@@ -4139,52 +4169,62 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
         };
 
-        // Патч всех streaming URL в ответе /youtubei/v1/player.
-        // Вызывается когда n-transform уже готова — патчим ДО того, как плеер
-        // сделает первый videoplayback-запрос.
+        // Патч streamingData из ответа /youtubei/v1/player.
+        // 1. Всегда удаляем serverAbrStreamingUrl — отключаем SABR.
+        //    SABR использует POST к CDN, которые ТСПУ блокирует (CORS/ERR_FAILED).
+        //    Без него плеер переключается на обычный adaptive streaming (GET-запросы).
+        // 2. Если n-transform готов — патчим n-параметры в formats/adaptiveFormats.
         const patchStreamingData = (streamingData) => {
-            if (!streamingData || !_nTransformFn) return;
-            ['formats', 'adaptiveFormats'].forEach(key => {
-                if (!Array.isArray(streamingData[key])) return;
-                streamingData[key].forEach(fmt => {
-                    if (fmt.url) fmt.url = patchVideoUrl(fmt.url);
-                    if (fmt.dashManifestUrl) fmt.dashManifestUrl = patchVideoUrl(fmt.dashManifestUrl);
+            if (!streamingData) return;
+            // Отключаем SABR — плеер упадёт на обычный DASH/adaptive
+            delete streamingData.serverAbrStreamingUrl;
+            // Патчим n-параметры во всех форматах
+            if (_nTransformFn) {
+                ['formats', 'adaptiveFormats'].forEach(key => {
+                    if (!Array.isArray(streamingData[key])) return;
+                    streamingData[key].forEach(fmt => {
+                        if (fmt.url) fmt.url = patchVideoUrl(fmt.url);
+                        if (fmt.dashManifestUrl) fmt.dashManifestUrl = patchVideoUrl(fmt.dashManifestUrl);
+                    });
                 });
-            });
+            }
         };
 
         // --- 4. Перехват fetch: videoplayback URLs + /youtubei/v1/player ответ ---
+        // Используем синхронный wrapper с .then() — не async, чтобы не менять
+        // поведение плеера и не добавлять лишние Promise-микрозадачи.
         const _origFetch = _unsafeWin.fetch;
-        _unsafeWin.fetch = async function(input, init) {
-            let patchedInput = input;
+        _unsafeWin.fetch = function(input, init) {
+            var patchedInput = input;
             try {
-                const rawUrl = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+                var rawUrl = typeof input === 'string' ? input : (input && input.url ? input.url : '');
                 if (isVideoPlayback(rawUrl)) {
-                    const p = patchVideoUrl(rawUrl);
+                    var p = patchVideoUrl(rawUrl);
                     if (p !== rawUrl) {
                         patchedInput = typeof input === 'string' ? p : new Request(p, input);
                     }
                 }
             } catch (e) {}
-            const response = await _origFetch.call(this, patchedInput, init);
-            // Перехватываем ответ player API — патчим все n-параметры сразу
-            try {
-                const reqUrl = typeof patchedInput === 'string'
-                    ? patchedInput
-                    : (patchedInput && patchedInput.url ? patchedInput.url : '');
-                if (_nTransformFn && reqUrl.indexOf('/youtubei/v1/player') !== -1) {
-                    const json = await response.clone().json();
-                    if (json && json.streamingData) {
-                        patchStreamingData(json.streamingData);
-                        return new Response(JSON.stringify(json), {
-                            status: response.status,
-                            statusText: response.statusText,
-                            headers: { 'content-type': 'application/json; charset=utf-8' }
-                        });
-                    }
-                }
-            } catch (e) {}
-            return response;
+            var reqUrl = typeof patchedInput === 'string'
+                ? patchedInput
+                : (patchedInput && patchedInput.url ? patchedInput.url : '');
+            // Перехватываем ответ player API — удаляем SABR + патчим n-параметры
+            if (reqUrl.indexOf('/youtubei/v1/player') !== -1) {
+                return _origFetch.call(_unsafeWin, patchedInput, init).then(function(response) {
+                    return response.clone().json().then(function(json) {
+                        if (json && json.streamingData) {
+                            patchStreamingData(json.streamingData);
+                            return new Response(JSON.stringify(json), {
+                                status: response.status,
+                                statusText: response.statusText,
+                                headers: { 'content-type': 'application/json; charset=utf-8' }
+                            });
+                        }
+                        return response;
+                    }).catch(function() { return response; });
+                });
+            }
+            return _origFetch.call(_unsafeWin, patchedInput, init);
         };
 
         // --- 5. Перехват XHR.open (только videoplayback, без send/setRequestHeader) ---
