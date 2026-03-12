@@ -47,12 +47,12 @@
     const _BUILTIN_LANGS = {
         en: {
             title: "YouTube Fix for Yandex", version: "v4.4.5",
-            tabs: ["General", "Fixes", "Yandex Browser", "Appearance"], tabsNoYandex: ["General", "Fixes", "Appearance"],
+            tabs: ["General", "Yandex Fixes", "Settings"], tabsNoYandex: ["General", "Settings"],
             save: "Save settings", reset: "Reset settings",
             saved: "Settings saved! Page will reload...", reseted: "Settings reset! Page will reload...",
             confirmReset: "Are you sure you want to reset all settings to default?",
-            mainSection: "Main settings", mainDesc: "General options for all browsers",
-            hideChips: "Hide chips (filters)", hideChipsDesc: "Hides the filter bar on the main page and in sections",
+            mainSection: "Interface", mainDesc: "Display and navigation options for all browsers",
+            hideChips: "Hide chips (filters)", hideChipsDesc: "Hides the filter bar on the home page and category sections (chips are always preserved on channel pages)",
             compactMode: "Compact mode", compactModeDesc: "Reduces spacing between videos for denser layout",
             hideShorts: "Hide Shorts", hideShortsDesc: "Removes Shorts section and recommendations",
             hideTopicShelves: "Hide \"More topics\"", hideTopicShelvesDesc: "Removes topic video shelves (\"More topics\") from the home page",
@@ -124,12 +124,12 @@
         },
         ru: {
             title: "YouTube Fix for Yandex", version: "v4.4.5",
-            tabs: ["Общие", "Исправления", "Яндекс Браузер", "Оформление"], tabsNoYandex: ["Общие", "Исправления", "Оформление"],
+            tabs: ["Общее", "Яндекс-Фиксы", "Настройки"], tabsNoYandex: ["Общее", "Настройки"],
             save: "Сохранить настройки", reset: "Сбросить настройки",
             saved: "Настройки сохранены! Страница будет перезагружена...", reseted: "Настройки сброшены! Страница будет перезагружена...",
             confirmReset: "Вы уверены, что хотите сбросить все настройки к значениям по умолчанию?",
-            mainSection: "Основные настройки", mainDesc: "Общие параметры для всех браузеров",
-            hideChips: "Скрыть чипсы (фильтры)", hideChipsDesc: "Скрывает полосу с фильтрами на главной странице и в разделах",
+            mainSection: "Интерфейс", mainDesc: "Параметры отображения и навигации для всех браузеров",
+            hideChips: "Скрыть чипсы (фильтры)", hideChipsDesc: "Скрывает полосу с фильтрами только на главной странице и разделах (на страницах каналов чипсы всегда сохраняются)",
             compactMode: "Компактный режим", compactModeDesc: "Уменьшает отступы между видео для более плотного расположения",
             hideShorts: "Скрыть Shorts", hideShortsDesc: "Убирает раздел Shorts и рекомендации коротких видео",
             hideTopicShelves: "Скрыть \"Ещё темы\"", hideTopicShelvesDesc: "Убирает секции с тематическими подборками видео (\"Ещё темы\") на главной странице",
@@ -1062,9 +1062,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         if (config.fixChannelCard) {
             fixChannelCardOnChannelTabs();
         }
-        if (config.restoreChips) {
-            restoreChipsOnVideosTab();
-        }
+        // Always restore chips on Videos tab so hiding chips on home never breaks channel sorting
+        restoreChipsOnVideosTab();
     }
 
     // --- Фикс карточки канала на всех вкладках ---
@@ -1537,6 +1536,48 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             #yt-style-editor select:focus {
                 border-color: var(--enhancer-primary, #3ea6ff) !important;
             }
+            #yt-style-editor button:not(.yt-enhancer-close-btn) {
+                background: none !important;
+                color: var(--enhancer-btn-fg) !important;
+                border: 1.5px solid var(--enhancer-btn-border) !important;
+                border-radius: 8px !important;
+                font-weight: 600;
+                padding: 8px 16px !important;
+                font-size: 0.9em !important;
+                cursor: pointer;
+                transition: background 0.18s, color 0.18s, border-color 0.18s;
+                box-shadow: none !important;
+            }
+            #yt-style-editor button:not(.yt-enhancer-close-btn):hover {
+                background: var(--enhancer-btn-hover-bg) !important;
+                color: var(--enhancer-btn-hover-fg) !important;
+                border-color: var(--enhancer-btn-hover-bg) !important;
+            }
+            #yt-style-editor input[type="text"],
+            #yt-style-editor input[type="number"],
+            #yt-style-editor textarea {
+                background: var(--enhancer-input-bg) !important;
+                color: var(--enhancer-input-fg) !important;
+                border: 1.5px solid var(--enhancer-input-border) !important;
+                border-radius: 8px !important;
+                font-family: var(--enhancer-font) !important;
+                outline: none !important;
+                transition: border-color 0.15s;
+            }
+            #yt-style-editor input[type="text"]:focus,
+            #yt-style-editor input[type="number"]:focus,
+            #yt-style-editor textarea:focus {
+                border-color: var(--enhancer-primary, #3ea6ff) !important;
+            }
+            #yt-style-editor input[type="checkbox"] {
+                accent-color: var(--enhancer-primary, #3ea6ff);
+            }
+            #yt-style-editor input[type="range"] {
+                accent-color: var(--enhancer-primary, #3ea6ff);
+            }
+            #yt-style-editor h2, #yt-style-editor h3 {
+                color: var(--enhancer-fg) !important;
+            }
             #yt-enhancer-settings input[type="checkbox"] {
                 width: 16px;
                 height: 16px;
@@ -1929,14 +1970,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         });
         dialog.appendChild(tabs);
         if (isYandexBrowser()) {
-            createMainTab(tabContents[0]);
-            createFixesTab(tabContents[1]);
-            createYandexTab(tabContents[2]);
-            createAppearanceTab(tabContents[3]);
-        } else {
-            createMainTab(tabContents[0]);
-            createFixesTab(tabContents[1]);
+            createGeneralTab(tabContents[0]);
+            createYandexTab(tabContents[1]);
             createAppearanceTab(tabContents[2]);
+        } else {
+            createGeneralTab(tabContents[0]);
+            createAppearanceTab(tabContents[1]);
         }
         tabContents.forEach(content => dialog.appendChild(content));
         // --- Кнопки сохранения/сброса ---
@@ -2048,7 +2087,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
     // --- Основная вкладка ---
 
-    function createMainTab(container) {
+    function createGeneralTab(container) {
         const section = (title, description = '') => {
             const sectionDiv = document.createElement('div');
             sectionDiv.style.marginBottom = '16px';
@@ -2069,7 +2108,6 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
             return sectionDiv;
         };
-        const mainSection = section(L.mainSection, L.mainDesc);
         const createCheckbox = (id, label, checked, description = '', isNew = false, isExp = false) => {
             const div = document.createElement('div');
             div.style.display = 'flex';
@@ -2112,124 +2150,31 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             div.appendChild(labelDiv);
             return div;
         };
-        mainSection.appendChild(createCheckbox(
-            'hideChips', L.hideChips, config.hideChips, L.hideChipsDesc
-        ));
-        mainSection.appendChild(createCheckbox(
-            'compactMode', L.compactMode, config.compactMode, L.compactModeDesc
-        ));
-        mainSection.appendChild(createCheckbox(
-            'hideShorts', L.hideShorts, config.hideShorts, L.hideShortsDesc
-        ));
-        mainSection.appendChild(createCheckbox(
-            'hideTopicShelves', L.hideTopicShelves, config.hideTopicShelves, L.hideTopicShelvesDesc, true
-        ));
-        mainSection.appendChild(createCheckbox(
-            'hideRFSlowWarning', L.hideRFSlowWarning, config.hideRFSlowWarning, L.hideRFSlowWarningDesc
-        ));
-        mainSection.appendChild(createCheckbox(
-            'fixChannelCard', L.fixChannelCard, config.fixChannelCard, L.fixChannelCardDesc
-        ));
-        mainSection.appendChild(createCheckbox(
-            'restoreChips', L.restoreChips, config.restoreChips, L.restoreChipsDesc
-        ));
-        mainSection.appendChild(createCheckbox(
-            'playlistModeFeature', L.playlistModeFeature, config.playlistModeFeature, L.playlistModeFeatureDesc
-        ));
+
+        // --- Section 1: Interface ---
+        const mainSection = section(L.mainSection, L.mainDesc);
+        mainSection.appendChild(createCheckbox('hideChips', L.hideChips, config.hideChips, L.hideChipsDesc));
+        mainSection.appendChild(createCheckbox('compactMode', L.compactMode, config.compactMode, L.compactModeDesc));
+        mainSection.appendChild(createCheckbox('hideShorts', L.hideShorts, config.hideShorts, L.hideShortsDesc));
+        mainSection.appendChild(createCheckbox('hideTopicShelves', L.hideTopicShelves, config.hideTopicShelves, L.hideTopicShelvesDesc, true));
+        mainSection.appendChild(createCheckbox('hideRFSlowWarning', L.hideRFSlowWarning, config.hideRFSlowWarning, L.hideRFSlowWarningDesc));
+        mainSection.appendChild(createCheckbox('fixChannelCard', L.fixChannelCard, config.fixChannelCard, L.fixChannelCardDesc));
+        mainSection.appendChild(createCheckbox('playlistModeFeature', L.playlistModeFeature, config.playlistModeFeature, L.playlistModeFeatureDesc));
         container.appendChild(mainSection);
-    }
 
-    // --- Вкладка фиксов ---
-
-    function createFixesTab(container) {
-        const section = (title, description = '') => {
-            const sectionDiv = document.createElement('div');
-            sectionDiv.style.marginBottom = '16px';
-            const h3 = document.createElement('h3');
-            h3.textContent = title;
-            h3.style.margin = '16px 0 8px 0';
-            h3.style.fontSize = '1.1em';
-            h3.style.color = 'var(--enhancer-fg, #030303)';
-            h3.style.fontWeight = 'bold';
-            sectionDiv.appendChild(h3);
-            if (description) {
-                const desc = document.createElement('p');
-                desc.textContent = description;
-                desc.style.margin = '4px 0 8px 0';
-                desc.style.fontSize = '0.9em';
-                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
-                sectionDiv.appendChild(desc);
-            }
-            return sectionDiv;
-        };
+        // --- Section 2: Bug Fixes (all browsers) ---
         const fixesSection = section(L.fixesSection, L.fixesDesc);
-        const createCheckbox = (id, label, checked, description = '', isNew = false, isExp = false) => {
-            const div = document.createElement('div');
-            div.style.display = 'flex';
-            div.style.alignItems = 'flex-start';
-            div.style.marginBottom = '12px';
-            const input = document.createElement('input');
-            input.type = 'checkbox';
-            input.id = id;
-            input.checked = checked;
-            input.style.marginRight = '10px';
-            input.style.marginTop = '3px';
-            const labelDiv = document.createElement('div');
-            const labelEl = document.createElement('label');
-            labelEl.htmlFor = id;
-            labelEl.textContent = label;
-            labelEl.style.userSelect = 'none';
-            labelEl.style.fontWeight = '500';
-            labelDiv.appendChild(labelEl);
-            if (isNew) {
-                const newMark = document.createElement('span');
-                newMark.textContent = L.newMark;
-                newMark.className = 'yt-enhancer-badge';
-                labelDiv.appendChild(newMark);
-            }
-            if (isExp) {
-                const expMark = document.createElement('span');
-                expMark.textContent = L.expMark || 'EXP';
-                expMark.className = 'yt-enhancer-badge yt-enhancer-badge-exp';
-                labelDiv.appendChild(expMark);
-            }
-            if (description) {
-                const desc = document.createElement('div');
-                desc.textContent = description;
-                desc.style.fontSize = '0.85em';
-                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
-                desc.style.marginTop = '4px';
-                labelDiv.appendChild(desc);
-            }
-            div.appendChild(input);
-            div.appendChild(labelDiv);
-            return div;
-        };
-        fixesSection.appendChild(createCheckbox(
-            'forceH264', L.forceH264, config.forceH264, L.forceH264Desc, true
-        ));
-        fixesSection.appendChild(createCheckbox(
-            'fixAutoPause', L.fixAutoPause, config.fixAutoPause, L.fixAutoPauseDesc, true
-        ));
-        fixesSection.appendChild(createCheckbox(
-            'fixDarkFlash', L.fixDarkFlash, config.fixDarkFlash, L.fixDarkFlashDesc, true
-        ));
-        fixesSection.appendChild(createCheckbox(
-            'fixMiniPlayer', L.fixMiniPlayer, config.fixMiniPlayer, L.fixMiniPlayerDesc, true
-        ));
-        fixesSection.appendChild(createCheckbox(
-            'scrollOptimization', L.scrollOptimization, config.scrollOptimization, L.scrollOptimizationDesc, true
-        ));
-        fixesSection.appendChild(createCheckbox(
-            'hideEmptyBlocks', L.hideEmptyBlocks, config.hideEmptyBlocks, L.hideEmptyBlocksDesc, true
-        ));
-        fixesSection.appendChild(createCheckbox(
-            'fixRussiaThrottle', L.fixRussiaThrottle, config.fixRussiaThrottle, L.fixRussiaThrottleDesc, false, true
-        ));
+        fixesSection.appendChild(createCheckbox('forceH264', L.forceH264, config.forceH264, L.forceH264Desc, true));
+        fixesSection.appendChild(createCheckbox('fixAutoPause', L.fixAutoPause, config.fixAutoPause, L.fixAutoPauseDesc, true));
+        fixesSection.appendChild(createCheckbox('fixDarkFlash', L.fixDarkFlash, config.fixDarkFlash, L.fixDarkFlashDesc, true));
+        fixesSection.appendChild(createCheckbox('fixMiniPlayer', L.fixMiniPlayer, config.fixMiniPlayer, L.fixMiniPlayerDesc, true));
+        fixesSection.appendChild(createCheckbox('scrollOptimization', L.scrollOptimization, config.scrollOptimization, L.scrollOptimizationDesc, true));
+        fixesSection.appendChild(createCheckbox('hideEmptyBlocks', L.hideEmptyBlocks, config.hideEmptyBlocks, L.hideEmptyBlocksDesc, true));
+        fixesSection.appendChild(createCheckbox('fixRussiaThrottle', L.fixRussiaThrottle, config.fixRussiaThrottle, L.fixRussiaThrottleDesc, false, true));
         container.appendChild(fixesSection);
     }
 
-    // --- Яндекс вкладка ---
+    // --- Яндекс вкладка (Яндекс-Фиксы) ---
 
     function createYandexTab(container) {
         const section = (title, description = '') => {
@@ -2633,7 +2578,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         closeBtn.className = 'yt-enhancer-close-btn';
         closeBtn.textContent = '\u2715';
         closeBtn.style.cssText = 'background:none!important;border:none!important;backdrop-filter:none!important;font-size:1.4em;cursor:pointer;color:var(--enhancer-fg);padding:4px 8px;box-shadow:none!important;';
-        closeBtn.addEventListener('click', () => overlay.remove());
+        // close handler assigned below after _closeStyleEditor is defined
         header.appendChild(titleEl);
         header.appendChild(closeBtn);
         panel.appendChild(header);
@@ -2677,7 +2622,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
         overlay.appendChild(panel);
         document.body.appendChild(overlay);
-        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+        // Hide main settings when style editor is open; restore on close
+        const _mainSettings = document.getElementById('yt-enhancer-settings');
+        if (_mainSettings) _mainSettings.style.display = 'none';
+
+        const _closeStyleEditor = () => {
+            overlay.remove();
+            const ms = document.getElementById('yt-enhancer-settings');
+            if (ms) ms.style.display = '';
+            else createSettingsUI();
+        };
+
+        closeBtn.addEventListener('click', _closeStyleEditor);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) _closeStyleEditor(); });
     }
 
     // --- Color Editor Panel ---
