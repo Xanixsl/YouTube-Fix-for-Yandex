@@ -747,9 +747,16 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     const LANGS = (function() {
         const extEN = _loadResource('langEN');
         const extRU = _loadResource('langRU');
+        // These structural fields must always come from builtin to prevent stale cached JSON from overriding them
+        const _structuralKeys = ['version','tabs','tabsNoYandex','mainSection','mainDesc','hideChipsDesc','fixesSection','fixesDesc'];
+        const _protect = (builtin) => {
+            const override = {};
+            _structuralKeys.forEach(k => { override[k] = builtin[k]; });
+            return override;
+        };
         return {
-            en: extEN ? (() => { try { const ext = JSON.parse(extEN); return {..._BUILTIN_LANGS.en, ...ext, version: _BUILTIN_LANGS.en.version}; } catch(e) { return _BUILTIN_LANGS.en; } })() : _BUILTIN_LANGS.en,
-            ru: extRU ? (() => { try { const ext = JSON.parse(extRU); return {..._BUILTIN_LANGS.ru, ...ext, version: _BUILTIN_LANGS.ru.version}; } catch(e) { return _BUILTIN_LANGS.ru; } })() : _BUILTIN_LANGS.ru
+            en: extEN ? (() => { try { const ext = JSON.parse(extEN); return {..._BUILTIN_LANGS.en, ...ext, ..._protect(_BUILTIN_LANGS.en)}; } catch(e) { return _BUILTIN_LANGS.en; } })() : _BUILTIN_LANGS.en,
+            ru: extRU ? (() => { try { const ext = JSON.parse(extRU); return {..._BUILTIN_LANGS.ru, ...ext, ..._protect(_BUILTIN_LANGS.ru)}; } catch(e) { return _BUILTIN_LANGS.ru; } })() : _BUILTIN_LANGS.ru
         };
     })();
 
