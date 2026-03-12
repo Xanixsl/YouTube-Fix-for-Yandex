@@ -1,0 +1,516 @@
+/* ============================================================
+   YouTube Fix for Yandex — Theme CSS
+   https://github.com/Xanixsl/test-123-123
+
+   Formats per theme:
+     /* @theme <name> */
+     /* @base */   — unconditional vars
+     /* @dark */   — applied in dark mode
+     /* @light */  — applied in light mode
+     /* @common */ — unconditional rules
+============================================================ */
+
+/* @theme youtube */
+/* @base */
+:root {
+    --enhancer-radius: 12px !important;
+    --enhancer-btn-radius: 20px !important;
+    --enhancer-transition: all 0.2s ease !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: var(--yt-spec-base-background, #0f0f0f) !important;
+    --enhancer-fg: var(--yt-spec-text-primary, #f1f1f1) !important;
+    --enhancer-border: var(--yt-spec-10-percent-layer, #272727) !important;
+    --enhancer-primary: #ff0000 !important;
+    --enhancer-secondary: #ff0000 !important;
+    --enhancer-accent: #ff0000 !important;
+    --enhancer-btn-border: var(--yt-spec-10-percent-layer, #333) !important;
+    --enhancer-btn-fg: var(--yt-spec-text-primary, #f1f1f1) !important;
+    --enhancer-btn-hover-bg: var(--yt-spec-10-percent-layer, #272727) !important;
+    --enhancer-btn-hover-fg: var(--yt-spec-text-primary, #f1f1f1) !important;
+    --enhancer-badge-bg: rgba(255, 0, 0, 0.12) !important;
+    --enhancer-badge-fg: #ff4444 !important;
+    --enhancer-badge-exp-bg: rgba(255, 112, 67, 0.15) !important;
+    --enhancer-badge-exp-fg: #ff7043 !important;
+    --enhancer-input-bg: var(--yt-spec-badge-chip-background, #272727) !important;
+    --enhancer-input-fg: var(--yt-spec-text-primary, #f1f1f1) !important;
+    --enhancer-input-border: var(--yt-spec-10-percent-layer, #3f3f3f) !important;
+    --enhancer-tab-active: var(--yt-spec-text-primary, #f1f1f1) !important;
+    --enhancer-tab-inactive: var(--yt-spec-text-secondary, #aaa) !important;
+    --enhancer-divider: var(--yt-spec-10-percent-layer, #272727) !important;
+    --enhancer-select-bg: var(--yt-spec-badge-chip-background, #272727) !important;
+    --enhancer-select-fg: var(--yt-spec-text-primary, #f1f1f1) !important;
+    --enhancer-select-border: var(--yt-spec-10-percent-layer, #3f3f3f) !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: none;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 600; font-size: 1.4em;
+    color: var(--yt-spec-text-primary, #f1f1f1) !important;
+    margin-bottom: 20px;
+}
+#yt-enhancer-settings select option {
+    background: #272727 !important;
+    color: #f1f1f1 !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: var(--yt-spec-base-background, #ffffff) !important;
+    --enhancer-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
+    --enhancer-border: var(--yt-spec-10-percent-layer, #e5e5e5) !important;
+    --enhancer-primary: #cc0000 !important;
+    --enhancer-secondary: #cc0000 !important;
+    --enhancer-accent: #cc0000 !important;
+    --enhancer-btn-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
+    --enhancer-btn-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
+    --enhancer-btn-hover-bg: var(--yt-spec-10-percent-layer, #f2f2f2) !important;
+    --enhancer-btn-hover-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
+    --enhancer-badge-bg: rgba(204, 0, 0, 0.08) !important;
+    --enhancer-badge-fg: #cc0000 !important;
+    --enhancer-badge-exp-bg: rgba(255, 152, 0, 0.1) !important;
+    --enhancer-badge-exp-fg: #e65100 !important;
+    --enhancer-input-bg: var(--yt-spec-badge-chip-background, #f2f2f2) !important;
+    --enhancer-input-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
+    --enhancer-input-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
+    --enhancer-tab-active: var(--yt-spec-text-primary, #0f0f0f) !important;
+    --enhancer-tab-inactive: var(--yt-spec-text-secondary, #606060) !important;
+    --enhancer-divider: var(--yt-spec-10-percent-layer, #e5e5e5) !important;
+    --enhancer-select-bg: var(--yt-spec-badge-chip-background, #f2f2f2) !important;
+    --enhancer-select-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
+    --enhancer-select-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12) !important;
+    backdrop-filter: none;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 600; font-size: 1.4em;
+    color: var(--yt-spec-text-primary, #0f0f0f) !important;
+    margin-bottom: 20px;
+}
+#yt-enhancer-settings select option {
+    background: #f2f2f2 !important;
+    color: #0f0f0f !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 20px 0 12px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 12px; margin-bottom: 20px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important;
+}
+#yt-enhancer-settings button:hover {
+    background: var(--enhancer-btn-hover-bg) !important;
+}
+
+/* @theme improved */
+/* @base */
+:root {
+    --enhancer-radius: 20px !important;
+    --enhancer-btn-radius: 14px !important;
+    --enhancer-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: rgba(15, 15, 15, 0.92) !important;
+    --enhancer-fg: #f1f1f1 !important;
+    --enhancer-border: rgba(62, 166, 255, 0.12) !important;
+    --enhancer-primary: #3ea6ff !important;
+    --enhancer-secondary: #5fb4ff !important;
+    --enhancer-accent: #7fc1ff !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #000 !important;
+    --enhancer-badge-bg: rgba(62, 166, 255, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(255, 112, 67, 0.2) !important;
+    --enhancer-badge-exp-fg: #ff7043 !important;
+    --enhancer-input-bg: rgba(255, 255, 255, 0.06) !important;
+    --enhancer-input-fg: #f1f1f1 !important;
+    --enhancer-input-border: rgba(255, 255, 255, 0.1) !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: rgba(255, 255, 255, 0.5) !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(62, 166, 255, 0.4), transparent) !important;
+    --enhancer-select-bg: rgba(255, 255, 255, 0.08) !important;
+    --enhancer-select-fg: #f1f1f1 !important;
+    --enhancer-select-border: rgba(255, 255, 255, 0.12) !important;
+}
+#yt-enhancer-settings {
+    background: rgba(15, 15, 15, 0.92) !important;
+    backdrop-filter: blur(20px) saturate(1.8) !important;
+    border: 1px solid rgba(62, 166, 255, 0.15) !important;
+    box-shadow: 0 0 0 1px rgba(62, 166, 255, 0.08), 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(135deg, #3ea6ff, #5fb4ff, #7fc1ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+ytd-popup-container tp-yt-paper-listbox,
+ytd-menu-popup-renderer,
+tp-yt-paper-dialog.ytd-popup-container,
+tp-yt-paper-dialog {
+    background: rgba(15, 15, 15, 0.95) !important;
+    color: #f1f1f1 !important;
+    border: 1px solid rgba(62, 166, 255, 0.12) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(16px) !important;
+    overflow: hidden !important;
+}
+ytd-multi-page-menu-renderer,
+ytd-multi-page-menu-renderer #container {
+    background: rgba(15, 15, 15, 0.95) !important;
+    color: #f1f1f1 !important;
+    border: 1px solid rgba(62, 166, 255, 0.12) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(16px) !important;
+}
+tp-yt-paper-item,
+ytd-menu-service-item-renderer,
+ytd-compact-link-renderer {
+    color: #f1f1f1 !important;
+}
+tp-yt-paper-item:hover,
+ytd-menu-service-item-renderer:hover,
+ytd-compact-link-renderer:hover {
+    background: rgba(62, 166, 255, 0.12) !important;
+}
+ytd-menu-popup-renderer #items ytd-menu-service-item-renderer {
+    border-radius: 8px !important; margin: 2px 4px !important;
+}
+iron-dropdown .dropdown-content {
+    background: rgba(15, 15, 15, 0.95) !important;
+    border: 1px solid rgba(62, 166, 255, 0.12) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+#yt-enhancer-settings select option {
+    background: #1a1a1a !important;
+    color: #f1f1f1 !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: rgba(255, 255, 255, 0.92) !important;
+    --enhancer-fg: #0f0f0f !important;
+    --enhancer-border: rgba(6, 95, 212, 0.1) !important;
+    --enhancer-primary: #065fd4 !important;
+    --enhancer-secondary: #1a73e8 !important;
+    --enhancer-accent: #4285f4 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: rgba(6, 95, 212, 0.06) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(255, 152, 0, 0.1) !important;
+    --enhancer-badge-exp-fg: #e65100 !important;
+    --enhancer-input-bg: rgba(0, 0, 0, 0.03) !important;
+    --enhancer-input-fg: #0f0f0f !important;
+    --enhancer-input-border: rgba(0, 0, 0, 0.08) !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: rgba(0, 0, 0, 0.4) !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(6, 95, 212, 0.2), transparent) !important;
+    --enhancer-select-bg: rgba(0, 0, 0, 0.04) !important;
+    --enhancer-select-fg: #0f0f0f !important;
+    --enhancer-select-border: rgba(0, 0, 0, 0.1) !important;
+}
+#yt-enhancer-settings {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(20px) saturate(1.5) !important;
+    border: 1px solid rgba(6, 95, 212, 0.1) !important;
+    box-shadow: 0 0 0 1px rgba(6, 95, 212, 0.05), 0 20px 60px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+ytd-popup-container tp-yt-paper-listbox,
+ytd-menu-popup-renderer,
+tp-yt-paper-dialog.ytd-popup-container,
+tp-yt-paper-dialog {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #0f0f0f !important;
+    border: 1px solid rgba(6, 95, 212, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(16px) !important;
+    overflow: hidden !important;
+}
+ytd-multi-page-menu-renderer,
+ytd-multi-page-menu-renderer #container {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #0f0f0f !important;
+    border: 1px solid rgba(6, 95, 212, 0.1) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(16px) !important;
+}
+tp-yt-paper-item,
+ytd-menu-service-item-renderer,
+ytd-compact-link-renderer {
+    color: #0f0f0f !important;
+}
+tp-yt-paper-item:hover,
+ytd-menu-service-item-renderer:hover,
+ytd-compact-link-renderer:hover {
+    background: rgba(6, 95, 212, 0.08) !important;
+}
+ytd-menu-popup-renderer #items ytd-menu-service-item-renderer {
+    border-radius: 8px !important; margin: 2px 4px !important;
+}
+iron-dropdown .dropdown-content {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(6, 95, 212, 0.1) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+#yt-enhancer-settings select option {
+    background: #f5f5f5 !important;
+    color: #0f0f0f !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+    backdrop-filter: blur(8px);
+}
+#yt-enhancer-settings button.yt-enhancer-close-btn {
+    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }
+ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
+    transition: background 0.2s ease, color 0.2s ease !important;
+}
+
+/* @theme midnight */
+/* @base */
+:root {
+    --enhancer-radius: 18px !important;
+    --enhancer-btn-radius: 12px !important;
+    --enhancer-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #0d1117 !important;
+    --enhancer-fg: #e6edf3 !important;
+    --enhancer-border: #21262d !important;
+    --enhancer-primary: #a855f7 !important;
+    --enhancer-secondary: #c084fc !important;
+    --enhancer-accent: #d8b4fe !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #fff !important;
+    --enhancer-badge-bg: rgba(168, 85, 247, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(244, 114, 182, 0.2) !important;
+    --enhancer-badge-exp-fg: #f472b6 !important;
+    --enhancer-input-bg: #161b22 !important;
+    --enhancer-input-fg: #e6edf3 !important;
+    --enhancer-input-border: #30363d !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #8b949e !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.3), transparent) !important;
+    --enhancer-select-bg: #161b22 !important;
+    --enhancer-select-fg: #e6edf3 !important;
+    --enhancer-select-border: #30363d !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.2), 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(12px);
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(90deg, #a855f7, #c084fc, #d8b4fe);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option {
+    background: #161b22 !important;
+    color: #e6edf3 !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: #f8f7ff !important;
+    --enhancer-fg: #1e1b3a !important;
+    --enhancer-border: #e0ddf5 !important;
+    --enhancer-primary: #7c3aed !important;
+    --enhancer-secondary: #8b5cf6 !important;
+    --enhancer-accent: #a78bfa !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #fff !important;
+    --enhancer-badge-bg: rgba(124, 58, 237, 0.08) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(236, 72, 153, 0.1) !important;
+    --enhancer-badge-exp-fg: #db2777 !important;
+    --enhancer-input-bg: #f0eefa !important;
+    --enhancer-input-fg: #1e1b3a !important;
+    --enhancer-input-border: #d6d3f0 !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #9895b5 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.15), transparent) !important;
+    --enhancer-select-bg: #f8f7ff !important;
+    --enhancer-select-fg: #1e1b3a !important;
+    --enhancer-select-border: #d6d3f0 !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    backdrop-filter: blur(8px);
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+#yt-enhancer-settings select option {
+    background: #f0eefa !important;
+    color: #1e1b3a !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* @theme sunset */
+/* @base */
+:root {
+    --enhancer-radius: 16px !important;
+    --enhancer-btn-radius: 12px !important;
+    --enhancer-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #1a1412 !important;
+    --enhancer-fg: #fef3c7 !important;
+    --enhancer-border: #44332a !important;
+    --enhancer-primary: #f59e0b !important;
+    --enhancer-secondary: #fbbf24 !important;
+    --enhancer-accent: #fcd34d !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #1a1412 !important;
+    --enhancer-badge-bg: rgba(245, 158, 11, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(239, 68, 68, 0.2) !important;
+    --enhancer-badge-exp-fg: #ef4444 !important;
+    --enhancer-input-bg: #241c17 !important;
+    --enhancer-input-fg: #fef3c7 !important;
+    --enhancer-input-border: #4a3628 !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #a08060 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.3), transparent) !important;
+    --enhancer-select-bg: #241c17 !important;
+    --enhancer-select-fg: #fef3c7 !important;
+    --enhancer-select-border: #4a3628 !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2), 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(12px);
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option {
+    background: #241c17 !important;
+    color: #fef3c7 !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: #fffbeb !important;
+    --enhancer-fg: #451a03 !important;
+    --enhancer-border: #fed7aa !important;
+    --enhancer-primary: #d97706 !important;
+    --enhancer-secondary: #b45309 !important;
+    --enhancer-accent: #92400e !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #fff !important;
+    --enhancer-badge-bg: rgba(217, 119, 6, 0.08) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(220, 38, 38, 0.1) !important;
+    --enhancer-badge-exp-fg: #dc2626 !important;
+    --enhancer-input-bg: #fff8e1 !important;
+    --enhancer-input-fg: #451a03 !important;
+    --enhancer-input-border: #fde68a !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #b08050 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(217, 119, 6, 0.15), transparent) !important;
+    --enhancer-select-bg: #fffbeb !important;
+    --enhancer-select-fg: #451a03 !important;
+    --enhancer-select-border: #fde68a !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    backdrop-filter: blur(8px);
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+#yt-enhancer-settings select option {
+    background: #fff8e1 !important;
+    color: #451a03 !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+}
