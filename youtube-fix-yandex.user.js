@@ -389,7 +389,8 @@ iron-dropdown .dropdown-content {
     border-radius: 12px !important;
     overflow: hidden !important;
 }
-#yt-enhancer-settings select option {
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
     background: #1a1a1a !important;
     color: #f1f1f1 !important;
 }
@@ -468,7 +469,8 @@ iron-dropdown .dropdown-content {
     border-radius: 12px !important;
     overflow: hidden !important;
 }
-#yt-enhancer-settings select option {
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
     background: #f5f5f5 !important;
     color: #0f0f0f !important;
 }
