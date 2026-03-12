@@ -1,5 +1,5 @@
 {
-"title": "YouTube Fix for Yandex", "version": "v4.4.5",
+"title": "YouTube Fix for Yandex", "version": "v4.4.6",
             "tabs": ["General", "Yandex Fixes", "Settings"], "tabsNoYandex": ["General", "Settings"],
             "save": "Save settings", "reset": "Reset settings",
             "saved": "Settings saved! Page will reload...", "reseted": "Settings reset! Page will reload...",

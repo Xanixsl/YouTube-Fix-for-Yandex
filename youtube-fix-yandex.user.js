@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace https://github.com/Xanixsl/test-123-123
-// @version      4.4.5
+// @version      4.4.6
 // @description  Оптимизация и исправления YouTube для Яндекс Браузера: сетка, производительность, интерфейс, фикс пустых блоков, кодеков, авто-паузы, скролла, нативный YouTube UI
 // @author       Xanix
 // @match        https://www.youtube.com/*
@@ -14,6 +14,8 @@
 // @grant        GM_getResourceText
 // @grant        GM_xmlhttpRequest
 // @connect      raw.githubusercontent.com
+// @connect      www.youtube.com
+// @connect      googlevideo.com
 // @homepage     https://github.com/Xanixsl/test-123-123
 // @supportURL   https://github.com/Xanixsl/test-123-123/issues
 // @updateURL    https://raw.githubusercontent.com/Xanixsl/test-123-123/main/youtube-fix-yandex.user.js
@@ -46,7 +48,7 @@
     // --- Мультиязычность (встроенные данные + опциональное обновление из @resource / GitHub API) ---
     const _BUILTIN_LANGS = {
         en: {
-            title: "YouTube Fix for Yandex", version: "v4.4.5",
+            title: "YouTube Fix for Yandex", version: "v4.4.6",
             tabs: ["General", "Yandex Fixes", "Settings"], tabsNoYandex: ["General", "Settings"],
             save: "Save settings", reset: "Reset settings",
             saved: "Settings saved! Page will reload...", reseted: "Settings reset! Page will reload...",
@@ -123,7 +125,7 @@
             exitPlaylistModeNotification: "Extension will reload in {seconds} seconds to restore functionality"
         },
         ru: {
-            title: "YouTube Fix for Yandex", version: "v4.4.5",
+            title: "YouTube Fix for Yandex", version: "v4.4.6",
             tabs: ["Общее", "Яндекс-Фиксы", "Настройки"], tabsNoYandex: ["Общее", "Настройки"],
             save: "Сохранить настройки", reset: "Сбросить настройки",
             saved: "Настройки сохранены! Страница будет перезагружена...", reseted: "Настройки сброшены! Страница будет перезагружена...",
@@ -3898,7 +3900,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // Обход замедления YouTube в РФ
     // Основной механизм: n-parameter deobfuscation — YouTube сам замедляет видео
     // до ~50-100 КБ/с если параметр 'n' в videoplayback URL не трансформирован.
-    // Дополнительно: очистка URL от ТСПУ-идентификаторов, preconnect к CDN.
+    // Дополнительно: перехват /youtubei/v1/player ответа для патча n до плеера,
+    // очистка URL от ТСПУ-идентификаторов, preconnect к CDN.
     // Примечание: для полного обхода ТСПУ (DPI Роскомнадзора) необходимы
     // системные утилиты (GoodbyeDPI, zapret) — userscript не может влиять на TLS.
     function applyFixRussiaThrottle() {
@@ -3909,7 +3912,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         // --- 1. Предварительное подключение к CDN ---
         const preconnectHosts = [
             'www.youtube.com', 'i.ytimg.com', 'yt3.ggpht.com',
-            'redirector.googlevideo.com'
+            'redirector.googlevideo.com', 'manifest.googlevideo.com'
         ];
         preconnectHosts.forEach(host => {
             const pc = document.createElement('link');
@@ -3928,50 +3931,68 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         // Если трансформация не произошла (баг плеера, Yandex Browser JS engine) —
         // YouTube throttles видео. Мы извлекаем эту функцию и применяем сами.
         let _nTransformFn = null;
-        let _nExtractAttempted = false;
+        let _nExtractInProgress = false;
+        let _nExtractAttempts = 0;
+        const _nExtractMaxAttempts = 5;
         const _nCache = Object.create(null);
 
         const extractNTransform = async () => {
-            if (_nTransformFn || _nExtractAttempted) return;
-            _nExtractAttempted = true;
+            if (_nTransformFn || _nExtractInProgress || _nExtractAttempts >= _nExtractMaxAttempts) return;
+            _nExtractInProgress = true;
+            _nExtractAttempts++;
+            let success = false;
             try {
                 // Находим URL player base.js
                 let baseJsUrl = null;
 
-                // Метод 1: из <script> тега
-                const scriptEls = document.querySelectorAll('script[src*="/base.js"]');
-                for (let i = 0; i < scriptEls.length; i++) {
-                    if (scriptEls[i].src && scriptEls[i].src.indexOf('player') !== -1) {
-                        baseJsUrl = scriptEls[i].src;
-                        break;
-                    }
-                }
-
-                // Метод 2: из ytcfg
-                if (!baseJsUrl && _unsafeWin.ytcfg && _unsafeWin.ytcfg.get) {
+                // Метод 1: из ytcfg (самый надёжный — приоритет)
+                if (_unsafeWin.ytcfg && _unsafeWin.ytcfg.get) {
                     const jsPath = _unsafeWin.ytcfg.get('PLAYER_JS_URL');
                     if (jsPath) baseJsUrl = jsPath.charAt(0) === '/' ? location.origin + jsPath : jsPath;
                 }
 
-                // Метод 3: из HTML страницы
+                // Метод 2: из <script> тега
                 if (!baseJsUrl) {
-                    const htmlMatch = document.documentElement.innerHTML.match(/"jsUrl"\s*:\s*"([^"]*?base\.js[^"]*)"/);
-                    if (htmlMatch) baseJsUrl = location.origin + htmlMatch[1];
+                    const scriptEls = document.querySelectorAll('script[src*="/base.js"]');
+                    for (let i = 0; i < scriptEls.length; i++) {
+                        if (scriptEls[i].src && scriptEls[i].src.indexOf('player') !== -1) {
+                            baseJsUrl = scriptEls[i].src;
+                            break;
+                        }
+                    }
                 }
 
-                if (!baseJsUrl) return;
+                // Метод 3: из HTML страницы
+                if (!baseJsUrl) {
+                    const htmlMatch = document.documentElement.innerHTML.match(/"(?:jsUrl|PLAYER_JS_URL)"\s*:\s*"([^"]*?base\.js[^"]*)"/);
+                    if (htmlMatch) {
+                        const p = htmlMatch[1];
+                        baseJsUrl = p.charAt(0) === '/' ? location.origin + p : p;
+                    }
+                }
+
+                if (!baseJsUrl) { _nExtractInProgress = false; scheduleRetry(); return; }
 
                 const resp = await _unsafeWin.fetch(baseJsUrl);
                 const playerCode = await resp.text();
 
-                // Ищем имя функции, которая трансформирует n-параметр.
-                // YouTube периодически меняет паттерн, поэтому пробуем несколько вариантов.
+                // Паттерны для поиска функции n-трансформации (обновлено 2025).
+                // YouTube регулярно меняет имена переменных, поэтому пробуем несколько.
                 const namePatterns = [
-                    /\.get\("n"\)\)&&\(b=([a-zA-Z0-9$]+)(?:\[(\d+)\])?\(b\)/,
-                    /\.get\("n"\)\)&&\([a-zA-Z]=([a-zA-Z0-9$]+)(?:\[(\d+)\])?\([a-zA-Z]\)/,
+                    // 2024-2025: основной формат
+                    /\.get\("n"\)\)&&\(b=([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\(b\)/,
+                    // Вариант с одиночными буквами переменных
+                    /\.get\("n"\)\)&&\([a-z]=([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\([a-z]\)/,
+                    // С явным encodeURIComponent
+                    /[a-z]&&[a-z]\.set\("n",\s*encodeURIComponent\(([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\([a-z]\)\)\)/,
+                    /\.set\([^,]+,\s*encodeURIComponent\(([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\([a-z]\)\)\)/,
+                    // Более широкие паттерны (устаревшие версии плеера)
                     /\bc\s*&&\s*d\.set\([^,]+\s*,\s*encodeURIComponent\(([a-zA-Z0-9$]+)\(/,
                     /\bc\s*&&\s*[a-z]\.set\([^,]+\s*,\s*encodeURIComponent\(([a-zA-Z0-9$]+)\(/,
-                    /\b[cs]\s*&&\s*[adf]\.set\([^,]+\s*,\s*encodeURIComponent\(([a-zA-Z0-9$]+)\(/
+                    /\b[cs]\s*&&\s*[adf]\.set\([^,]+\s*,\s*encodeURIComponent\(([a-zA-Z0-9$]+)\(/,
+                    // Конец 2024 — начало 2025
+                    /\([a-z]\)=[a-z]&&[a-z]\.get\("n"\)\)&&\([a-z]=([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\(/,
+                    /;[a-z]=([a-zA-Z0-9$]{2,4})(?:\[(\d+)\])?\([a-z]\);[a-z]\.set\("n"/
                 ];
 
                 let funcName = null;
@@ -3984,10 +4005,10 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                         break;
                     }
                 }
-                if (!funcName) return;
+                if (!funcName) { _nExtractInProgress = false; scheduleRetry(); return; }
 
                 // Извлекаем тело функции из player code
-                const escName = funcName.replace(/\$/g, '\\$');
+                const escName = funcName.replace(/[$^.*+?{}()|[\]\\]/g, '\\$&');
                 let funcBody = null;
                 let funcStartIdx = -1;
 
@@ -4012,7 +4033,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                     if (fnMatch) funcStartIdx = fnMatch.index;
                 }
 
-                if (funcStartIdx === -1) return;
+                if (funcStartIdx === -1) { _nExtractInProgress = false; scheduleRetry(); return; }
 
                 // Находим закрывающую скобку
                 let ci = funcStartIdx;
@@ -4042,7 +4063,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
                 let helperCode = '';
                 helpers.forEach(function(objName) {
-                    const escObj = objName.replace(/\$/g, '\\$');
+                    const escObj = objName.replace(/[$^.*+?{}()|[\]\\]/g, '\\$&');
                     const objRe = new RegExp('var\\s+' + escObj + '\\s*=\\s*\\{');
                     const objMatch = objRe.exec(playerCode);
                     if (objMatch) {
@@ -4061,15 +4082,23 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 const returnExpr = arrayIdx !== null ? funcName + '[' + arrayIdx + ']' : funcName;
                 const fn = new Function(helperCode + funcBody + '\nreturn ' + returnExpr + ';')();
 
-                // Валидация: функция должна возвращать строку
-                if (typeof fn !== 'function') return;
+                // Валидация: функция должна возвращать строку, отличную от входной
+                if (typeof fn !== 'function') { _nExtractInProgress = false; scheduleRetry(); return; }
                 const testResult = fn('tQ6oLS-i_e8');
-                if (typeof testResult !== 'string') return;
+                if (typeof testResult !== 'string' || testResult === 'tQ6oLS-i_e8') { _nExtractInProgress = false; scheduleRetry(); return; }
 
                 _nTransformFn = fn;
+                success = true;
             } catch (e) {
-                // Извлечение не удалось — работаем без n-transform
+                // Извлечение не удалось — повторим позже
             }
+            _nExtractInProgress = false;
+            if (!success) scheduleRetry();
+        };
+
+        const scheduleRetry = () => {
+            if (_nTransformFn || _nExtractAttempts >= _nExtractMaxAttempts) return;
+            setTimeout(extractNTransform, 1500 * _nExtractAttempts);
         };
 
         // Применение n-трансформации к URL
@@ -4100,7 +4129,6 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const patchVideoUrl = (url) => {
             try {
                 if (!url || !isVideoPlayback(url)) return url;
-                // Применяем n-transform
                 let patched = applyNTransform(url);
                 const u = new URL(patched);
                 // Удаление параметров, используемых ТСПУ для идентификации потока
@@ -4111,21 +4139,52 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
         };
 
-        // --- 4. Перехват fetch (только videoplayback) ---
+        // Патч всех streaming URL в ответе /youtubei/v1/player.
+        // Вызывается когда n-transform уже готова — патчим ДО того, как плеер
+        // сделает первый videoplayback-запрос.
+        const patchStreamingData = (streamingData) => {
+            if (!streamingData || !_nTransformFn) return;
+            ['formats', 'adaptiveFormats'].forEach(key => {
+                if (!Array.isArray(streamingData[key])) return;
+                streamingData[key].forEach(fmt => {
+                    if (fmt.url) fmt.url = patchVideoUrl(fmt.url);
+                    if (fmt.dashManifestUrl) fmt.dashManifestUrl = patchVideoUrl(fmt.dashManifestUrl);
+                });
+            });
+        };
+
+        // --- 4. Перехват fetch: videoplayback URLs + /youtubei/v1/player ответ ---
         const _origFetch = _unsafeWin.fetch;
-        _unsafeWin.fetch = function(input, init) {
+        _unsafeWin.fetch = async function(input, init) {
+            let patchedInput = input;
             try {
-                var url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
-                if (isVideoPlayback(url)) {
-                    var patched = patchVideoUrl(url);
-                    if (typeof input === 'string') {
-                        input = patched;
-                    } else if (input && typeof input === 'object') {
-                        input = new Request(patched, input);
+                const rawUrl = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+                if (isVideoPlayback(rawUrl)) {
+                    const p = patchVideoUrl(rawUrl);
+                    if (p !== rawUrl) {
+                        patchedInput = typeof input === 'string' ? p : new Request(p, input);
                     }
                 }
-            } catch (e) { /* fallback */ }
-            return _origFetch.apply(this, arguments);
+            } catch (e) {}
+            const response = await _origFetch.call(this, patchedInput, init);
+            // Перехватываем ответ player API — патчим все n-параметры сразу
+            try {
+                const reqUrl = typeof patchedInput === 'string'
+                    ? patchedInput
+                    : (patchedInput && patchedInput.url ? patchedInput.url : '');
+                if (_nTransformFn && reqUrl.indexOf('/youtubei/v1/player') !== -1) {
+                    const json = await response.clone().json();
+                    if (json && json.streamingData) {
+                        patchStreamingData(json.streamingData);
+                        return new Response(JSON.stringify(json), {
+                            status: response.status,
+                            statusText: response.statusText,
+                            headers: { 'content-type': 'application/json; charset=utf-8' }
+                        });
+                    }
+                }
+            } catch (e) {}
+            return response;
         };
 
         // --- 5. Перехват XHR.open (только videoplayback, без send/setRequestHeader) ---
@@ -4138,20 +4197,26 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         };
 
         // --- 6. Запуск извлечения n-функции ---
-        // Ждём загрузки player base.js, потом извлекаем
-        const startExtraction = () => {
-            extractNTransform();
-        };
-        if (document.readyState === 'complete') {
-            setTimeout(startExtraction, 1000);
+        if (_unsafeWin.ytcfg && _unsafeWin.ytcfg.get && _unsafeWin.ytcfg.get('PLAYER_JS_URL')) {
+            // ytcfg уже доступен — начинаем немедленно
+            setTimeout(extractNTransform, 0);
+        } else if (document.readyState === 'complete') {
+            setTimeout(extractNTransform, 500);
         } else {
-            _unsafeWin.addEventListener('load', () => setTimeout(startExtraction, 1000));
+            _unsafeWin.addEventListener('load', () => setTimeout(extractNTransform, 500));
         }
-        // При SPA-навигации — повторяем если предыдущая попытка не удалась
+        // При SPA-навигации — сбрасываем счётчик попыток и пробуем снова
         document.addEventListener('yt-navigate-finish', () => {
             if (!_nTransformFn) {
-                _nExtractAttempted = false;
-                setTimeout(extractNTransform, 500);
+                _nExtractAttempts = 0;
+                setTimeout(extractNTransform, 400);
+            }
+        });
+        // Раннее событие при смене видео (срабатывает раньше yt-navigate-finish)
+        document.addEventListener('yt-page-data-updated', () => {
+            if (!_nTransformFn) {
+                _nExtractAttempts = 0;
+                setTimeout(extractNTransform, 300);
             }
         });
     }
