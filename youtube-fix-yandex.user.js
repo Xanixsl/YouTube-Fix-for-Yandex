@@ -3682,6 +3682,24 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const editorTabNames = [L.styleEditorColors, L.styleEditorPresets, L.styleEditorBackground, L.styleEditorCSS];
         const editorTabs = [];
         const editorPanels = [];
+
+        // Compute theme-aware tab colors once
+        const _tKey = config.settingsStyle || 'youtube';
+        const _tDark = config.enhancerTheme === 'dark' ||
+            (config.enhancerTheme === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        const _tP = (_BUILTIN_PRESET_COLORS[_tKey] || _BUILTIN_PRESET_COLORS['youtube'])[_tDark ? 'dark' : 'light'] || {};
+        const _tFg  = (_tP.fg      || (_tDark ? '#e8e8e8' : '#222222'));
+        const _tPri = (_tP.primary || '#3ea6ff');
+        function _c2a(hex, a) {
+            if (!hex || hex[0] !== '#' || hex.length < 7) return `rgba(200,200,200,${a})`;
+            const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+            return `rgba(${r},${g},${b},${a})`;
+        }
+        const TAB_INACTIVE = _c2a(_tFg, 0.62);
+        const TAB_ACTIVE   = _tFg;
+        const TAB_SHADOW   = `0 0 10px ${_c2a(_tPri, 0.75)}, 0 0 3px ${_c2a(_tFg, 0.55)}`;
+        const TAB_HOVER_SHADOW = `0 0 7px ${_c2a(_tFg, 0.5)}`;
+
         editorTabNames.forEach((name, i) => {
             const tab = document.createElement('button');
             tab.style.cssText = `background:none!important;border:none!important;border-bottom:3px solid transparent;padding:10px 18px;cursor:pointer;font-weight:600;font-size:1.05em;transition:color 0.15s,background 0.15s;display:flex;align-items:center;gap:6px;border-radius:8px 8px 0 0;`;
@@ -3696,10 +3714,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             tab.appendChild(labelSpan);
 
             // setProperty 'important' to always beat any stylesheet rule including YouTube's own CSS
-            const INACTIVE_COLOR = 'var(--enhancer-tab-inactive,#888)';
-            const ACTIVE_COLOR   = 'var(--enhancer-primary,#3ea6ff)';
-            const ACTIVE_BG      = 'rgba(62,166,255,0.13)';
-            const ACTIVE_SHADOW  = '0 0 8px rgba(62,166,255,0.5)';
+            const INACTIVE_COLOR = TAB_INACTIVE;
+            const ACTIVE_COLOR   = TAB_ACTIVE;
+            const ACTIVE_SHADOW  = TAB_SHADOW;
 
             const setActive = () => {
                 tab.dataset.tabActive = '1';
@@ -3732,17 +3749,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 editorPanels.forEach((p, j) => { p.style.display = j === i ? 'block' : 'none'; });
             });
             tab.addEventListener('mouseenter', () => {
-                if (tab.dataset.tabActive) return; // активная вкладка — ничего не трогаем
-                const themeKey = config.settingsStyle || 'youtube';
-                const isDark = config.enhancerTheme === 'dark' ||
-                    (config.enhancerTheme === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
-                const preset = (_BUILTIN_PRESET_COLORS[themeKey] || _BUILTIN_PRESET_COLORS['youtube'])[isDark ? 'dark' : 'light'] || {};
-                const hoverColor = preset.fg || (isDark ? '#ffffff' : '#111111');
-                tab.style.setProperty('color', hoverColor, 'important');
-                tab.style.setProperty('text-shadow', `0 0 6px ${hoverColor}55`, 'important');
+                if (tab.dataset.tabActive) return;
+                tab.style.setProperty('color', TAB_ACTIVE, 'important');
+                tab.style.setProperty('text-shadow', TAB_HOVER_SHADOW, 'important');
             });
             tab.addEventListener('mouseleave', () => {
-                if (tab.dataset.tabActive) return; // активная вкладка — ничего не трогаем
+                if (tab.dataset.tabActive) return;
                 tab.style.setProperty('color', INACTIVE_COLOR, 'important');
                 tab.style.setProperty('text-shadow', 'none', 'important');
             });
