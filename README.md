@@ -20,7 +20,7 @@ Click it to open the full settings panel — no browser extensions, no popups, j
 
 <br/>
 
-<sub>👥 Visitors</sub><br/>
+<sub>👥 Visitors</sub><br/><br/>
 <a href="https://github.com/Xanixsl/YouTube-Fix-for-Yandex">
   <img src="https://count.getloli.com/@Xanixsl-YouTube-Fix-for-Yandex?name=Xanixsl-YouTube-Fix-for-Yandex&theme=booru-lewd&padding=1&offset=0&align=center&scale=1&pixelated=1&darkmode=0" alt="Visitors" />
 </a>
@@ -34,7 +34,7 @@ Click it to open the full settings panel — no browser extensions, no popups, j
 [![Installs](https://img.shields.io/badge/Installs-5.8k%2B-238636?style=for-the-badge&logo=tampermonkey&logoColor=white&labelColor=0d1117)](https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js)
 
 <br/>
-<sub>📋 Quick Navigation</sub><br/>
+<sub>📋 Quick Navigation</sub><br/><br/>
 
 [![README RU](https://img.shields.io/badge/-README__RU-CE3228?style=for-the-badge&logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxyZWN0IGZpbGw9IiNmZmYiIHdpZHRoPSI5IiBoZWlnaHQ9IjIiLz48cmVjdCBmaWxsPSIjMDAzOUE2IiB5PSIyIiB3aWR0aD0iOSIgaGVpZ2h0PSIyIi8+PHJlY3QgZmlsbD0iI0Q1MkIxRSIgeT0iNCIgd2lkdGg9IjkiIGhlaWdodD0iMiIvPjwvc3ZnPg==&labelColor=0d1117)](doc/README_RU.md)&nbsp;
 [![Install](https://img.shields.io/badge/📥_Install-Guide-238636?style=for-the-badge&labelColor=0d1117)](#-installation)&nbsp;
@@ -50,7 +50,7 @@ Click it to open the full settings panel — no browser extensions, no popups, j
 
 <p align="center">
   <sub>🌍 Gear button — appears in the YouTube top bar, next to the +Create button and your profile icon</sub><br/><br/>
-  <img src="https://github.com/user-attachments/assets/107aca06-5722-4201-ac93-eea26ff20aee" width="600" height="auto" alt="Panel button on YouTube page"/>
+  <img src="https://github.com/user-attachments/assets/107aca06-5722-4201-ac93-eea26ff20aee" width="1000" height="auto" alt="Panel button on YouTube page"/>
 </p>
 
 <p align="center">
