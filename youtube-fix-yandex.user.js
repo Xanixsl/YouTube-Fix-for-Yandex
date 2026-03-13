@@ -1026,12 +1026,16 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                     margin: 0 !important;
                     overflow: hidden !important;
                 }
-                ytd-masthead[frosted-glass-mode="with-chipbar"] #background {
-                    height: ${config.chipbarBgHeight}px !important;
-                    min-height: unset !important;
-                }
             `;
         }
+        // Высота фона шапки — работает всегда, независимо от hideChips
+        mainCSS += `
+            ytd-masthead[frosted-glass-mode="with-chipbar"] #background,
+            ytd-masthead #background {
+                height: ${config.chipbarBgHeight}px !important;
+                min-height: unset !important;
+            }
+        `;
         // Принудительно показываем чипсы на вкладке Videos
         if (/\/@[^/]+\/videos/.test(location.pathname)) {
             mainCSS += `
@@ -2193,7 +2197,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             div.appendChild(input);
             return div;
         };
-        mainSection.appendChild(createNumInput('chipbarBgHeight', L.chipbarBgHeight, config.chipbarBgHeight, 0, 200));
+        mainSection.appendChild(createNumInput('chipbarBgHeight', L.chipbarBgHeight, config.chipbarBgHeight, -200, 200));
         mainSection.appendChild(createCheckbox('compactMode', L.compactMode, config.compactMode, L.compactModeDesc));
         mainSection.appendChild(createCheckbox('hideShorts', L.hideShorts, config.hideShorts, L.hideShortsDesc));
         mainSection.appendChild(createCheckbox('hideTopicShelves', L.hideTopicShelves, config.hideTopicShelves, L.hideTopicShelvesDesc, true));
