@@ -2266,45 +2266,48 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             div.appendChild(input);
             return div;
         };
-        // Определяем реальную максимальную высоту #frosted-glass
-        const _fgEl = document.querySelector('#frosted-glass');
-        let _chipbarNaturalMax = 80;
-        if (_fgEl) {
-            const _savedH = _fgEl.style.height;
-            _fgEl.style.height = '';
-            _chipbarNaturalMax = _fgEl.scrollHeight || _fgEl.offsetHeight || 80;
-            _fgEl.style.height = _savedH;
+        // Настройки фона чипбара — только для не-Яндекс браузеров
+        if (!isYandexBrowser()) {
+            // Определяем реальную максимальную высоту #frosted-glass
+            const _fgEl = document.querySelector('#frosted-glass');
+            let _chipbarNaturalMax = 80;
+            if (_fgEl) {
+                const _savedH = _fgEl.style.height;
+                _fgEl.style.height = '';
+                _chipbarNaturalMax = _fgEl.scrollHeight || _fgEl.offsetHeight || 80;
+                _fgEl.style.height = _savedH;
+            }
+            const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, Math.min(Math.max(config.chipbarBgHeight, 0), _chipbarNaturalMax), 0, _chipbarNaturalMax);
+            // Клamp: не даём ввести меньше 0 и больше max
+            const _chipbarInp = chipbarBgHeightRow.querySelector('input');
+            _chipbarInp.addEventListener('input', () => {
+                let v = parseInt(_chipbarInp.value, 10);
+                if (isNaN(v) || v < 0) { _chipbarInp.value = 0; }
+                else if (v > _chipbarNaturalMax) { _chipbarInp.value = _chipbarNaturalMax; }
+            });
+            _chipbarInp.addEventListener('blur', () => {
+                let v = parseInt(_chipbarInp.value, 10);
+                if (isNaN(v) || v < 0) { _chipbarInp.value = 0; }
+                else if (v > _chipbarNaturalMax) { _chipbarInp.value = _chipbarNaturalMax; }
+            });
+            const setChipbarBgHeightEnabled = (enabled) => {
+                const inp = chipbarBgHeightRow.querySelector('input');
+                const lbl = chipbarBgHeightRow.querySelector('label');
+                inp.disabled = !enabled;
+                chipbarBgHeightRow.style.opacity = enabled ? '1' : '0.4';
+                chipbarBgHeightRow.style.pointerEvents = enabled ? '' : 'none';
+                lbl.style.color = enabled ? '' : 'var(--enhancer-tab-inactive, #888)';
+            };
+            mainSection.appendChild(chipbarBgHeightRow);
+            const hideChipbarBgCb = createCheckbox('hideChipbarBg', L.hideChipbarBg, config.hideChipbarBg, L.hideChipbarBgDesc);
+            // Связь: при изменении чекбокса управляем доступностью поля высоты
+            const hideChipbarBgInput = hideChipbarBgCb.querySelector('input[type=checkbox]');
+            setChipbarBgHeightEnabled(!config.hideChipbarBg);
+            hideChipbarBgInput.addEventListener('change', () => {
+                setChipbarBgHeightEnabled(!hideChipbarBgInput.checked);
+            });
+            mainSection.appendChild(hideChipbarBgCb);
         }
-        const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, Math.min(Math.max(config.chipbarBgHeight, 0), _chipbarNaturalMax), 0, _chipbarNaturalMax);
-        // Клamp: не даём ввести меньше 0 и больше max
-        const _chipbarInp = chipbarBgHeightRow.querySelector('input');
-        _chipbarInp.addEventListener('input', () => {
-            let v = parseInt(_chipbarInp.value, 10);
-            if (isNaN(v) || v < 0) { _chipbarInp.value = 0; }
-            else if (v > _chipbarNaturalMax) { _chipbarInp.value = _chipbarNaturalMax; }
-        });
-        _chipbarInp.addEventListener('blur', () => {
-            let v = parseInt(_chipbarInp.value, 10);
-            if (isNaN(v) || v < 0) { _chipbarInp.value = 0; }
-            else if (v > _chipbarNaturalMax) { _chipbarInp.value = _chipbarNaturalMax; }
-        });
-        const setChipbarBgHeightEnabled = (enabled) => {
-            const inp = chipbarBgHeightRow.querySelector('input');
-            const lbl = chipbarBgHeightRow.querySelector('label');
-            inp.disabled = !enabled;
-            chipbarBgHeightRow.style.opacity = enabled ? '1' : '0.4';
-            chipbarBgHeightRow.style.pointerEvents = enabled ? '' : 'none';
-            lbl.style.color = enabled ? '' : 'var(--enhancer-tab-inactive, #888)';
-        };
-        mainSection.appendChild(chipbarBgHeightRow);
-        const hideChipbarBgCb = createCheckbox('hideChipbarBg', L.hideChipbarBg, config.hideChipbarBg, L.hideChipbarBgDesc);
-        // Связь: при изменении чекбокса управляем доступностью поля высоты
-        const hideChipbarBgInput = hideChipbarBgCb.querySelector('input[type=checkbox]');
-        setChipbarBgHeightEnabled(!config.hideChipbarBg);
-        hideChipbarBgInput.addEventListener('change', () => {
-            setChipbarBgHeightEnabled(!hideChipbarBgInput.checked);
-        });
-        mainSection.appendChild(hideChipbarBgCb);
         mainSection.appendChild(createCheckbox('compactMode', L.compactMode, config.compactMode, L.compactModeDesc));
         mainSection.appendChild(createCheckbox('hideShorts', L.hideShorts, config.hideShorts, L.hideShortsDesc));
         mainSection.appendChild(createCheckbox('hideTopicShelves', L.hideTopicShelves, config.hideTopicShelves, L.hideTopicShelvesDesc, true));
