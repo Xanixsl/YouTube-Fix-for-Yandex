@@ -46,7 +46,7 @@
             "themeSection": "Settings window theme", "themeDesc": "Appearance of this settings window",
             "themeAuto": "Auto (system)", "themeLight": "Light", "themeDark": "Dark", "fontSize": "Font size:",
             "styleSection": "Color scheme", "styleDesc": "Color palette and style of the settings window",
-            "styleYoutube": "YouTube", "styleImproved": "Improved (glass + dropdowns)", "styleMidnight": "Midnight", "styleSunset": "Sunset", "styleOcean": "Ocean", "styleEmerald": "Emerald", "styleRose": "Rose", "styleCustom": "Custom",
+            "styleYoutube": "YouTube", "styleImproved": "Improved (glass + dropdowns)", "styleMidnight": "Midnight", "styleSunset": "Sunset", "styleOcean": "Ocean", "styleEmerald": "Emerald", "styleRose": "Rose", "styleDarkPink": "Dark Pink", "styleFrost": "Frost", "styleSky": "Sky", "styleClassic": "Classic", "styleCustom": "Custom",
             "customColorsSection": "Fine-tune colors", "customColorsDesc": "Manually adjust individual colors (overrides current scheme)",
             "customColorEnabled": "Enable custom colors", "customColorBg": "Background", "customColorFg": "Text",
             "customColorPrimary": "Accent color", "customColorBorder": "Borders", "customColorBtnBorder": "Button border",
