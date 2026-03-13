@@ -2919,7 +2919,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         ghLink.appendChild(ghSvg);
         title.appendChild(ghLink);
 
-        // DonationAlerts link
+        // DonationAlerts link — orange circle with white "D"
         const daLink = document.createElement('a');
         daLink.href = 'https://www.donationalerts.com/r/saylont';
         daLink.target = '_blank';
@@ -2929,16 +2929,18 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         daLink.addEventListener('mouseenter', () => { daLink.style.opacity = '1'; });
         daLink.addEventListener('mouseleave', () => { daLink.style.opacity = '0.6'; });
         const daSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        daSvg.setAttribute('width', '20'); daSvg.setAttribute('height', '20'); daSvg.setAttribute('viewBox', '0 0 24 24'); daSvg.setAttribute('fill', 'none');
-        const daPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        daPath.setAttribute('fill-rule', 'evenodd'); daPath.setAttribute('clip-rule', 'evenodd');
-        daPath.setAttribute('d', 'M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm.354 4.646a.5.5 0 0 0-.708 0l-5 5a.5.5 0 0 0 0 .708l5 5a.5.5 0 0 0 .708 0l5-5a.5.5 0 0 0 0-.708l-5-5z');
-        daPath.setAttribute('fill', '#ff4d28');
-        daSvg.appendChild(daPath);
+        daSvg.setAttribute('width', '20'); daSvg.setAttribute('height', '20'); daSvg.setAttribute('viewBox', '0 0 20 20');
+        const daCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        daCircle.setAttribute('cx', '10'); daCircle.setAttribute('cy', '10'); daCircle.setAttribute('r', '10'); daCircle.setAttribute('fill', '#FF5500');
+        const daText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        daText.setAttribute('x', '10'); daText.setAttribute('y', '14.5'); daText.setAttribute('text-anchor', 'middle');
+        daText.setAttribute('font-size', '13'); daText.setAttribute('font-weight', 'bold'); daText.setAttribute('font-family', 'Arial,sans-serif'); daText.setAttribute('fill', '#fff');
+        daText.textContent = 'D';
+        daSvg.appendChild(daCircle); daSvg.appendChild(daText);
         daLink.appendChild(daSvg);
         title.appendChild(daLink);
 
-        // Boosty link
+        // Boosty link — orange circle with white "B"
         const bLink = document.createElement('a');
         bLink.href = 'https://boosty.to/saylontoff/donate';
         bLink.target = '_blank';
@@ -2948,14 +2950,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         bLink.addEventListener('mouseenter', () => { bLink.style.opacity = '1'; });
         bLink.addEventListener('mouseleave', () => { bLink.style.opacity = '0.6'; });
         const bSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        bSvg.setAttribute('width', '20'); bSvg.setAttribute('height', '20'); bSvg.setAttribute('viewBox', '0 0 24 24'); bSvg.setAttribute('fill', 'none');
-        const bPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        bPath1.setAttribute('d', 'M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z');
-        bPath1.setAttribute('fill', '#f15f2c');
-        const bPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        bPath2.setAttribute('d', 'M8 8h4.5C14.433 8 16 9.567 16 11.5S14.433 15 12.5 15H8V8zm2 2v3h2.5a1.5 1.5 0 0 0 0-3H10z');
-        bPath2.setAttribute('fill', '#fff');
-        bSvg.appendChild(bPath1); bSvg.appendChild(bPath2);
+        bSvg.setAttribute('width', '20'); bSvg.setAttribute('height', '20'); bSvg.setAttribute('viewBox', '0 0 20 20');
+        const bCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        bCircle.setAttribute('cx', '10'); bCircle.setAttribute('cy', '10'); bCircle.setAttribute('r', '10'); bCircle.setAttribute('fill', '#F15F2C');
+        const bText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        bText.setAttribute('x', '10'); bText.setAttribute('y', '14.5'); bText.setAttribute('text-anchor', 'middle');
+        bText.setAttribute('font-size', '13'); bText.setAttribute('font-weight', 'bold'); bText.setAttribute('font-family', 'Arial,sans-serif'); bText.setAttribute('fill', '#fff');
+        bText.textContent = 'B';
+        bSvg.appendChild(bCircle); bSvg.appendChild(bText);
         bLink.appendChild(bSvg);
         title.appendChild(bLink);
 
