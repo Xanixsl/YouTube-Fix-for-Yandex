@@ -3709,8 +3709,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             tab.addEventListener('mouseenter', () => {
                 tab.style.setProperty('background', 'none', 'important');
                 if (!tab.dataset.tabActive) {
-                    const fgColor = getComputedStyle(document.documentElement).getPropertyValue('--enhancer-fg').trim();
-                    tab.style.color = fgColor || '#ffffff';
+                    // Read actual computed background of panel (resolves var(--enhancer-bg))
+                    // and compute luminance to pick a guaranteed-visible text color
+                    const bgRaw = getComputedStyle(panel).backgroundColor;
+                    const m = bgRaw.match(/[\d.]+/g);
+                    const luma = (m && m.length >= 3)
+                        ? 0.299 * +m[0] + 0.587 * +m[1] + 0.114 * +m[2]
+                        : 0;
+                    tab.style.color = luma > 128 ? '#111111' : '#ffffff';
                 }
             });
             tab.addEventListener('mouseleave', () => {
