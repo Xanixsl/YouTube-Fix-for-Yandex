@@ -3684,21 +3684,34 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const editorPanels = [];
         editorTabNames.forEach((name, i) => {
             const tab = document.createElement('button');
-            tab.textContent = name;
-            tab.style.cssText = `background:none!important;border:none!important;border-bottom:2px solid transparent;padding:10px 16px;cursor:pointer;font-weight:600;font-size:0.95em;color:var(--enhancer-tab-inactive,#888);transition:color 0.15s;`;
-            if (i === 0) { tab.dataset.tabActive = '1'; tab.style.color = 'var(--enhancer-primary,#3ea6ff)'; tab.style.borderBottomColor = 'var(--enhancer-primary,#3ea6ff)'; }
+            tab.style.cssText = `background:none!important;border:none!important;border-bottom:2px solid transparent;padding:10px 16px;cursor:pointer;font-weight:600;font-size:0.95em;color:var(--enhancer-tab-inactive,#888);transition:color 0.15s;display:flex;align-items:center;gap:5px;`;
+
+            // Active dot indicator
+            const dot = document.createElement('span');
+            dot.textContent = '●';
+            dot.style.cssText = `font-size:0.45em;opacity:0;transition:opacity 0.15s;flex-shrink:0;`;
+            const labelSpan = document.createElement('span');
+            labelSpan.textContent = name;
+            tab.appendChild(dot);
+            tab.appendChild(labelSpan);
+
+            if (i === 0) { tab.dataset.tabActive = '1'; tab.style.color = 'var(--enhancer-primary,#3ea6ff)'; tab.style.borderBottomColor = 'var(--enhancer-primary,#3ea6ff)'; dot.style.opacity = '1'; }
             const content = document.createElement('div');
             content.style.cssText = `padding:18px 22px;display:${i === 0 ? 'block' : 'none'};`;
             tab.addEventListener('click', () => {
-                editorTabs.forEach(t => { t.dataset.tabActive = ''; t.style.color = 'var(--enhancer-tab-inactive,#888)'; t.style.borderBottomColor = 'transparent'; });
+                editorTabs.forEach(t => { t.dataset.tabActive = ''; t.style.color = 'var(--enhancer-tab-inactive,#888)'; t.style.borderBottomColor = 'transparent'; t.children[0].style.opacity = '0'; });
                 tab.dataset.tabActive = '1';
                 tab.style.color = 'var(--enhancer-primary,#3ea6ff)';
                 tab.style.borderBottomColor = 'var(--enhancer-primary,#3ea6ff)';
+                dot.style.opacity = '1';
                 editorPanels.forEach((p, j) => { p.style.display = j === i ? 'block' : 'none'; });
             });
             tab.addEventListener('mouseenter', () => {
                 tab.style.setProperty('background', 'none', 'important');
-                if (!tab.dataset.tabActive) tab.style.color = 'var(--enhancer-fg,#f1f1f1)';
+                if (!tab.dataset.tabActive) {
+                    const fgColor = getComputedStyle(document.documentElement).getPropertyValue('--enhancer-fg').trim();
+                    tab.style.color = fgColor || '#ffffff';
+                }
             });
             tab.addEventListener('mouseleave', () => {
                 if (!tab.dataset.tabActive) tab.style.color = 'var(--enhancer-tab-inactive,#888)';
