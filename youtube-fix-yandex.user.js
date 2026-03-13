@@ -1031,16 +1031,6 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 }
             `;
         }
-        // Высота фона чипбара (CSS fallback; скрытие обрабатывается через JS в applyChipbarBgFix)
-        if (!config.hideChipbarBg) {
-            mainCSS += `
-                ytd-app #frosted-glass,
-                #frosted-glass {
-                    height: ${config.chipbarBgHeight}px !important;
-                    min-height: unset !important;
-                }
-            `;
-        }
         // Принудительно показываем чипсы на вкладке Videos
         if (/\/@[^/]+\/videos/.test(location.pathname)) {
             mainCSS += `
@@ -1097,45 +1087,71 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         restoreChipsOnVideosTab();
     }
 
-    // --- Скрыть фон чипбара (#frosted-glass в ytd-app) через CSS + JS + MutationObserver ---
+    // --- Управление #frosted-glass: скрыть полностью или задать высоту вручную ---
 
     function applyChipbarBgFix() {
-        if (!config.hideChipbarBg || (isPlaylistModeActive && config.playlistModeFeature)) return;
+        if (isPlaylistModeActive && config.playlistModeFeature) return;
 
-        // CSS — таргетим именно #frosted-glass, который пользователь видит как полосу
-        addStyles(`
-            ytd-app #frosted-glass,
-            #frosted-glass {
-                display: none !important;
-                height: 0 !important;
-                min-height: 0 !important;
-                opacity: 0 !important;
-                visibility: hidden !important;
+        if (config.hideChipbarBg) {
+            // Полное скрытие
+            addStyles(`
+                ytd-app #frosted-glass, #frosted-glass {
+                    display: none !important;
+                    height: 0 !important;
+                    min-height: 0 !important;
+                    opacity: 0 !important;
+                    visibility: hidden !important;
+                }
+            `, 'yt-enhancer-chipbar-bg-hide');
+            const fixHide = () => {
+                document.querySelectorAll('#frosted-glass').forEach(el => {
+                    el.style.setProperty('display', 'none', 'important');
+                    el.style.setProperty('height', '0', 'important');
+                    el.style.setProperty('min-height', '0', 'important');
+                });
+            };
+            fixHide();
+            if (!_unsafeWin.__ytEnhancerChipbarBgInterval) {
+                _unsafeWin.__ytEnhancerChipbarBgInterval = setInterval(fixHide, 500);
             }
-        `, 'yt-enhancer-chipbar-bg-hide');
-
-        const fixBg = () => {
-            // Скрываем #frosted-glass
-            document.querySelectorAll('#frosted-glass').forEach(el => {
-                el.style.setProperty('display', 'none', 'important');
-                el.style.setProperty('height', '0', 'important');
-                el.style.setProperty('min-height', '0', 'important');
-            });
-        };
-
-        fixBg();
-
-        // MutationObserver на ytd-app — реагируем мгновенно если YouTube вернёт элемент
-        const appEl = document.querySelector('ytd-app');
-        if (appEl && !appEl._chipbarBgObserver) {
-            const obs = new MutationObserver(fixBg);
-            obs.observe(appEl, { attributes: true, childList: true, subtree: false });
-            appEl._chipbarBgObserver = obs;
+        } else {
+            // Ручная высота
+            const h = config.chipbarBgHeight;
+            addStyles(`
+                ytd-app #frosted-glass, #frosted-glass {
+                    height: ${h}px !important;
+                    min-height: unset !important;
+                    overflow: hidden !important;
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                }
+            `, 'yt-enhancer-chipbar-bg-hide');
+            const fixHeight = () => {
+                document.querySelectorAll('#frosted-glass').forEach(el => {
+                    el.style.setProperty('height', h + 'px', 'important');
+                    el.style.setProperty('min-height', 'unset', 'important');
+                    el.style.setProperty('overflow', 'hidden', 'important');
+                });
+            };
+            fixHeight();
+            if (!_unsafeWin.__ytEnhancerChipbarBgInterval) {
+                _unsafeWin.__ytEnhancerChipbarBgInterval = setInterval(fixHeight, 500);
+            }
         }
 
-        // Интервал как backup (каждые 500мс)
-        if (!_unsafeWin.__ytEnhancerChipbarBgInterval) {
-            _unsafeWin.__ytEnhancerChipbarBgInterval = setInterval(fixBg, 500);
+        // MutationObserver на ytd-app — мгновенная реакция на изменения YouTube
+        const appEl = document.querySelector('ytd-app');
+        if (appEl && !appEl._chipbarBgObserver) {
+            const obs = new MutationObserver(() => {
+                if (_unsafeWin.__ytEnhancerChipbarBgInterval) {
+                    clearInterval(_unsafeWin.__ytEnhancerChipbarBgInterval);
+                    _unsafeWin.__ytEnhancerChipbarBgInterval = null;
+                }
+                applyChipbarBgFix();
+            });
+            obs.observe(appEl, { attributes: true, attributeFilter: ['class'], childList: true, subtree: false });
+            appEl._chipbarBgObserver = obs;
         }
     }
 
@@ -2245,7 +2261,16 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             div.appendChild(input);
             return div;
         };
-        const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, config.chipbarBgHeight, -200, 200);
+        // Определяем реальную максимальную высоту #frosted-glass
+        const _fgEl = document.querySelector('#frosted-glass');
+        let _chipbarNaturalMax = 80;
+        if (_fgEl) {
+            const _savedH = _fgEl.style.height;
+            _fgEl.style.height = '';
+            _chipbarNaturalMax = _fgEl.scrollHeight || _fgEl.offsetHeight || 80;
+            _fgEl.style.height = _savedH;
+        }
+        const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, Math.min(config.chipbarBgHeight, _chipbarNaturalMax), 0, _chipbarNaturalMax);
         const setChipbarBgHeightEnabled = (enabled) => {
             const inp = chipbarBgHeightRow.querySelector('input');
             const lbl = chipbarBgHeightRow.querySelector('label');
