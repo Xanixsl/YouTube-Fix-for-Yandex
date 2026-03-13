@@ -2245,8 +2245,24 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             div.appendChild(input);
             return div;
         };
-        mainSection.appendChild(createNumInput('chipbarBgHeight', L.chipbarBgHeight, config.chipbarBgHeight, -200, 200));
-        mainSection.appendChild(createCheckbox('hideChipbarBg', L.hideChipbarBg, config.hideChipbarBg, L.hideChipbarBgDesc));
+        const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, config.chipbarBgHeight, -200, 200);
+        const setChipbarBgHeightEnabled = (enabled) => {
+            const inp = chipbarBgHeightRow.querySelector('input');
+            const lbl = chipbarBgHeightRow.querySelector('label');
+            inp.disabled = !enabled;
+            chipbarBgHeightRow.style.opacity = enabled ? '1' : '0.4';
+            chipbarBgHeightRow.style.pointerEvents = enabled ? '' : 'none';
+            lbl.style.color = enabled ? '' : 'var(--enhancer-tab-inactive, #888)';
+        };
+        mainSection.appendChild(chipbarBgHeightRow);
+        const hideChipbarBgCb = createCheckbox('hideChipbarBg', L.hideChipbarBg, config.hideChipbarBg, L.hideChipbarBgDesc);
+        // Связь: при изменении чекбокса управляем доступностью поля высоты
+        const hideChipbarBgInput = hideChipbarBgCb.querySelector('input[type=checkbox]');
+        setChipbarBgHeightEnabled(!config.hideChipbarBg);
+        hideChipbarBgInput.addEventListener('change', () => {
+            setChipbarBgHeightEnabled(!hideChipbarBgInput.checked);
+        });
+        mainSection.appendChild(hideChipbarBgCb);
         mainSection.appendChild(createCheckbox('compactMode', L.compactMode, config.compactMode, L.compactModeDesc));
         mainSection.appendChild(createCheckbox('hideShorts', L.hideShorts, config.hideShorts, L.hideShortsDesc));
         mainSection.appendChild(createCheckbox('hideTopicShelves', L.hideTopicShelves, config.hideTopicShelves, L.hideTopicShelvesDesc, true));
