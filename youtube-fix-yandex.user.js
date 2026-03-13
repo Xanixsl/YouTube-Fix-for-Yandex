@@ -1034,8 +1034,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         // Высота фона чипбара (CSS fallback; скрытие обрабатывается через JS в applyChipbarBgFix)
         if (!config.hideChipbarBg) {
             mainCSS += `
-                ytd-masthead[frosted-glass-mode="with-chipbar"] #background,
-                ytd-masthead #background {
+                ytd-app #frosted-glass,
+                #frosted-glass {
                     height: ${config.chipbarBgHeight}px !important;
                     min-height: unset !important;
                 }
@@ -1097,16 +1097,15 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         restoreChipsOnVideosTab();
     }
 
-    // --- Скрыть фон чипбара: убираем атрибут frosted-glass-mode + CSS + MutationObserver ---
+    // --- Скрыть фон чипбара (#frosted-glass в ytd-app) через CSS + JS + MutationObserver ---
 
     function applyChipbarBgFix() {
         if (!config.hideChipbarBg || (isPlaylistModeActive && config.playlistModeFeature)) return;
 
-        // CSS — работает если YouTube не перебивает inline-стилями
+        // CSS — таргетим именно #frosted-glass, который пользователь видит как полосу
         addStyles(`
-            ytd-masthead #background,
-            ytd-masthead[frosted-glass-mode] #background,
-            ytd-masthead[frosted-glass-mode="with-chipbar"] #background {
+            ytd-app #frosted-glass,
+            #frosted-glass {
                 display: none !important;
                 height: 0 !important;
                 min-height: 0 !important;
@@ -1116,35 +1115,22 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         `, 'yt-enhancer-chipbar-bg-hide');
 
         const fixBg = () => {
-            const masthead = document.querySelector('ytd-masthead');
-            if (!masthead) return;
-            // Убираем атрибут frosted-glass-mode — именно он заставляет #background растягиваться
-            if (masthead.hasAttribute('frosted-glass-mode')) {
-                masthead.removeAttribute('frosted-glass-mode');
-            }
-            // Прямое скрытие #background во всех возможных местах
-            [
-                masthead.querySelector('#background'),
-                document.querySelector('#masthead-container #background'),
-                masthead.shadowRoot && masthead.shadowRoot.querySelector('#background'),
-            ].forEach(bg => {
-                if (bg) {
-                    bg.style.setProperty('display', 'none', 'important');
-                    bg.style.setProperty('height', '0', 'important');
-                    bg.style.setProperty('min-height', '0', 'important');
-                    bg.style.setProperty('opacity', '0', 'important');
-                }
+            // Скрываем #frosted-glass
+            document.querySelectorAll('#frosted-glass').forEach(el => {
+                el.style.setProperty('display', 'none', 'important');
+                el.style.setProperty('height', '0', 'important');
+                el.style.setProperty('min-height', '0', 'important');
             });
         };
 
         fixBg();
 
-        // MutationObserver: реагируем сразу же как YouTube возвращает атрибут или меняет стиль
-        const mastheadEl = document.querySelector('ytd-masthead');
-        if (mastheadEl && !mastheadEl._chipbarBgObserver) {
+        // MutationObserver на ytd-app — реагируем мгновенно если YouTube вернёт элемент
+        const appEl = document.querySelector('ytd-app');
+        if (appEl && !appEl._chipbarBgObserver) {
             const obs = new MutationObserver(fixBg);
-            obs.observe(mastheadEl, { attributes: true, childList: true, subtree: true });
-            mastheadEl._chipbarBgObserver = obs;
+            obs.observe(appEl, { attributes: true, childList: true, subtree: false });
+            appEl._chipbarBgObserver = obs;
         }
 
         // Интервал как backup (каждые 500мс)
