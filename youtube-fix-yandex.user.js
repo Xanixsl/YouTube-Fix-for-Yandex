@@ -3705,7 +3705,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 tab.dataset.tabActive = '1';
                 tab.style.setProperty('color', ACTIVE_COLOR, 'important');
                 tab.style.setProperty('border-bottom-color', ACTIVE_COLOR, 'important');
-                tab.style.setProperty('background', ACTIVE_BG, 'important');
+                tab.style.setProperty('background', 'none', 'important');
                 tab.style.setProperty('text-shadow', ACTIVE_SHADOW, 'important');
                 tab.style.fontWeight = '800';
                 tab.style.fontSize = '1.1em';
