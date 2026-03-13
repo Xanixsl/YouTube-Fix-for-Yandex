@@ -1097,38 +1097,59 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         restoreChipsOnVideosTab();
     }
 
-    // --- Скрыть фон чипбара через прямое DOM-манипулирование (обходит Shadow DOM и inline-стили YouTube) ---
+    // --- Скрыть фон чипбара: убираем атрибут frosted-glass-mode + CSS + MutationObserver ---
 
     function applyChipbarBgFix() {
         if (!config.hideChipbarBg || (isPlaylistModeActive && config.playlistModeFeature)) return;
+
+        // CSS — работает если YouTube не перебивает inline-стилями
+        addStyles(`
+            ytd-masthead #background,
+            ytd-masthead[frosted-glass-mode] #background,
+            ytd-masthead[frosted-glass-mode="with-chipbar"] #background {
+                display: none !important;
+                height: 0 !important;
+                min-height: 0 !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+            }
+        `, 'yt-enhancer-chipbar-bg-hide');
+
         const fixBg = () => {
-            // Попытка 1: обычный DOM
-            let bg = document.querySelector('ytd-masthead #background');
-            // Попытка 2: Shadow DOM
-            if (!bg) {
-                const masthead = document.querySelector('ytd-masthead');
-                if (masthead && masthead.shadowRoot) {
-                    bg = masthead.shadowRoot.querySelector('#background');
+            const masthead = document.querySelector('ytd-masthead');
+            if (!masthead) return;
+            // Убираем атрибут frosted-glass-mode — именно он заставляет #background растягиваться
+            if (masthead.hasAttribute('frosted-glass-mode')) {
+                masthead.removeAttribute('frosted-glass-mode');
+            }
+            // Прямое скрытие #background во всех возможных местах
+            [
+                masthead.querySelector('#background'),
+                document.querySelector('#masthead-container #background'),
+                masthead.shadowRoot && masthead.shadowRoot.querySelector('#background'),
+            ].forEach(bg => {
+                if (bg) {
+                    bg.style.setProperty('display', 'none', 'important');
+                    bg.style.setProperty('height', '0', 'important');
+                    bg.style.setProperty('min-height', '0', 'important');
+                    bg.style.setProperty('opacity', '0', 'important');
                 }
-            }
-            if (bg) {
-                bg.style.setProperty('display', 'none', 'important');
-                bg.style.setProperty('height', '0', 'important');
-                bg.style.setProperty('min-height', '0', 'important');
-            }
-            // Также скрываем через атрибут frosted-glass-mode
-            const mastheadEl = document.querySelector('ytd-masthead');
-            if (mastheadEl) {
-                const bgAlt = mastheadEl.querySelector('#background');
-                if (bgAlt && bgAlt !== bg) {
-                    bgAlt.style.setProperty('display', 'none', 'important');
-                    bgAlt.style.setProperty('height', '0', 'important');
-                }
-            }
+            });
         };
+
         fixBg();
+
+        // MutationObserver: реагируем сразу же как YouTube возвращает атрибут или меняет стиль
+        const mastheadEl = document.querySelector('ytd-masthead');
+        if (mastheadEl && !mastheadEl._chipbarBgObserver) {
+            const obs = new MutationObserver(fixBg);
+            obs.observe(mastheadEl, { attributes: true, childList: true, subtree: true });
+            mastheadEl._chipbarBgObserver = obs;
+        }
+
+        // Интервал как backup (каждые 500мс)
         if (!_unsafeWin.__ytEnhancerChipbarBgInterval) {
-            _unsafeWin.__ytEnhancerChipbarBgInterval = setInterval(fixBg, 2000);
+            _unsafeWin.__ytEnhancerChipbarBgInterval = setInterval(fixBg, 500);
         }
     }
 
