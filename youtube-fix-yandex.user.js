@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name         YouTube Fix for Yandex
-// @namespace https://github.com/Xanixsl/test-123-123
+// @namespace https://github.com/Xanixsl/YouTube-Fix-for-Yandex
 // @version      4.4.5
 // @description  Оптимизация и исправления YouTube для Яндекс Браузера: сетка, производительность, интерфейс, фикс пустых блоков, кодеков, авто-паузы, скролла, нативный YouTube UI
 // @author       Xanix
@@ -8,22 +8,22 @@
 // @match        https://m.youtube.com/*
 // @icon         https://i.postimg.cc/CxVhyKXz/You-Tube-Fix.png
 // @icon64       https://i.postimg.cc/CxVhyKXz/You-Tube-Fix.png
-// @resource     langEN https://raw.githubusercontent.com/Xanixsl/test-123-123/main/lang/EN_en.json
-// @resource     langRU https://raw.githubusercontent.com/Xanixsl/test-123-123/main/lang/RU_ru.json
-// @resource     themeCSS https://raw.githubusercontent.com/Xanixsl/test-123-123/main/css/style.css
+// @resource     langEN https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/lang/EN_en.json
+// @resource     langRU https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/lang/RU_ru.json
+// @resource     themeCSS https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/css/style.css
 // @grant        GM_getResourceText
 // @grant        GM_xmlhttpRequest
 // @connect      raw.githubusercontent.com
 // @connect      www.youtube.com
 // @connect      googlevideo.com
-// @homepage     https://github.com/Xanixsl/test-123-123
-// @supportURL   https://github.com/Xanixsl/test-123-123/issues
-// @updateURL    https://raw.githubusercontent.com/Xanixsl/test-123-123/main/youtube-fix-yandex.user.js
-// @downloadURL  https://raw.githubusercontent.com/Xanixsl/test-123-123/main/youtube-fix-yandex.user.js
+// @homepage     https://github.com/Xanixsl/YouTube-Fix-for-Yandex
+// @supportURL   https://github.com/Xanixsl/YouTube-Fix-for-Yandex/issues
+// @updateURL    https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js
+// @downloadURL  https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js
 // @run-at       document-start
-// @license      MIT
-// @licenseURL   https://opensource.org/licenses/MIT
-// @contributionURL https://github.com/Xanixsl/test-123-123/discussions
+// @license      All Rights Reserved
+// @licenseURL   https://github.com/Xanixsl/YouTube-Fix-for-Yandex/blob/main/LICENSE
+// @contributionURL https://github.com/Xanixsl/YouTube-Fix-for-Yandex/discussions
 // ==/UserScript==
 
 (function() {
@@ -93,7 +93,11 @@
             thumbSection: "Video thumbnail size", thumbDesc: "Change video preview size and aspect",
             thumbDefault: "Default (16:9)", thumbSmall: "Small (16:9)", thumbMedium: "Medium (4:3)", thumbLarge: "Large (1:1)",
             themeSection: "Settings window theme", themeDesc: "Appearance of this settings window",
-            themeAuto: "Auto (system)", themeLight: "Light", themeDark: "Dark", fontSize: "Font size:",
+            themeAuto: "Auto (system)", themeLight: "Light", themeDark: "Dark", fontSize: "Font size:", windowWidth: "Window width:",
+            settingsPosLabel: "Window position:", settingsPosCenter: "Center", settingsPosTopRight: "Top right", settingsPosBotRight: "Bottom right", settingsPosBotLeft: "Bottom left", settingsPosTopLeft: "Top left",
+            settingsRadius: "Corner radius:", settingsAnimation: "Smooth animation",
+            editorSection: "Style editor window", editorDesc: "Appearance of the style editor panel",
+            editorFontSize: "Editor font size:", editorWidth: "Editor width:",
             styleSection: "Color scheme", styleDesc: "Color palette and style of the settings window",
             styleYoutube: "YouTube", styleImproved: "Improved (glass + dropdowns)", styleMidnight: "Midnight", styleSunset: "Sunset", styleOcean: "Ocean", styleEmerald: "Emerald", styleRose: "Rose", styleDarkPink: "Dark Pink", styleFrost: "Frost", styleSky: "Sky", styleClassic: "Classic", styleAurora: "Aurora", styleCustom: "Custom",
             customColorsSection: "Fine-tune colors", customColorsDesc: "Manually adjust individual colors (overrides current scheme)",
@@ -173,7 +177,11 @@
             thumbSection: "Размер миниатюр видео", thumbDesc: "Изменение размера и пропорций превью видео",
             thumbDefault: "По умолчанию (16:9)", thumbSmall: "Маленькие (16:9)", thumbMedium: "Средние (4:3)", thumbLarge: "Большие (1:1)",
             themeSection: "Тема окна настроек", themeDesc: "Внешний вид этого окна с настройками",
-            themeAuto: "Авто (система)", themeLight: "Светлая", themeDark: "Тёмная", fontSize: "Размер шрифта:",
+            themeAuto: "Авто (система)", themeLight: "Светлая", themeDark: "Тёмная", fontSize: "Размер шрифта:", windowWidth: "Ширина окна:",
+            settingsPosLabel: "Позиция окна:", settingsPosCenter: "По центру", settingsPosTopRight: "Сверху справа", settingsPosBotRight: "Снизу справа", settingsPosBotLeft: "Снизу слева", settingsPosTopLeft: "Сверху слева",
+            settingsRadius: "Скругление углов:", settingsAnimation: "Плавная анимация",
+            editorSection: "Окно редактора стилей", editorDesc: "Внешний вид панели редактора стилей",
+            editorFontSize: "Шрифт редактора:", editorWidth: "Ширина редактора:",
             styleSection: "Цветовая схема", styleDesc: "Палитра цветов и стиль окна настроек",
             styleYoutube: "YouTube", styleImproved: "Улучшенная (glass + выпадающие)", styleMidnight: "Полночь", styleSunset: "Закат", styleOcean: "Океан", styleEmerald: "Изумруд", styleRose: "Роза", styleDarkPink: "Тёмно-розовая", styleFrost: "Мороз", styleSky: "Небо", styleClassic: "Классика", styleAurora: "Аврора", styleCustom: "Своя",
             customColorsSection: "Тонкая настройка цветов", customColorsDesc: "Ручная настройка отдельных цветов (переопределяет текущую схему)",
@@ -253,65 +261,73 @@
     color: var(--yt-spec-text-primary, #f1f1f1) !important;
     margin-bottom: 20px;
 }
-#yt-enhancer-settings select option {
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
     background: #272727 !important;
     color: #f1f1f1 !important;
 }
 /* @light */
 :root {
-    --enhancer-bg: var(--yt-spec-base-background, #ffffff) !important;
-    --enhancer-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-border: var(--yt-spec-10-percent-layer, #e5e5e5) !important;
+    --enhancer-bg: #ffffff !important;
+    --enhancer-fg: #0f0f0f !important;
+    --enhancer-border: rgba(204, 0, 0, 0.25) !important;
     --enhancer-primary: #cc0000 !important;
-    --enhancer-secondary: #cc0000 !important;
-    --enhancer-accent: #cc0000 !important;
-    --enhancer-btn-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
-    --enhancer-btn-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-btn-hover-bg: var(--yt-spec-10-percent-layer, #f2f2f2) !important;
-    --enhancer-btn-hover-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-badge-bg: rgba(204, 0, 0, 0.08) !important;
+    --enhancer-secondary: #aa0000 !important;
+    --enhancer-accent: #ff4444 !important;
+    --enhancer-btn-border: #cc0000 !important;
+    --enhancer-btn-fg: #cc0000 !important;
+    --enhancer-btn-hover-bg: #cc0000 !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: #fde8e8 !important;
     --enhancer-badge-fg: #cc0000 !important;
-    --enhancer-badge-exp-bg: rgba(255, 152, 0, 0.1) !important;
-    --enhancer-badge-exp-fg: #e65100 !important;
-    --enhancer-input-bg: var(--yt-spec-badge-chip-background, #f2f2f2) !important;
-    --enhancer-input-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-input-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
-    --enhancer-tab-active: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-tab-inactive: var(--yt-spec-text-secondary, #606060) !important;
-    --enhancer-divider: var(--yt-spec-10-percent-layer, #e5e5e5) !important;
-    --enhancer-select-bg: var(--yt-spec-badge-chip-background, #f2f2f2) !important;
-    --enhancer-select-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-select-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
+    --enhancer-badge-exp-bg: #fff0e6 !important;
+    --enhancer-badge-exp-fg: #bf360c !important;
+    --enhancer-input-bg: #fde8e8 !important;
+    --enhancer-input-fg: #0f0f0f !important;
+    --enhancer-input-border: rgba(204, 0, 0, 0.35) !important;
+    --enhancer-tab-active: #cc0000 !important;
+    --enhancer-tab-inactive: #6e6e6e !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(204, 0, 0, 0.22), transparent) !important;
+    --enhancer-select-bg: #fde8e8 !important;
+    --enhancer-select-fg: #0f0f0f !important;
+    --enhancer-select-border: rgba(204, 0, 0, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 0 0 1.5px rgba(204, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06), 0 18px 40px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: none;
+    border: 1.5px solid rgba(204, 0, 0, 0.25) !important;
 }
 #yt-enhancer-settings h2 {
-    font-weight: 600; font-size: 1.4em;
-    color: var(--yt-spec-text-primary, #0f0f0f) !important;
-    margin-bottom: 20px;
+    font-weight: 700; font-size: 1.5em;
+    color: #cc0000 !important;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(204, 0, 0, 0.18);
 }
-#yt-enhancer-settings select option {
-    background: #f2f2f2 !important;
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #fde8e8 !important;
     color: #0f0f0f !important;
 }
 /* @common */
 #yt-enhancer-settings h3 {
     font-weight: 600; color: var(--enhancer-fg) !important;
-    margin: 20px 0 12px; padding-bottom: 8px;
+    margin: 22px 0 14px; padding-bottom: 8px;
     border-bottom: 1px solid var(--enhancer-border);
 }
-.yt-enhancer-section { position: relative; padding-bottom: 12px; margin-bottom: 20px; }
+.yt-enhancer-section { position: relative; padding-bottom: 14px; margin-bottom: 22px; }
 .yt-enhancer-section::after {
     content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
     background: var(--enhancer-divider);
 }
 #yt-enhancer-settings button {
     transition: var(--enhancer-transition) !important;
+    position: relative; overflow: hidden;
 }
 #yt-enhancer-settings button:hover {
     background: var(--enhancer-btn-hover-bg) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(204, 0, 0, 0.28) !important;
 }
 #yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
 #yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
@@ -410,7 +426,7 @@ iron-dropdown .dropdown-content {
 :root {
     --enhancer-bg: rgba(255, 255, 255, 0.92) !important;
     --enhancer-fg: #0f0f0f !important;
-    --enhancer-border: rgba(6, 95, 212, 0.1) !important;
+    --enhancer-border: rgba(6, 95, 212, 0.2) !important;
     --enhancer-primary: #065fd4 !important;
     --enhancer-secondary: #1a73e8 !important;
     --enhancer-accent: #4285f4 !important;
@@ -422,21 +438,21 @@ iron-dropdown .dropdown-content {
     --enhancer-badge-fg: var(--enhancer-primary) !important;
     --enhancer-badge-exp-bg: rgba(255, 152, 0, 0.1) !important;
     --enhancer-badge-exp-fg: #e65100 !important;
-    --enhancer-input-bg: rgba(0, 0, 0, 0.03) !important;
+    --enhancer-input-bg: rgba(6, 95, 212, 0.08) !important;
     --enhancer-input-fg: #0f0f0f !important;
-    --enhancer-input-border: rgba(0, 0, 0, 0.08) !important;
+    --enhancer-input-border: rgba(6, 95, 212, 0.25) !important;
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: rgba(0, 0, 0, 0.4) !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(6, 95, 212, 0.2), transparent) !important;
-    --enhancer-select-bg: rgba(0, 0, 0, 0.04) !important;
+    --enhancer-select-bg: rgba(6, 95, 212, 0.06) !important;
     --enhancer-select-fg: #0f0f0f !important;
-    --enhancer-select-border: rgba(0, 0, 0, 0.1) !important;
+    --enhancer-select-border: rgba(6, 95, 212, 0.22) !important;
 }
 #yt-enhancer-settings {
     background: rgba(255, 255, 255, 0.92) !important;
     backdrop-filter: blur(20px) saturate(1.5) !important;
-    border: 1px solid rgba(6, 95, 212, 0.1) !important;
-    box-shadow: 0 0 0 1px rgba(6, 95, 212, 0.05), 0 20px 60px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+    border: 1px solid rgba(6, 95, 212, 0.2) !important;
+    box-shadow: 0 0 0 1px rgba(6, 95, 212, 0.1), 0 20px 50px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255,255,255,0.8) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -483,7 +499,7 @@ iron-dropdown .dropdown-content {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: #f5f5f5 !important;
+    background: #ebf2fc !important;
     color: #0f0f0f !important;
 }
 /* @common */
@@ -583,12 +599,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #9895b5 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.15), transparent) !important;
-    --enhancer-select-bg: #f8f7ff !important;
+    --enhancer-select-bg: #ede9fc !important;
     --enhancer-select-fg: #1e1b3a !important;
     --enhancer-select-border: #d6d3f0 !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.18), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(8px);
 }
 #yt-enhancer-settings h2 {
@@ -683,18 +699,18 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: var(--enhancer-primary) !important;
     --enhancer-badge-exp-bg: rgba(220, 38, 38, 0.1) !important;
     --enhancer-badge-exp-fg: #dc2626 !important;
-    --enhancer-input-bg: #fff8e1 !important;
+    --enhancer-input-bg: #fde8c0 !important;
     --enhancer-input-fg: #451a03 !important;
-    --enhancer-input-border: #fde68a !important;
+    --enhancer-input-border: rgba(217, 119, 6, 0.35) !important;
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #b08050 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(217, 119, 6, 0.15), transparent) !important;
-    --enhancer-select-bg: #fffbeb !important;
+    --enhancer-select-bg: #fde8c0 !important;
     --enhancer-select-fg: #451a03 !important;
-    --enhancer-select-border: #fde68a !important;
+    --enhancer-select-border: rgba(217, 119, 6, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.18), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(8px);
 }
 #yt-enhancer-settings h2 {
@@ -702,7 +718,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     color: var(--enhancer-primary) !important; margin-bottom: 24px;
 }
 #yt-enhancer-settings select option {
-    background: #fff8e1 !important;
+    background: #fde8c0 !important;
     color: #451a03 !important;
 }
 /* @common */
@@ -797,14 +813,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #6098b8 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(8, 145, 178, 0.2), transparent) !important;
-    --enhancer-select-bg: #f0f9ff !important;
+    --enhancer-select-bg: #bae6fd !important;
     --enhancer-select-fg: #0c4a6e !important;
     --enhancer-select-border: #7dd3fc !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.1), 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.2), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(8, 145, 178, 0.12) !important;
+    border: 1px solid rgba(8, 145, 178, 0.22) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -906,12 +922,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #4a9060 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.18), transparent) !important;
-    --enhancer-select-bg: #f0fdf4 !important;
+    --enhancer-select-bg: #bbf7d0 !important;
     --enhancer-select-fg: #14532d !important;
     --enhancer-select-border: #86efac !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.18), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(8px) !important;
 }
 #yt-enhancer-settings h2 {
@@ -1015,14 +1031,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #a06070 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(225, 29, 72, 0.18), transparent) !important;
-    --enhancer-select-bg: #fff1f2 !important;
+    --enhancer-select-bg: #fecdd3 !important;
     --enhancer-select-fg: #4c0519 !important;
     --enhancer-select-border: #fda4af !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.1), 0 4px 24px rgba(0, 0, 0, 0.07) !important;
+    box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.18), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(225, 29, 72, 0.1) !important;
+    border: 1px solid rgba(225, 29, 72, 0.2) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1130,14 +1146,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: #d6006a !important;
     --enhancer-tab-inactive: #d080a8 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(214, 0, 106, 0.2), transparent) !important;
-    --enhancer-select-bg: #fff0f8 !important;
+    --enhancer-select-bg: #ffd6ec !important;
     --enhancer-select-fg: #6b0038 !important;
     --enhancer-select-border: rgba(255, 105, 180, 0.3) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(214, 0, 106, 0.1), 0 4px 24px rgba(214, 0, 106, 0.08) !important;
+    box-shadow: 0 0 0 1px rgba(214, 0, 106, 0.18), 0 6px 28px rgba(214, 0, 106, 0.14) !important;
     backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(214, 0, 106, 0.12) !important;
+    border: 1px solid rgba(214, 0, 106, 0.22) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1222,7 +1238,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 :root {
     --enhancer-bg: rgba(248, 250, 252, 0.96) !important;
     --enhancer-fg: #1e293b !important;
-    --enhancer-border: rgba(203, 213, 225, 0.6) !important;
+    --enhancer-border: rgba(100, 116, 139, 0.3) !important;
     --enhancer-primary: #2563eb !important;
     --enhancer-secondary: #3b82f6 !important;
     --enhancer-accent: #60a5fa !important;
@@ -1234,20 +1250,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: #2563eb !important;
     --enhancer-badge-exp-bg: rgba(249, 115, 22, 0.12) !important;
     --enhancer-badge-exp-fg: #ea580c !important;
-    --enhancer-input-bg: rgba(255, 255, 255, 0.9) !important;
+    --enhancer-input-bg: #dce6f0 !important;
     --enhancer-input-fg: #1e293b !important;
-    --enhancer-input-border: rgba(203, 213, 225, 0.8) !important;
+    --enhancer-input-border: rgba(100, 116, 139, 0.4) !important;
     --enhancer-tab-active: #2563eb !important;
     --enhancer-tab-inactive: #94a3b8 !important;
-    --enhancer-divider: linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.6), transparent) !important;
-    --enhancer-select-bg: rgba(255, 255, 255, 0.9) !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.25), transparent) !important;
+    --enhancer-select-bg: #dce6f0 !important;
     --enhancer-select-fg: #1e293b !important;
-    --enhancer-select-border: rgba(203, 213, 225, 0.8) !important;
+    --enhancer-select-border: rgba(100, 116, 139, 0.4) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(226, 232, 240, 0.8), 0 8px 32px rgba(148, 163, 184, 0.12) !important;
+    box-shadow: 0 0 0 1px rgba(100, 116, 139, 0.25), 0 8px 32px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(203, 213, 225, 0.5) !important;
+    border: 1px solid rgba(100, 116, 139, 0.22) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1255,7 +1271,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: rgba(255, 255, 255, 0.95) !important;
+    background: #dce6f0 !important;
     color: #1e293b !important;
 }
 /* @common */
@@ -1332,7 +1348,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 :root {
     --enhancer-bg: rgba(240, 249, 255, 0.98) !important;
     --enhancer-fg: #0369a1 !important;
-    --enhancer-border: rgba(186, 230, 253, 0.6) !important;
+    --enhancer-border: rgba(14, 165, 233, 0.25) !important;
     --enhancer-primary: #0284c7 !important;
     --enhancer-secondary: #0ea5e9 !important;
     --enhancer-accent: #38bdf8 !important;
@@ -1344,20 +1360,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: #0284c7 !important;
     --enhancer-badge-exp-bg: rgba(251, 146, 60, 0.15) !important;
     --enhancer-badge-exp-fg: #c2410c !important;
-    --enhancer-input-bg: rgba(255, 255, 255, 0.9) !important;
+    --enhancer-input-bg: #d0e8f8 !important;
     --enhancer-input-fg: #0369a1 !important;
-    --enhancer-input-border: rgba(186, 230, 253, 0.8) !important;
-    --enhancer-tab-active: #38bdf8 !important;
-    --enhancer-tab-inactive: #7dd3fc !important;
+    --enhancer-input-border: rgba(14, 165, 233, 0.35) !important;
+    --enhancer-tab-active: #0284c7 !important;
+    --enhancer-tab-inactive: #38a8cc !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(2, 132, 199, 0.2), transparent) !important;
-    --enhancer-select-bg: rgba(255, 255, 255, 0.9) !important;
+    --enhancer-select-bg: #d0e8f8 !important;
     --enhancer-select-fg: #0369a1 !important;
-    --enhancer-select-border: rgba(186, 230, 253, 0.8) !important;
+    --enhancer-select-border: rgba(14, 165, 233, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(186, 230, 253, 0.5), 0 8px 32px rgba(2, 132, 199, 0.1) !important;
+    box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.18), 0 8px 32px rgba(2, 132, 199, 0.14) !important;
     backdrop-filter: blur(6px) !important;
-    border: 1px solid rgba(186, 230, 253, 0.4) !important;
+    border: 1px solid rgba(14, 165, 233, 0.2) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1367,7 +1383,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: #e0f2fe !important;
+    background: #d0e8f8 !important;
     color: #0369a1 !important;
 }
 /* @common */
@@ -1442,7 +1458,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 :root {
     --enhancer-bg: rgba(255, 255, 255, 0.98) !important;
     --enhancer-fg: #1f2937 !important;
-    --enhancer-border: rgba(209, 213, 219, 0.6) !important;
+    --enhancer-border: rgba(107, 114, 128, 0.25) !important;
     --enhancer-primary: #4b5563 !important;
     --enhancer-secondary: #6b7280 !important;
     --enhancer-accent: #9ca3af !important;
@@ -1454,20 +1470,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: #4b5563 !important;
     --enhancer-badge-exp-bg: rgba(245, 158, 11, 0.1) !important;
     --enhancer-badge-exp-fg: #92400e !important;
-    --enhancer-input-bg: rgba(249, 250, 251, 0.9) !important;
+    --enhancer-input-bg: #e9eaed !important;
     --enhancer-input-fg: #1f2937 !important;
-    --enhancer-input-border: rgba(209, 213, 219, 0.8) !important;
+    --enhancer-input-border: rgba(107, 114, 128, 0.35) !important;
     --enhancer-tab-active: #4b5563 !important;
     --enhancer-tab-inactive: #9ca3af !important;
-    --enhancer-divider: linear-gradient(90deg, transparent, rgba(156, 163, 175, 0.4), transparent) !important;
-    --enhancer-select-bg: rgba(249, 250, 251, 0.9) !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(107, 114, 128, 0.3), transparent) !important;
+    --enhancer-select-bg: #e9eaed !important;
     --enhancer-select-fg: #1f2937 !important;
-    --enhancer-select-border: rgba(209, 213, 219, 0.8) !important;
+    --enhancer-select-border: rgba(107, 114, 128, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(229, 231, 235, 0.9), 0 8px 32px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 0 0 1px rgba(107, 114, 128, 0.22), 0 8px 32px rgba(0, 0, 0, 0.13) !important;
     backdrop-filter: blur(4px) !important;
-    border: 1px solid rgba(209, 213, 219, 0.5) !important;
+    border: 1px solid rgba(107, 114, 128, 0.2) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1475,7 +1491,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: rgba(249, 250, 251, 0.95) !important;
+    background: #e9eaed !important;
     color: #1f2937 !important;
 }
 /* @common */
@@ -1552,7 +1568,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 :root {
     --enhancer-bg: rgba(240, 255, 254, 0.98) !important;
     --enhancer-fg: #043237 !important;
-    --enhancer-border: rgba(6, 148, 162, 0.18) !important;
+    --enhancer-border: rgba(6, 148, 162, 0.3) !important;
     --enhancer-primary: #0694a2 !important;
     --enhancer-secondary: #7c3aed !important;
     --enhancer-accent: #06b6d4 !important;
@@ -1564,20 +1580,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: #0694a2 !important;
     --enhancer-badge-exp-bg: rgba(124, 58, 237, 0.1) !important;
     --enhancer-badge-exp-fg: #7c3aed !important;
-    --enhancer-input-bg: rgba(224, 255, 252, 0.9) !important;
+    --enhancer-input-bg: #b8f0eb !important;
     --enhancer-input-fg: #043237 !important;
-    --enhancer-input-border: rgba(6, 148, 162, 0.2) !important;
+    --enhancer-input-border: rgba(6, 148, 162, 0.4) !important;
     --enhancer-tab-active: #0694a2 !important;
     --enhancer-tab-inactive: #38bdf8 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(6, 148, 162, 0.2), transparent) !important;
-    --enhancer-select-bg: rgba(240, 255, 254, 0.95) !important;
+    --enhancer-select-bg: #b8f0eb !important;
     --enhancer-select-fg: #043237 !important;
-    --enhancer-select-border: rgba(6, 148, 162, 0.22) !important;
+    --enhancer-select-border: rgba(6, 148, 162, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(6, 148, 162, 0.2), 0 8px 32px rgba(6, 148, 162, 0.1) !important;
+    box-shadow: 0 0 0 1px rgba(6, 148, 162, 0.25), 0 8px 32px rgba(6, 148, 162, 0.15) !important;
     backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(6, 148, 162, 0.18) !important;
+    border: 1px solid rgba(6, 148, 162, 0.25) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1587,7 +1603,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: rgba(224, 255, 252, 0.95) !important;
+    background: #b8f0eb !important;
     color: #043237 !important;
 }
 /* @common */
@@ -1780,9 +1796,15 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         yandexSiteShift: 0,
         darkModeSupport: true,
         customThumbnailSize: 'default',
-        enhancerTheme: 'auto',
+        enhancerTheme: 'dark',
         settingsStyle: 'youtube',
         enhancerFontSize: 14,
+        enhancerWidth: 540,
+        settingsPosition: 'center',
+        settingsRadius: 22,
+        settingsAnimation: true,
+        editorFontSize: 14,
+        editorWidth: 640,
         customColorsEnabled: false,
         customColors: {
             bg: '', fg: '', primary: '', border: '',
@@ -2439,17 +2461,23 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 font-family: var(--enhancer-font) !important;
                 background: var(--enhancer-bg) !important;
                 color: var(--enhancer-fg) !important;
-                border-radius: var(--enhancer-radius) !important;
+                border-radius: ${config.settingsRadius ?? 22}px !important;
                 border: 1.5px solid var(--enhancer-border) !important;
-                min-width: ${Math.min(540, Math.max(320, config.enhancerFontSize * 20))}px;
+                min-width: ${config.enhancerWidth || 540}px;
                 max-width: calc(100vw - 32px) !important;
                 max-height: calc(100vh - 40px) !important;
                 overflow-y: auto !important;
                 box-sizing: border-box !important;
                 padding: 24px 18px 18px 18px !important;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
-                transition: background 0.2s, color 0.2s;
+                transition: ${config.settingsAnimation !== false ? 'background 0.2s, color 0.2s' : 'none'};
                 position: fixed;
+            }
+            #yt-style-editor > div {
+                font-size: ${config.editorFontSize || 14}px !important;
+                min-width: ${config.editorWidth || 640}px;
+                max-width: min(${config.editorWidth || 640}px, 96vw) !important;
+                border-radius: ${config.settingsRadius ?? 22}px !important;
             }
             #yt-enhancer-settings button,
             .yt-enhancer-lang-btn {
@@ -2692,15 +2720,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 to { opacity: 0; transform: translateY(10px);}
             }
         `;
-        // --- THEME: загрузка из внешнего CSS или встроенных тем ---
-        const themeMode = config.enhancerTheme || 'auto';
+        // --- THEME: загрузка из внешнего CSS или встроенных тем (только тёмная) ---
         const themeStyle = config.settingsStyle || 'youtube';
-        const darkOpen = themeMode === 'auto' ? '@media (prefers-color-scheme: dark) {\n' : '';
-        const darkClose = themeMode === 'auto' ? '\n}' : '';
-        const lightOpen = themeMode === 'auto' ? '@media (prefers-color-scheme: light) {\n' : '';
-        const lightClose = themeMode === 'auto' ? '\n}' : '';
-        const showDark = themeMode === 'auto' || themeMode === 'dark';
-        const showLight = themeMode === 'auto' || themeMode === 'light';
         // Try external CSS first (works for all themes if css/style.css contains all of them)
         const extCSS = _loadResource('themeCSS');
         const themeRaw = extCSS || _getThemeRaw(themeStyle);
@@ -2712,8 +2733,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
         if (_themeCSS) {
             css += _themeCSS.base;
-            if (showDark) css += darkOpen + _themeCSS.dark + darkClose;
-            if (showLight) css += lightOpen + _themeCSS.light + lightClose;
+            css += _themeCSS.dark;
             css += _themeCSS.common;
         }
         // --- Custom color overrides ---
@@ -2814,6 +2834,42 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 }
             `;
         }
+        // Disable all animations/transitions when setting is off
+        // Three-layer approach to beat any theme CSS:
+        // 1) Override the CSS variable used by all themes
+        // 2) Override @keyframes with empty ones
+        // 3) Explicit none on every element with high-specificity selectors
+        if (config.settingsAnimation === false) {
+            css += `
+                :root,
+                #yt-enhancer-settings,
+                #yt-style-editor {
+                    --enhancer-transition: none !important;
+                    --chips-animation-duration: 0s !important;
+                }
+                @keyframes fadeIn { from {} to {} }
+                @keyframes fadeOut { from {} to {} }
+                @keyframes pulse { from {} to {} }
+                @keyframes pulseExp { from {} to {} }
+                @keyframes chipsFadeIn { from {} to {} }
+                @keyframes darkpink-glow { from {} to {} }
+                #yt-enhancer-settings,
+                #yt-enhancer-settings *,
+                #yt-enhancer-settings::before,
+                #yt-enhancer-settings::after,
+                #yt-style-editor,
+                #yt-style-editor *,
+                #yt-style-editor::before,
+                #yt-style-editor::after {
+                    animation: none !important;
+                    animation-duration: 0s !important;
+                    animation-delay: 0s !important;
+                    transition: none !important;
+                    transition-duration: 0s !important;
+                    transition-delay: 0s !important;
+                }
+            `;
+        }
         // Playlist mode specific styles
         if (isPlaylistModeActive) {
             css += `
@@ -2835,6 +2891,42 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     }
 
     // --- Вспомогательные функции ---
+
+    // Принудительно убирает ВСЕ анимации/переходы у элемента и всех потомков.
+    // Inline style с !important имеет приоритет (1,0,0,0) — выше любого CSS-правила.
+    // Также запускает MutationObserver чтобы подавить любые динамически заданные стили.
+    function _stripAnimations(root) {
+        if (config.settingsAnimation !== false) return null;
+        const PROPS = [
+            ['transition',           'none'],
+            ['transition-duration',  '0s'],
+            ['transition-delay',     '0s'],
+            ['animation',            'none'],
+            ['animation-name',       'none'],
+            ['animation-duration',   '0s'],
+            ['animation-delay',      '0s'],
+            ['animation-play-state', 'paused'],
+        ];
+        const applyEl = el => {
+            PROPS.forEach(([p, v]) => el.style.setProperty(p, v, 'important'));
+        };
+        const applyAll = () => {
+            applyEl(root);
+            root.querySelectorAll('*').forEach(applyEl);
+        };
+        applyAll();
+        // MutationObserver: при любом изменении style-атрибута немедленно сбрасывает анимации
+        let _busy = false;
+        const observer = new MutationObserver(mutations => {
+            if (_busy) return;
+            _busy = true;
+            mutations.forEach(m => { if (m.type === 'attributes') applyEl(m.target); });
+            // Разблокировать после обработки текущего пакета мутаций
+            Promise.resolve().then(() => { _busy = false; });
+        });
+        observer.observe(root, { subtree: true, attributes: true, attributeFilter: ['style'] });
+        return observer;
+    }
 
     function getThumbnailAspectRatio() {
         switch(config.customThumbnailSize) {
@@ -2863,15 +2955,24 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         if (isPlaylistModeActive) {
             dialog.classList.add('playlist-mode-exception');
         }
+        // Вычисляем позицию окна
+        const _pos = config.settingsPosition || 'center';
+        const _posMap = {
+            'center':      'top:50%;left:50%;transform:translate(-50%,-50%);',
+            'top-right':   'top:16px;right:16px;left:auto;transform:none;',
+            'bottom-right':'bottom:16px;right:16px;left:auto;top:auto;transform:none;',
+            'bottom-left': 'bottom:16px;left:16px;right:auto;top:auto;transform:none;',
+            'top-left':    'top:16px;left:16px;right:auto;transform:none;',
+        };
+        const _posCSS = _posMap[_pos] || _posMap['center'];
+        const _anim = config.settingsAnimation !== false ? 'animation:fadeIn 0.2s ease;' : '';
         dialog.style.cssText = `
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            ${_posCSS}
             background: var(--yt-spec-base-background, #fff);
             color: var(--yt-spec-text-primary, #030303);
             padding: 24px;
-            border-radius: 22px;
+            border-radius: ${config.settingsRadius ?? 22}px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             z-index: 999999;
             max-width: min(98vw, ${isYandexBrowser() ? '540px' : '400px'});
@@ -2880,6 +2981,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             box-sizing: border-box;
             font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
             border: 2px solid var(--yt-spec-10-percent-layer, #ddd);
+            ${_anim}
         `;
         // --- Версия сверху ---
         const versionDiv = document.createElement('div');
@@ -3067,9 +3169,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const fnLic = document.createElement('span');
         fnLic.style.cssText = 'display:block;margin-top:3px;';
         const fnLicLink = document.createElement('a');
-        fnLicLink.href = 'https://creativecommons.org/licenses/by-nd/4.0/deed.en';
+        fnLicLink.href = 'https://github.com/Xanixsl/YouTube-Fix-for-Yandex/blob/main/LICENSE';
         fnLicLink.target = '_blank'; fnLicLink.rel = 'noopener noreferrer';
-        fnLicLink.textContent = 'CC BY-ND 4.0';
+        fnLicLink.textContent = 'All Rights Reserved';
         fnLicLink.style.cssText = 'color:inherit;text-decoration:underline;';
         fnLic.appendChild(document.createTextNode(_isRu ? '\u041B\u0438\u0446\u0435\u043D\u0437\u0438\u044F:\u00A0' : 'License:\u00A0'));
         fnLic.appendChild(fnLicLink);
@@ -3079,7 +3181,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         fnCopy.style.cssText = 'display:block;margin-top:3px;';
         const fnAuthorB = document.createElement('b'); fnAuthorB.textContent = 'Xanix';
         const fnGhLink = document.createElement('a');
-        fnGhLink.href = 'https://github.com/Xanixsl/YouTube-Fix-for-Yandex-main';
+        fnGhLink.href = 'https://github.com/Xanixsl/YouTube-Fix-for-Yandex';
         fnGhLink.target = '_blank'; fnGhLink.rel = 'noopener noreferrer';
         fnGhLink.textContent = 'GitHub';
         fnGhLink.style.cssText = 'color:inherit;text-decoration:underline;';
@@ -3203,6 +3305,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         };
         setTimeout(() => document.addEventListener('click', handleOutsideClick), 100);
         dialog.addEventListener('click', e => e.stopPropagation());
+        // Запустить observer — отслеживает любые изменения style и немедленно сбрасывает анимации
+        const _animObserver = _stripAnimations(dialog);
+        // Отключить observer при закрытии диалога чтобы не было утечек памяти
+        const _origClose = closeBtn.onclick;
+        const _disconnectOnClose = () => { if (_animObserver) _animObserver.disconnect(); };
+        closeBtn.addEventListener('click', _disconnectOnClose);
+        saveBtn.addEventListener('click', _disconnectOnClose);
+        resetBtn.addEventListener('click', _disconnectOnClose);
     }
 
     // --- Основная вкладка ---
@@ -3567,41 +3677,6 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
             return sectionDiv;
         };
-        const darkModeSection = section(L.appearanceSection, L.appearanceDesc);
-        const createCheckbox = (id, label, checked, description = '') => {
-            const div = document.createElement('div');
-            div.style.display = 'flex';
-            div.style.alignItems = 'flex-start';
-            div.style.marginBottom = '12px';
-            const input = document.createElement('input');
-            input.type = 'checkbox';
-            input.id = id;
-            input.checked = checked;
-            input.style.marginRight = '10px';
-            input.style.marginTop = '3px';
-            const labelDiv = document.createElement('div');
-            const labelEl = document.createElement('label');
-            labelEl.htmlFor = id;
-            labelEl.textContent = label;
-            labelEl.style.userSelect = 'none';
-            labelEl.style.fontWeight = '500';
-            labelDiv.appendChild(labelEl);
-            if (description) {
-                const desc = document.createElement('div');
-                desc.textContent = description;
-                desc.style.fontSize = '0.85em';
-                desc.style.color = 'var(--enhancer-tab-inactive, #888)';
-                desc.style.marginTop = '4px';
-                labelDiv.appendChild(desc);
-            }
-            div.appendChild(input);
-            div.appendChild(labelDiv);
-            return div;
-        };
-        darkModeSection.appendChild(createCheckbox(
-            'darkModeSupport', L.darkModeSupport, config.darkModeSupport, L.darkModeSupportDesc
-        ));
-        container.appendChild(darkModeSection);
         const thumbSection = section(L.thumbSection, L.thumbDesc);
         const thumbSelect = document.createElement('select');
         thumbSelect.id = 'customThumbnailSize';
@@ -3650,34 +3725,6 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         });
         langSection.appendChild(langSelect);
         container.appendChild(langSection);
-        const themeSection = section(L.themeSection, L.themeDesc);
-        const themeSelect = document.createElement('select');
-        themeSelect.id = 'enhancerTheme';
-        themeSelect.style.width = '50%';
-        themeSelect.style.padding = '8px';
-        themeSelect.style.borderRadius = '10px';
-        themeSelect.style.marginBottom = '16px';
-        themeSelect.style.border = '1px solid var(--enhancer-input-border, #ddd)';
-        themeSelect.style.background = 'var(--enhancer-select-bg, #f8fafc)';
-        themeSelect.style.color = 'var(--enhancer-select-fg, #030303)';
-        [
-            {value: 'auto', label: L.themeAuto},
-            {value: 'light', label: L.themeLight},
-            {value: 'dark', label: L.themeDark}
-        ].forEach(option => {
-            const optEl = document.createElement('option');
-            optEl.value = option.value;
-            optEl.textContent = option.label;
-            if (option.value === config.enhancerTheme) optEl.selected = true;
-            themeSelect.appendChild(optEl);
-        });
-        themeSection.appendChild(themeSelect);
-        // --- Live theme switch ---
-        themeSelect.addEventListener('change', () => {
-            config.enhancerTheme = themeSelect.value;
-            storage.set('ytEnhancerConfig', config);
-            applyGlobalStyles();
-        });
         // --- Style Editor Button ---
         const styleEditorBtn = document.createElement('button');
         styleEditorBtn.textContent = '\u{1F3A8} ' + L.styleEditorBtn;
@@ -3688,32 +3735,120 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             createStyleEditor();
         });
         container.appendChild(styleEditorBtn);
-        const fontSizeDiv = document.createElement('div');
-        fontSizeDiv.style.marginBottom = '16px';
-        const fontSizeLabel = document.createElement('label');
-        fontSizeLabel.htmlFor = 'enhancerFontSize';
-        fontSizeLabel.textContent = L.fontSize + ' ';
-        fontSizeLabel.style.marginRight = '10px';
-        fontSizeLabel.style.fontWeight = '500';
-        const fontSizeInput = document.createElement('input');
-        fontSizeInput.type = 'range';
-        fontSizeInput.id = 'enhancerFontSize';
-        fontSizeInput.value = config.enhancerFontSize || 14;
-        fontSizeInput.min = '12';
-        fontSizeInput.max = '20';
-        fontSizeInput.style.width = '200px';
-        fontSizeInput.style.marginRight = '10px';
-        const fontSizeValue = document.createElement('span');
-        fontSizeValue.textContent = `${config.enhancerFontSize || 14}px`;
-        fontSizeValue.style.fontWeight = '500';
-        fontSizeInput.addEventListener('input', () => {
-            fontSizeValue.textContent = `${fontSizeInput.value}px`;
+
+        // --- Размер текста + параметры окна ---
+        const appearanceDiv = document.createElement('div');
+        appearanceDiv.style.cssText = 'margin-bottom:16px;display:flex;flex-direction:column;gap:10px;';
+
+        // Вспомогательная функция: ряд «label + number + единица»
+        const makeSliderRow = (labelText, idStr, min, max, step, val, unit) => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
+            const lbl = document.createElement('label');
+            lbl.htmlFor = idStr;
+            lbl.textContent = labelText;
+            lbl.style.cssText = 'font-weight:500;min-width:150px;';
+            const num = document.createElement('input');
+            num.type = 'number'; num.id = idStr;
+            num.min = min; num.max = max; num.step = step; num.value = val;
+            num.style.cssText = 'width:72px;padding:5px 8px;border-radius:8px;font-size:0.95em;text-align:center;';
+            const unitSpan = document.createElement('span');
+            unitSpan.textContent = unit;
+            unitSpan.style.cssText = 'font-size:0.85em;color:var(--enhancer-tab-inactive);';
+            row.append(lbl, num, unitSpan);
+            return { row, num };
+        };
+
+        // Row: font size (settings)
+        const { row: fontSizeRow, num: fontSizeNum } =
+            makeSliderRow(L.fontSize, 'enhancerFontSize', 12, 22, 1, config.enhancerFontSize || 14, 'px');
+        appearanceDiv.appendChild(fontSizeRow);
+
+        // Row: window width (number input only)
+        const widthRow = document.createElement('div');
+        widthRow.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
+        const widthLbl = document.createElement('label');
+        widthLbl.htmlFor = 'enhancerWidth';
+        widthLbl.textContent = L.windowWidth;
+        widthLbl.style.cssText = 'font-weight:500;min-width:150px;';
+        const widthNum = document.createElement('input');
+        widthNum.type = 'number'; widthNum.id = 'enhancerWidth';
+        widthNum.min = '300'; widthNum.max = '1000'; widthNum.step = '1';
+        widthNum.value = config.enhancerWidth || 540;
+        widthNum.style.cssText = 'width:72px;padding:5px 8px;border-radius:8px;font-size:0.95em;text-align:center;';
+        const widthPx = document.createElement('span');
+        widthPx.textContent = 'px';
+        widthPx.style.cssText = 'font-size:0.85em;color:var(--enhancer-tab-inactive);';
+        widthRow.append(widthLbl, widthNum, widthPx);
+        appearanceDiv.appendChild(widthRow);
+
+        // Row: corner radius
+        const { row: radiusRow, num: radiusNum } =
+            makeSliderRow(L.settingsRadius, 'settingsRadius', 0, 36, 1, config.settingsRadius ?? 22, 'px');
+        appearanceDiv.appendChild(radiusRow);
+
+        // Row: position select
+        const posRow = document.createElement('div');
+        posRow.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
+        const posLbl = document.createElement('label');
+        posLbl.htmlFor = 'settingsPosition';
+        posLbl.textContent = L.settingsPosLabel;
+        posLbl.style.cssText = 'font-weight:500;min-width:150px;';
+        const posSelect = document.createElement('select');
+        posSelect.id = 'settingsPosition';
+        posSelect.style.cssText = 'padding:5px 8px;border-radius:8px;font-size:0.9em;';
+        [
+            { value: 'center',       label: L.settingsPosCenter },
+            { value: 'top-right',    label: L.settingsPosTopRight },
+            { value: 'bottom-right', label: L.settingsPosBotRight },
+            { value: 'bottom-left',  label: L.settingsPosBotLeft },
+            { value: 'top-left',     label: L.settingsPosTopLeft },
+        ].forEach(({ value, label }) => {
+            const opt = document.createElement('option');
+            opt.value = value; opt.textContent = label;
+            if (value === (config.settingsPosition || 'center')) opt.selected = true;
+            posSelect.appendChild(opt);
         });
-        fontSizeDiv.appendChild(fontSizeLabel);
-        fontSizeDiv.appendChild(fontSizeInput);
-        fontSizeDiv.appendChild(fontSizeValue);
-        themeSection.appendChild(fontSizeDiv);
-        container.appendChild(themeSection);
+        posRow.append(posLbl, posSelect);
+        appearanceDiv.appendChild(posRow);
+
+        // Checkbox: animation
+        const animRow = document.createElement('div');
+        animRow.style.cssText = 'display:flex;align-items:center;gap:8px;';
+        const animCheck = document.createElement('input');
+        animCheck.type = 'checkbox'; animCheck.id = 'settingsAnimation';
+        animCheck.checked = config.settingsAnimation !== false;
+        const animLbl = document.createElement('label');
+        animLbl.htmlFor = 'settingsAnimation';
+        animLbl.textContent = L.settingsAnimation;
+        animLbl.style.fontWeight = '500';
+        animRow.append(animCheck, animLbl);
+        appearanceDiv.appendChild(animRow);
+
+        // --- Редактор стилей ---
+        const editorAppDiv = document.createElement('div');
+        editorAppDiv.style.cssText = 'margin-top:6px;display:flex;flex-direction:column;gap:10px;';
+        const editorTitle = document.createElement('h3');
+        editorTitle.textContent = L.editorSection;
+        editorTitle.style.cssText = 'margin:10px 0 4px;font-size:1em;font-weight:700;color:var(--enhancer-fg);';
+        const editorDesc = document.createElement('p');
+        editorDesc.textContent = L.editorDesc;
+        editorDesc.style.cssText = 'margin:0 0 6px;font-size:0.85em;color:var(--enhancer-tab-inactive);';
+        editorAppDiv.append(editorTitle, editorDesc);
+
+        // Row: editor font size
+        const { row: edFontRow, num: edFontNum } =
+            makeSliderRow(L.editorFontSize, 'editorFontSize', 11, 20, 1, config.editorFontSize || 14, 'px');
+        editorAppDiv.appendChild(edFontRow);
+
+        // Row: editor width
+        const { row: edWidthRow, num: edWidthNum } =
+            makeSliderRow(L.editorWidth, 'editorWidth', 400, 1100, 1, config.editorWidth || 640, 'px');
+        editorAppDiv.appendChild(edWidthRow);
+
+        appearanceDiv.appendChild(editorAppDiv);
+        container.appendChild(appearanceDiv);
+
         // --- Смена языка при выборе ---
         langSelect.addEventListener('change', () => {
             setSavedUILang(langSelect.value);
@@ -3722,10 +3857,61 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             document.getElementById('yt-enhancer-settings').remove();
             setTimeout(createSettingsUI, 50);
         });
-        // --- Live font size ---
-        fontSizeInput.addEventListener('input', () => {
-            const dialog = document.getElementById('yt-enhancer-settings');
-            if (dialog) dialog.style.fontSize = fontSizeInput.value + 'px';
+
+        // font size
+        fontSizeNum.addEventListener('change', () => {
+            const v = Math.min(22, Math.max(12, parseInt(fontSizeNum.value) || 14));
+            fontSizeNum.value = v;
+            config.enhancerFontSize = v;
+            storage.set('ytEnhancerConfig', config);
+            applyGlobalStyles();
+        });
+        // window width
+        widthNum.addEventListener('change', () => {
+            const v = Math.min(1000, Math.max(300, parseInt(widthNum.value) || 540));
+            widthNum.value = v;
+            config.enhancerWidth = v;
+            storage.set('ytEnhancerConfig', config);
+            applyGlobalStyles();
+        });
+        // radius
+        radiusNum.addEventListener('change', () => {
+            const v = Math.min(36, Math.max(0, parseInt(radiusNum.value) || 0));
+            radiusNum.value = v;
+            config.settingsRadius = v;
+            storage.set('ytEnhancerConfig', config);
+            applyGlobalStyles();
+        });
+        // position
+        posSelect.addEventListener('change', () => {
+            config.settingsPosition = posSelect.value;
+            storage.set('ytEnhancerConfig', config);
+            document.getElementById('yt-enhancer-settings').remove();
+            setTimeout(createSettingsUI, 30);
+        });
+        // animation
+        animCheck.addEventListener('change', () => {
+            config.settingsAnimation = animCheck.checked;
+            storage.set('ytEnhancerConfig', config);
+            applyGlobalStyles();
+            document.getElementById('yt-enhancer-settings').remove();
+            setTimeout(createSettingsUI, 30);
+        });
+        // editor font size
+        edFontNum.addEventListener('change', () => {
+            const v = Math.min(20, Math.max(11, parseInt(edFontNum.value) || 14));
+            edFontNum.value = v;
+            config.editorFontSize = v;
+            storage.set('ytEnhancerConfig', config);
+            applyGlobalStyles();
+        });
+        // editor width
+        edWidthNum.addEventListener('change', () => {
+            const v = Math.min(1100, Math.max(400, parseInt(edWidthNum.value) || 640));
+            edWidthNum.value = v;
+            config.editorWidth = v;
+            storage.set('ytEnhancerConfig', config);
+            applyGlobalStyles();
         });
     }
 
@@ -3743,21 +3929,25 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             background: rgba(0,0,0,0.6); z-index: 9999999;
             display: flex; align-items: center; justify-content: center;
             font-family: 'Segoe UI','Roboto',Arial,sans-serif;
-            animation: fadeIn 0.2s ease;
+            ${config.settingsAnimation !== false ? 'animation:fadeIn 0.2s ease;' : ''}
         `;
         const panel = document.createElement('div');
+        const _editorR = config.settingsRadius ?? 18;
+        const _editorAnim = config.settingsAnimation !== false ? 'animation:fadeIn 0.2s ease;' : '';
         panel.style.cssText = `
             background: var(--enhancer-bg, #0f0f0f);
             color: var(--enhancer-fg, #f1f1f1);
             border: 1.5px solid var(--enhancer-border, #272727);
-            border-radius: 18px;
-            width: 640px; max-width: 96vw; max-height: 90vh;
+            border-radius: ${_editorR}px;
+            width: ${config.editorWidth || 640}px; max-width: 96vw; max-height: 90vh;
             overflow-y: auto; padding: 0;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            font-size: ${config.editorFontSize || 14}px;
+            ${_editorAnim}
         `;
         // Header
         const header = document.createElement('div');
-        header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:18px 22px 14px;border-bottom:1px solid var(--enhancer-border,#272727);position:sticky;top:0;background:inherit;z-index:2;border-radius:18px 18px 0 0;';
+        header.style.cssText = `display:flex;justify-content:space-between;align-items:center;padding:18px 22px 14px;border-bottom:1px solid var(--enhancer-border,#272727);position:sticky;top:0;background:inherit;z-index:2;border-radius:${_editorR}px ${_editorR}px 0 0;`;
         const titleEl = document.createElement('h2');
         titleEl.textContent = L.styleEditorTitle;
         titleEl.style.cssText = 'margin:0;font-size:1.3em;font-weight:700;color:var(--enhancer-fg);';
@@ -3778,8 +3968,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
         // Compute theme-aware tab colors once
         const _tKey = config.settingsStyle || 'youtube';
-        const _tDark = config.enhancerTheme === 'dark' ||
-            (config.enhancerTheme === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        const _tDark = true;
         const _tP = (_BUILTIN_PRESET_COLORS[_tKey] || _BUILTIN_PRESET_COLORS['youtube'])[_tDark ? 'dark' : 'light'] || {};
         const _tFg  = (_tP.fg      || (_tDark ? '#e8e8e8' : '#222222'));
         const _tPri = (_tP.primary || '#3ea6ff');
@@ -3788,10 +3977,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
             return `rgba(${r},${g},${b},${a})`;
         }
-        const TAB_INACTIVE = _c2a(_tFg, 0.62);
-        const TAB_ACTIVE   = _tFg;
-        const TAB_SHADOW   = `0 0 10px ${_c2a(_tPri, 0.75)}, 0 0 3px ${_c2a(_tFg, 0.55)}`;
-        const TAB_HOVER_SHADOW = `0 0 7px ${_c2a(_tFg, 0.5)}`;
+        const TAB_INACTIVE     = _c2a(_tFg, 0.62);
+        const TAB_ACTIVE       = _tDark ? _tFg : _tPri;
+        const TAB_SHADOW       = _tDark
+            ? `0 0 10px ${_c2a(_tPri, 0.75)}, 0 0 3px ${_c2a(_tFg, 0.55)}`
+            : `0 0 8px ${_c2a(_tPri, 0.4)}`;
+        const TAB_HOVER_SHADOW = `0 0 7px ${_c2a(_tDark ? _tFg : _tPri, 0.5)}`;
 
         editorTabNames.forEach((name, i) => {
             const tab = document.createElement('button');
@@ -3872,12 +4063,15 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
         overlay.appendChild(panel);
         document.body.appendChild(overlay);
+        // Запустить observer для overlay редактора стилей
+        const _editorAnimObserver = _stripAnimations(overlay);
 
         // Hide main settings when style editor is open; restore on close
         const _mainSettings = document.getElementById('yt-enhancer-settings');
         if (_mainSettings) _mainSettings.style.display = 'none';
 
         const _closeStyleEditor = () => {
+            if (_editorAnimObserver) _editorAnimObserver.disconnect();
             overlay.remove();
             const ms = document.getElementById('yt-enhancer-settings');
             if (ms) ms.style.display = '';
@@ -3923,8 +4117,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
         // Pre-populate from current theme preset as defaults
         const themeKey = config.settingsStyle || 'youtube';
-        const isDarkMode = config.enhancerTheme === 'dark' ||
-            (config.enhancerTheme === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        const isDarkMode = true;
         const themePreset = (_BUILTIN_PRESET_COLORS[themeKey] || _BUILTIN_PRESET_COLORS['youtube'])[isDarkMode ? 'dark' : 'light'] || {};
 
         // Color grid (4 columns)
@@ -4116,7 +4309,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     const _BUILTIN_PRESET_COLORS = {
         youtube: {
             dark: { bg:'#0f0f0f', fg:'#f1f1f1', border:'#272727', primary:'#ff0000', btnBorder:'#333', btnFg:'#f1f1f1', btnHoverBg:'#272727', btnHoverFg:'#f1f1f1', badgeBg:'rgba(255,0,0,0.12)', badgeFg:'#ff4444', inputBg:'#272727', inputFg:'#f1f1f1', inputBorder:'#3f3f3f', selectBg:'#272727', selectFg:'#f1f1f1', selectBorder:'#3f3f3f' },
-            light: { bg:'#ffffff', fg:'#0f0f0f', border:'#e5e5e5', primary:'#cc0000', btnBorder:'#d6d6d6', btnFg:'#0f0f0f', btnHoverBg:'#f2f2f2', btnHoverFg:'#0f0f0f', badgeBg:'rgba(204,0,0,0.08)', badgeFg:'#cc0000', inputBg:'#f2f2f2', inputFg:'#0f0f0f', inputBorder:'#d6d6d6', selectBg:'#f2f2f2', selectFg:'#0f0f0f', selectBorder:'#d6d6d6' }
+            light: { bg:'#ffffff', fg:'#0f0f0f', border:'rgba(204,0,0,0.25)', primary:'#cc0000', btnBorder:'#cc0000', btnFg:'#cc0000', btnHoverBg:'#cc0000', btnHoverFg:'#ffffff', badgeBg:'#fde8e8', badgeFg:'#cc0000', inputBg:'#fde8e8', inputFg:'#0f0f0f', inputBorder:'rgba(204,0,0,0.35)', selectBg:'#fde8e8', selectFg:'#0f0f0f', selectBorder:'rgba(204,0,0,0.35)' }
         },
         improved: {
             dark: { bg:'rgba(15,15,15,0.92)', fg:'#f1f1f1', border:'rgba(62,166,255,0.12)', primary:'#3ea6ff', btnBorder:'#3ea6ff', btnFg:'#3ea6ff', btnHoverBg:'#3ea6ff', btnHoverFg:'#000000', badgeBg:'rgba(62,166,255,0.15)', badgeFg:'#3ea6ff', inputBg:'rgba(255,255,255,0.06)', inputFg:'#f1f1f1', inputBorder:'rgba(255,255,255,0.1)', selectBg:'rgba(255,255,255,0.08)', selectFg:'#f1f1f1', selectBorder:'rgba(255,255,255,0.12)' },
@@ -4289,7 +4482,6 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                         if (p.customColors) { config.customColors = {...p.customColors}; }
                         if (p.customColorsEnabled !== undefined) config.customColorsEnabled = p.customColorsEnabled;
                         if (p.settingsStyle) config.settingsStyle = p.settingsStyle;
-                        if (p.enhancerTheme) config.enhancerTheme = p.enhancerTheme;
                         if (p.bgImage !== undefined) config.bgImage = p.bgImage;
                         if (p.bgTarget) config.bgTarget = p.bgTarget;
                         if (p.bgOpacity !== undefined) config.bgOpacity = p.bgOpacity;
@@ -4340,7 +4532,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 customColors: {...(config.customColors || {})},
                 customColorsEnabled: !!config.customColorsEnabled,
                 settingsStyle: config.settingsStyle || 'youtube',
-                enhancerTheme: config.enhancerTheme || 'auto',
+                enhancerTheme: 'dark',
                 bgImage: config.bgImage || '',
                 bgTarget: config.bgTarget || 'settings',
                 bgOpacity: config.bgOpacity ?? 0.15,

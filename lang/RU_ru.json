@@ -1,5 +1,5 @@
-{
-"title": "YouTube Fix for Yandex", "version": "v4.4.9",
+﻿{
+"title": "YouTube Fix for Yandex", "version": "v4.4.5",
             "tabs": ["Общее", "Яндекс-Фиксы", "Настройки"], "tabsNoYandex": ["Общее", "Настройки"],
             "save": "Сохранить настройки", "reset": "Сбросить настройки",
             "saved": "Настройки сохранены! Страница будет перезагружена...", "reseted": "Настройки сброшены! Страница будет перезагружена...",
@@ -44,7 +44,11 @@
             "thumbSection": "Размер миниатюр видео", "thumbDesc": "Изменение размера и пропорций превью видео",
             "thumbDefault": "По умолчанию (16:9)", "thumbSmall": "Маленькие (16:9)", "thumbMedium": "Средние (4:3)", "thumbLarge": "Большие (1:1)",
             "themeSection": "Тема окна настроек", "themeDesc": "Внешний вид этого окна с настройками",
-            "themeAuto": "Авто (система)", "themeLight": "Светлая", "themeDark": "Тёмная", "fontSize": "Размер шрифта:",
+            "themeAuto": "Авто (система)", "themeLight": "Светлая", "themeDark": "Тёмная", "fontSize": "Размер шрифта:", "windowWidth": "Ширина окна:",
+            "settingsPosLabel": "Позиция окна:", "settingsPosCenter": "По центру", "settingsPosTopRight": "Сверху справа", "settingsPosBotRight": "Снизу справа", "settingsPosBotLeft": "Снизу слева", "settingsPosTopLeft": "Сверху слева",
+            "settingsRadius": "Скругление углов:", "settingsAnimation": "Плавная анимация",
+            "editorSection": "Окно редактора стилей", "editorDesc": "Внешний вид панели редактора стилей",
+            "editorFontSize": "Шрифт редактора:", "editorWidth": "Ширина редактора:",
             "styleSection": "Цветовая схема", "styleDesc": "Палитра цветов и стиль окна настроек",
             "styleYoutube": "YouTube", "styleImproved": "Улучшенная (glass + выпадающие)", "styleMidnight": "Полночь", "styleSunset": "Закат", "styleOcean": "Океан", "styleEmerald": "Изумруд", "styleRose": "Роза", "styleDarkPink": "Тёмно-розовая", "styleFrost": "Мороз", "styleSky": "Небо", "styleClassic": "Классика", "styleAurora": "Аврора", "styleCustom": "Своя",
             "customColorsSection": "Тонкая настройка цветов", "customColorsDesc": "Ручная настройка отдельных цветов (переопределяет текущую схему)",

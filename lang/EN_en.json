@@ -1,5 +1,5 @@
-{
-"title": "YouTube Fix for Yandex", "version": "v4.4.9",
+﻿{
+"title": "YouTube Fix for Yandex", "version": "v4.4.5",
             "tabs": ["General", "Yandex Fixes", "Settings"], "tabsNoYandex": ["General", "Settings"],
             "save": "Save settings", "reset": "Reset settings",
             "saved": "Settings saved! Page will reload...", "reseted": "Settings reset! Page will reload...",
@@ -44,7 +44,11 @@
             "thumbSection": "Video thumbnail size", "thumbDesc": "Change video preview size and aspect",
             "thumbDefault": "Default (16:9)", "thumbSmall": "Small (16:9)", "thumbMedium": "Medium (4:3)", "thumbLarge": "Large (1:1)",
             "themeSection": "Settings window theme", "themeDesc": "Appearance of this settings window",
-            "themeAuto": "Auto (system)", "themeLight": "Light", "themeDark": "Dark", "fontSize": "Font size:",
+            "themeAuto": "Auto (system)", "themeLight": "Light", "themeDark": "Dark", "fontSize": "Font size:", "windowWidth": "Window width:",
+            "settingsPosLabel": "Window position:", "settingsPosCenter": "Center", "settingsPosTopRight": "Top right", "settingsPosBotRight": "Bottom right", "settingsPosBotLeft": "Bottom left", "settingsPosTopLeft": "Top left",
+            "settingsRadius": "Corner radius:", "settingsAnimation": "Smooth animation",
+            "editorSection": "Style editor window", "editorDesc": "Appearance of the style editor panel",
+            "editorFontSize": "Editor font size:", "editorWidth": "Editor width:",
             "styleSection": "Color scheme", "styleDesc": "Color palette and style of the settings window",
             "styleYoutube": "YouTube", "styleImproved": "Improved (glass + dropdowns)", "styleMidnight": "Midnight", "styleSunset": "Sunset", "styleOcean": "Ocean", "styleEmerald": "Emerald", "styleRose": "Rose", "styleDarkPink": "Dark Pink", "styleFrost": "Frost", "styleSky": "Sky", "styleClassic": "Classic", "styleAurora": "Aurora", "styleCustom": "Custom",
             "customColorsSection": "Fine-tune colors", "customColorsDesc": "Manually adjust individual colors (overrides current scheme)",

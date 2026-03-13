@@ -1,13 +1,13 @@
-/* ============================================================
+﻿/* ============================================================
    YouTube Fix for Yandex — Theme CSS
-   https://github.com/Xanixsl/test-123-123
+   https://github.com/Xanixsl/YouTube-Fix-for-Yandex
 
    Formats per theme:
-     /* @theme <name> */
-     /* @base */   — unconditional vars
-     /* @dark */   — applied in dark mode
-     /* @light */  — applied in light mode
-     /* @common */ — unconditional rules
+     @theme <name>  — theme block start
+     @base          — unconditional vars
+     @dark          — applied in dark mode
+     @light         — applied in light mode
+     @common        — unconditional rules
 ============================================================ */
 
 /* @theme youtube */
@@ -59,60 +59,66 @@
 }
 /* @light */
 :root {
-    --enhancer-bg: var(--yt-spec-base-background, #ffffff) !important;
-    --enhancer-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-border: var(--yt-spec-10-percent-layer, #e5e5e5) !important;
+    --enhancer-bg: #ffffff !important;
+    --enhancer-fg: #0f0f0f !important;
+    --enhancer-border: rgba(204, 0, 0, 0.25) !important;
     --enhancer-primary: #cc0000 !important;
-    --enhancer-secondary: #cc0000 !important;
-    --enhancer-accent: #cc0000 !important;
-    --enhancer-btn-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
-    --enhancer-btn-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-btn-hover-bg: var(--yt-spec-10-percent-layer, #f2f2f2) !important;
-    --enhancer-btn-hover-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-badge-bg: rgba(204, 0, 0, 0.08) !important;
+    --enhancer-secondary: #aa0000 !important;
+    --enhancer-accent: #ff4444 !important;
+    --enhancer-btn-border: #cc0000 !important;
+    --enhancer-btn-fg: #cc0000 !important;
+    --enhancer-btn-hover-bg: #cc0000 !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: #fde8e8 !important;
     --enhancer-badge-fg: #cc0000 !important;
-    --enhancer-badge-exp-bg: rgba(255, 152, 0, 0.1) !important;
-    --enhancer-badge-exp-fg: #e65100 !important;
-    --enhancer-input-bg: var(--yt-spec-badge-chip-background, #f2f2f2) !important;
-    --enhancer-input-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-input-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
-    --enhancer-tab-active: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-tab-inactive: var(--yt-spec-text-secondary, #606060) !important;
-    --enhancer-divider: var(--yt-spec-10-percent-layer, #e5e5e5) !important;
-    --enhancer-select-bg: var(--yt-spec-badge-chip-background, #f2f2f2) !important;
-    --enhancer-select-fg: var(--yt-spec-text-primary, #0f0f0f) !important;
-    --enhancer-select-border: var(--yt-spec-10-percent-layer, #d6d6d6) !important;
+    --enhancer-badge-exp-bg: #fff0e6 !important;
+    --enhancer-badge-exp-fg: #bf360c !important;
+    --enhancer-input-bg: #fde8e8 !important;
+    --enhancer-input-fg: #0f0f0f !important;
+    --enhancer-input-border: rgba(204, 0, 0, 0.35) !important;
+    --enhancer-tab-active: #cc0000 !important;
+    --enhancer-tab-inactive: #6e6e6e !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(204, 0, 0, 0.22), transparent) !important;
+    --enhancer-select-bg: #fde8e8 !important;
+    --enhancer-select-fg: #0f0f0f !important;
+    --enhancer-select-border: rgba(204, 0, 0, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 0 0 1.5px rgba(204, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06), 0 18px 40px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: none;
+    border: 1.5px solid rgba(204, 0, 0, 0.25) !important;
 }
 #yt-enhancer-settings h2 {
-    font-weight: 600; font-size: 1.4em;
-    color: var(--yt-spec-text-primary, #0f0f0f) !important;
-    margin-bottom: 20px;
+    font-weight: 700; font-size: 1.5em;
+    color: #cc0000 !important;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(204, 0, 0, 0.18);
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: #f2f2f2 !important;
+    background: #fde8e8 !important;
     color: #0f0f0f !important;
 }
 /* @common */
 #yt-enhancer-settings h3 {
     font-weight: 600; color: var(--enhancer-fg) !important;
-    margin: 20px 0 12px; padding-bottom: 8px;
+    margin: 22px 0 14px; padding-bottom: 8px;
     border-bottom: 1px solid var(--enhancer-border);
 }
-.yt-enhancer-section { position: relative; padding-bottom: 12px; margin-bottom: 20px; }
+.yt-enhancer-section { position: relative; padding-bottom: 14px; margin-bottom: 22px; }
 .yt-enhancer-section::after {
     content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
     background: var(--enhancer-divider);
 }
 #yt-enhancer-settings button {
     transition: var(--enhancer-transition) !important;
+    position: relative; overflow: hidden;
 }
 #yt-enhancer-settings button:hover {
     background: var(--enhancer-btn-hover-bg) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(204, 0, 0, 0.28) !important;
 }
 #yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
 #yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
@@ -212,7 +218,7 @@ iron-dropdown .dropdown-content {
 :root {
     --enhancer-bg: rgba(255, 255, 255, 0.92) !important;
     --enhancer-fg: #0f0f0f !important;
-    --enhancer-border: rgba(6, 95, 212, 0.1) !important;
+    --enhancer-border: rgba(6, 95, 212, 0.2) !important;
     --enhancer-primary: #065fd4 !important;
     --enhancer-secondary: #1a73e8 !important;
     --enhancer-accent: #4285f4 !important;
@@ -224,21 +230,21 @@ iron-dropdown .dropdown-content {
     --enhancer-badge-fg: var(--enhancer-primary) !important;
     --enhancer-badge-exp-bg: rgba(255, 152, 0, 0.1) !important;
     --enhancer-badge-exp-fg: #e65100 !important;
-    --enhancer-input-bg: rgba(0, 0, 0, 0.03) !important;
+    --enhancer-input-bg: rgba(6, 95, 212, 0.08) !important;
     --enhancer-input-fg: #0f0f0f !important;
-    --enhancer-input-border: rgba(0, 0, 0, 0.08) !important;
+    --enhancer-input-border: rgba(6, 95, 212, 0.25) !important;
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: rgba(0, 0, 0, 0.4) !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(6, 95, 212, 0.2), transparent) !important;
-    --enhancer-select-bg: rgba(0, 0, 0, 0.04) !important;
+    --enhancer-select-bg: rgba(6, 95, 212, 0.06) !important;
     --enhancer-select-fg: #0f0f0f !important;
-    --enhancer-select-border: rgba(0, 0, 0, 0.1) !important;
+    --enhancer-select-border: rgba(6, 95, 212, 0.22) !important;
 }
 #yt-enhancer-settings {
     background: rgba(255, 255, 255, 0.92) !important;
     backdrop-filter: blur(20px) saturate(1.5) !important;
-    border: 1px solid rgba(6, 95, 212, 0.1) !important;
-    box-shadow: 0 0 0 1px rgba(6, 95, 212, 0.05), 0 20px 60px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+    border: 1px solid rgba(6, 95, 212, 0.2) !important;
+    box-shadow: 0 0 0 1px rgba(6, 95, 212, 0.1), 0 20px 50px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255,255,255,0.8) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -285,7 +291,7 @@ iron-dropdown .dropdown-content {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: #f5f5f5 !important;
+    background: #ebf2fc !important;
     color: #0f0f0f !important;
 }
 /* @common */
@@ -387,12 +393,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #9895b5 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.15), transparent) !important;
-    --enhancer-select-bg: #f8f7ff !important;
+    --enhancer-select-bg: #ede9fc !important;
     --enhancer-select-fg: #1e1b3a !important;
     --enhancer-select-border: #d6d3f0 !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.18), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(8px);
 }
 #yt-enhancer-settings h2 {
@@ -490,18 +496,18 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: var(--enhancer-primary) !important;
     --enhancer-badge-exp-bg: rgba(220, 38, 38, 0.1) !important;
     --enhancer-badge-exp-fg: #dc2626 !important;
-    --enhancer-input-bg: #fff8e1 !important;
+    --enhancer-input-bg: #fde8c0 !important;
     --enhancer-input-fg: #451a03 !important;
-    --enhancer-input-border: #fde68a !important;
+    --enhancer-input-border: rgba(217, 119, 6, 0.35) !important;
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #b08050 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(217, 119, 6, 0.15), transparent) !important;
-    --enhancer-select-bg: #fffbeb !important;
+    --enhancer-select-bg: #fde8c0 !important;
     --enhancer-select-fg: #451a03 !important;
-    --enhancer-select-border: #fde68a !important;
+    --enhancer-select-border: rgba(217, 119, 6, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.18), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(8px);
 }
 #yt-enhancer-settings h2 {
@@ -510,7 +516,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: #fff8e1 !important;
+    background: #fde8c0 !important;
     color: #451a03 !important;
 }
 /* @common */
@@ -606,14 +612,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #6098b8 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(8, 145, 178, 0.2), transparent) !important;
-    --enhancer-select-bg: #f0f9ff !important;
+    --enhancer-select-bg: #bae6fd !important;
     --enhancer-select-fg: #0c4a6e !important;
     --enhancer-select-border: #7dd3fc !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.1), 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.2), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(8, 145, 178, 0.12) !important;
+    border: 1px solid rgba(8, 145, 178, 0.22) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -716,12 +722,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #4a9060 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.18), transparent) !important;
-    --enhancer-select-bg: #f0fdf4 !important;
+    --enhancer-select-bg: #bbf7d0 !important;
     --enhancer-select-fg: #14532d !important;
     --enhancer-select-border: #86efac !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.18), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(8px) !important;
 }
 #yt-enhancer-settings h2 {
@@ -826,14 +832,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: var(--enhancer-primary) !important;
     --enhancer-tab-inactive: #a06070 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(225, 29, 72, 0.18), transparent) !important;
-    --enhancer-select-bg: #fff1f2 !important;
+    --enhancer-select-bg: #fecdd3 !important;
     --enhancer-select-fg: #4c0519 !important;
     --enhancer-select-border: #fda4af !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.1), 0 4px 24px rgba(0, 0, 0, 0.07) !important;
+    box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.18), 0 6px 28px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(225, 29, 72, 0.1) !important;
+    border: 1px solid rgba(225, 29, 72, 0.2) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -942,14 +948,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-tab-active: #d6006a !important;
     --enhancer-tab-inactive: #d080a8 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(214, 0, 106, 0.2), transparent) !important;
-    --enhancer-select-bg: #fff0f8 !important;
+    --enhancer-select-bg: #ffd6ec !important;
     --enhancer-select-fg: #6b0038 !important;
     --enhancer-select-border: rgba(255, 105, 180, 0.3) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(214, 0, 106, 0.1), 0 4px 24px rgba(214, 0, 106, 0.08) !important;
+    box-shadow: 0 0 0 1px rgba(214, 0, 106, 0.18), 0 6px 28px rgba(214, 0, 106, 0.14) !important;
     backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(214, 0, 106, 0.12) !important;
+    border: 1px solid rgba(214, 0, 106, 0.22) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1035,7 +1041,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 :root {
     --enhancer-bg: rgba(248, 250, 252, 0.96) !important;
     --enhancer-fg: #1e293b !important;
-    --enhancer-border: rgba(203, 213, 225, 0.6) !important;
+    --enhancer-border: rgba(100, 116, 139, 0.3) !important;
     --enhancer-primary: #2563eb !important;
     --enhancer-secondary: #3b82f6 !important;
     --enhancer-accent: #60a5fa !important;
@@ -1047,20 +1053,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: #2563eb !important;
     --enhancer-badge-exp-bg: rgba(249, 115, 22, 0.12) !important;
     --enhancer-badge-exp-fg: #ea580c !important;
-    --enhancer-input-bg: rgba(255, 255, 255, 0.9) !important;
+    --enhancer-input-bg: #dce6f0 !important;
     --enhancer-input-fg: #1e293b !important;
-    --enhancer-input-border: rgba(203, 213, 225, 0.8) !important;
+    --enhancer-input-border: rgba(100, 116, 139, 0.4) !important;
     --enhancer-tab-active: #2563eb !important;
     --enhancer-tab-inactive: #94a3b8 !important;
-    --enhancer-divider: linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.6), transparent) !important;
-    --enhancer-select-bg: rgba(255, 255, 255, 0.9) !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.25), transparent) !important;
+    --enhancer-select-bg: #dce6f0 !important;
     --enhancer-select-fg: #1e293b !important;
-    --enhancer-select-border: rgba(203, 213, 225, 0.8) !important;
+    --enhancer-select-border: rgba(100, 116, 139, 0.4) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(226, 232, 240, 0.8), 0 8px 32px rgba(148, 163, 184, 0.12) !important;
+    box-shadow: 0 0 0 1px rgba(100, 116, 139, 0.25), 0 8px 32px rgba(0, 0, 0, 0.14) !important;
     backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(203, 213, 225, 0.5) !important;
+    border: 1px solid rgba(100, 116, 139, 0.22) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1068,7 +1074,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: rgba(255, 255, 255, 0.95) !important;
+    background: #dce6f0 !important;
     color: #1e293b !important;
 }
 /* @common */
@@ -1146,7 +1152,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 :root {
     --enhancer-bg: rgba(240, 249, 255, 0.98) !important;
     --enhancer-fg: #0369a1 !important;
-    --enhancer-border: rgba(186, 230, 253, 0.6) !important;
+    --enhancer-border: rgba(14, 165, 233, 0.25) !important;
     --enhancer-primary: #0284c7 !important;
     --enhancer-secondary: #0ea5e9 !important;
     --enhancer-accent: #38bdf8 !important;
@@ -1158,20 +1164,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: #0284c7 !important;
     --enhancer-badge-exp-bg: rgba(251, 146, 60, 0.15) !important;
     --enhancer-badge-exp-fg: #c2410c !important;
-    --enhancer-input-bg: rgba(255, 255, 255, 0.9) !important;
+    --enhancer-input-bg: #d0e8f8 !important;
     --enhancer-input-fg: #0369a1 !important;
-    --enhancer-input-border: rgba(186, 230, 253, 0.8) !important;
-    --enhancer-tab-active: #38bdf8 !important;
-    --enhancer-tab-inactive: #7dd3fc !important;
+    --enhancer-input-border: rgba(14, 165, 233, 0.35) !important;
+    --enhancer-tab-active: #0284c7 !important;
+    --enhancer-tab-inactive: #38a8cc !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(2, 132, 199, 0.2), transparent) !important;
-    --enhancer-select-bg: rgba(255, 255, 255, 0.9) !important;
+    --enhancer-select-bg: #d0e8f8 !important;
     --enhancer-select-fg: #0369a1 !important;
-    --enhancer-select-border: rgba(186, 230, 253, 0.8) !important;
+    --enhancer-select-border: rgba(14, 165, 233, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(186, 230, 253, 0.5), 0 8px 32px rgba(2, 132, 199, 0.1) !important;
+    box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.18), 0 8px 32px rgba(2, 132, 199, 0.14) !important;
     backdrop-filter: blur(6px) !important;
-    border: 1px solid rgba(186, 230, 253, 0.4) !important;
+    border: 1px solid rgba(14, 165, 233, 0.2) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1181,7 +1187,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: #e0f2fe !important;
+    background: #d0e8f8 !important;
     color: #0369a1 !important;
 }
 /* @common */
@@ -1257,7 +1263,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 :root {
     --enhancer-bg: rgba(255, 255, 255, 0.98) !important;
     --enhancer-fg: #1f2937 !important;
-    --enhancer-border: rgba(209, 213, 219, 0.6) !important;
+    --enhancer-border: rgba(107, 114, 128, 0.25) !important;
     --enhancer-primary: #4b5563 !important;
     --enhancer-secondary: #6b7280 !important;
     --enhancer-accent: #9ca3af !important;
@@ -1269,20 +1275,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: #4b5563 !important;
     --enhancer-badge-exp-bg: rgba(245, 158, 11, 0.1) !important;
     --enhancer-badge-exp-fg: #92400e !important;
-    --enhancer-input-bg: rgba(249, 250, 251, 0.9) !important;
+    --enhancer-input-bg: #e9eaed !important;
     --enhancer-input-fg: #1f2937 !important;
-    --enhancer-input-border: rgba(209, 213, 219, 0.8) !important;
+    --enhancer-input-border: rgba(107, 114, 128, 0.35) !important;
     --enhancer-tab-active: #4b5563 !important;
     --enhancer-tab-inactive: #9ca3af !important;
-    --enhancer-divider: linear-gradient(90deg, transparent, rgba(156, 163, 175, 0.4), transparent) !important;
-    --enhancer-select-bg: rgba(249, 250, 251, 0.9) !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(107, 114, 128, 0.3), transparent) !important;
+    --enhancer-select-bg: #e9eaed !important;
     --enhancer-select-fg: #1f2937 !important;
-    --enhancer-select-border: rgba(209, 213, 219, 0.8) !important;
+    --enhancer-select-border: rgba(107, 114, 128, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(229, 231, 235, 0.9), 0 8px 32px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 0 0 1px rgba(107, 114, 128, 0.22), 0 8px 32px rgba(0, 0, 0, 0.13) !important;
     backdrop-filter: blur(4px) !important;
-    border: 1px solid rgba(209, 213, 219, 0.5) !important;
+    border: 1px solid rgba(107, 114, 128, 0.2) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1290,7 +1296,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: rgba(249, 250, 251, 0.95) !important;
+    background: #e9eaed !important;
     color: #1f2937 !important;
 }
 /* @common */
@@ -1368,7 +1374,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 :root {
     --enhancer-bg: rgba(240, 255, 254, 0.98) !important;
     --enhancer-fg: #043237 !important;
-    --enhancer-border: rgba(6, 148, 162, 0.18) !important;
+    --enhancer-border: rgba(6, 148, 162, 0.3) !important;
     --enhancer-primary: #0694a2 !important;
     --enhancer-secondary: #7c3aed !important;
     --enhancer-accent: #06b6d4 !important;
@@ -1380,20 +1386,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     --enhancer-badge-fg: #0694a2 !important;
     --enhancer-badge-exp-bg: rgba(124, 58, 237, 0.1) !important;
     --enhancer-badge-exp-fg: #7c3aed !important;
-    --enhancer-input-bg: rgba(224, 255, 252, 0.9) !important;
+    --enhancer-input-bg: #b8f0eb !important;
     --enhancer-input-fg: #043237 !important;
-    --enhancer-input-border: rgba(6, 148, 162, 0.2) !important;
+    --enhancer-input-border: rgba(6, 148, 162, 0.4) !important;
     --enhancer-tab-active: #0694a2 !important;
     --enhancer-tab-inactive: #38bdf8 !important;
     --enhancer-divider: linear-gradient(90deg, transparent, rgba(6, 148, 162, 0.2), transparent) !important;
-    --enhancer-select-bg: rgba(240, 255, 254, 0.95) !important;
+    --enhancer-select-bg: #b8f0eb !important;
     --enhancer-select-fg: #043237 !important;
-    --enhancer-select-border: rgba(6, 148, 162, 0.22) !important;
+    --enhancer-select-border: rgba(6, 148, 162, 0.35) !important;
 }
 #yt-enhancer-settings {
-    box-shadow: 0 0 0 1px rgba(6, 148, 162, 0.2), 0 8px 32px rgba(6, 148, 162, 0.1) !important;
+    box-shadow: 0 0 0 1px rgba(6, 148, 162, 0.25), 0 8px 32px rgba(6, 148, 162, 0.15) !important;
     backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(6, 148, 162, 0.18) !important;
+    border: 1px solid rgba(6, 148, 162, 0.25) !important;
 }
 #yt-enhancer-settings h2 {
     font-weight: 700; font-size: 1.5em;
@@ -1403,7 +1409,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings select option,
 #yt-style-editor select option {
-    background: rgba(224, 255, 252, 0.95) !important;
+    background: #b8f0eb !important;
     color: #043237 !important;
 }
 /* @common */

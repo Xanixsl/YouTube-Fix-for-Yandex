@@ -1,21 +1,199 @@
-MIT License
+﻿Copyright (c) 2026 Xanixsl
+All Rights Reserved
 
-Copyright (c) 2025 Xanixsl
+=======================================================================
+        YouTube Fix for Yandex -- Proprietary Software License
+=======================================================================
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This license agreement ("License") is a legal agreement between you
+("User") and Xanixsl ("Author") for the use of YouTube Fix for Yandex
+("Software").
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+By downloading, installing, copying, or using the Software in any way,
+you agree to be bound by the terms of this License. If you do not agree
+to these terms, do not use the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+=======================================================================
+SECTION 1 -- GRANT OF RIGHTS
+=======================================================================
+
+Subject to the terms and conditions of this License, the Author
+hereby grants you a limited, non-exclusive, non-transferable,
+revocable, worldwide, royalty-free license to:
+
+  (a) Download and install the Software on your personal devices;
+  (b) Use the Software for personal, non-commercial purposes;
+  (c) Redistribute the Software in its ORIGINAL, UNMODIFIED form,
+      free of charge, provided all conditions in Section 2 are met.
+
+No other rights are granted. All rights not expressly granted herein
+are reserved by the Author.
+
+=======================================================================
+SECTION 2 -- CONDITIONS OF USE
+=======================================================================
+
+2.1 ATTRIBUTION
+    Any permitted redistribution or public mention of the Software
+    must include clear, visible credit to the original author:
+
+      Xanixsl -- https://github.com/Xanixsl/YouTube-Fix-for-Yandex
+
+    Attribution must appear in the same location and with equal or
+    greater prominence as any other credits.
+
+2.2 INTEGRITY OF LICENSE
+    This License text must be included, complete and unmodified,
+    with every permitted copy or redistribution of the Software.
+
+2.3 NO MISREPRESENTATION
+    You may not represent the Software as your own work, claim
+    authorship, or remove, obscure, or alter any notices of
+    copyright, authorship, or origin.
+
+=======================================================================
+SECTION 3 -- RESTRICTIONS
+=======================================================================
+
+Unless you have received explicit prior written permission from the
+Author, the following are strictly PROHIBITED:
+
+  (a) Modifying, altering, adapting, translating, patching, or
+      transforming the Software or any part thereof;
+
+  (b) Creating derivative works, forks, spin-offs, or works based
+      on the Software, whether in whole or in part;
+
+  (c) Reverse engineering, disassembling, decompiling, or attempting
+      to derive the source code or underlying algorithms;
+
+  (d) Sublicensing, selling, renting, leasing, lending, or otherwise
+      commercially exploiting the Software or any portion of it;
+
+  (e) Incorporating or bundling the Software into other products,
+      projects, or distributions without prior written consent;
+
+  (f) Rebranding, republishing, or redistribution under a different
+      name, identity, or URL;
+
+  (g) Using the Software to build a competing product or service;
+
+  (h) Removing, altering, or circumventing any copyright notices,
+      license texts, or attribution statements in the Software.
+
+=======================================================================
+SECTION 4 -- INTELLECTUAL PROPERTY
+=======================================================================
+
+The Software, including its source code, design, logic, user interface,
+documentation, and all related materials, is the exclusive intellectual
+property of Xanixsl and is protected by applicable copyright laws and
+international treaties.
+
+Nothing in this License transfers, assigns, or grants any ownership
+rights in the Software to the User. The Author retains all right, title,
+and interest in and to the Software.
+
+=======================================================================
+SECTION 5 -- DISCLAIMER OF WARRANTIES
+=======================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY
+OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE MAXIMUM EXTENT PERMITTED
+BY APPLICABLE LAW, THE AUTHOR EXPRESSLY DISCLAIMS ALL WARRANTIES,
+INCLUDING BUT NOT LIMITED TO:
+
+  -- ANY IMPLIED WARRANTIES OF MERCHANTABILITY;
+  -- FITNESS FOR A PARTICULAR PURPOSE OR USE CASE;
+  -- NON-INFRINGEMENT OF THIRD-PARTY RIGHTS;
+  -- ACCURACY, COMPLETENESS, OR RELIABILITY OF THE SOFTWARE;
+  -- UNINTERRUPTED, ERROR-FREE, OR SECURE OPERATION;
+  -- COMPATIBILITY WITH ANY BROWSER, EXTENSION MANAGER, OPERATING
+     SYSTEM, OR THIRD-PARTY SERVICE;
+  -- CONTINUED AVAILABILITY OR MAINTENANCE OF THE SOFTWARE.
+
+THE AUTHOR DOES NOT WARRANT THAT THE SOFTWARE WILL MEET YOUR
+REQUIREMENTS OR THAT ANY DEFECTS WILL BE CORRECTED.
+
+=======================================================================
+SECTION 6 -- LIMITATION OF LIABILITY
+=======================================================================
+
+TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL
+THE AUTHOR BE LIABLE FOR ANY:
+
+  -- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES;
+  -- LOSS OF PROFITS, REVENUE, DATA, OR BUSINESS OPPORTUNITIES;
+  -- LOSS OF GOODWILL OR REPUTATION;
+  -- BUSINESS INTERRUPTION OR LOSS OF BUSINESS INFORMATION;
+  -- PERSONAL INJURY OR PROPERTY DAMAGE;
+  -- DAMAGES ARISING FROM RELIANCE ON THE SOFTWARE;
+  -- DAMAGES CAUSED BY THIRD-PARTY SERVICES (INCLUDING YOUTUBE,
+     YANDEX BROWSER, TAMPERMONKEY, VIOLENTMONKEY, OR ANY PLATFORM
+     ON WHICH THE SOFTWARE OPERATES);
+  -- ANY OTHER PECUNIARY OR NON-PECUNIARY LOSS;
+
+WHETHER BASED ON CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT
+LIABILITY, OR ANY OTHER LEGAL THEORY, EVEN IF THE AUTHOR HAS BEEN
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+THE USER ASSUMES ALL RISKS ASSOCIATED WITH THE USE OF THE SOFTWARE.
+
+=======================================================================
+SECTION 7 -- THIRD-PARTY SERVICES
+=======================================================================
+
+The Software interacts with third-party platforms including YouTube
+(Google LLC) and Yandex Browser (Yandex LLC). The Author is not
+affiliated with, endorsed by, or sponsored by these companies.
+The Author makes no representations regarding the availability,
+reliability, or legality of using the Software with any third-party
+service. The User is solely responsible for complying with the terms
+of service of any platform used in conjunction with the Software.
+
+=======================================================================
+SECTION 8 -- TERMINATION
+=======================================================================
+
+This License is effective until terminated. Your rights under this
+License will terminate automatically and without notice if you fail
+to comply with any of its terms and conditions. Upon termination,
+you must immediately cease all use of the Software and destroy all
+copies in your possession or control.
+
+The Author reserves the right to revoke, modify, or discontinue
+this License or the Software at any time without prior notice.
+
+=======================================================================
+SECTION 9 -- GOVERNING LAW
+=======================================================================
+
+This License shall be governed by and construed in accordance with
+the laws of the jurisdiction of the Author's residence, without
+regard to its conflict of law principles. Any disputes arising under
+this License shall be subject to the exclusive jurisdiction of the
+courts in that jurisdiction.
+
+=======================================================================
+SECTION 10 -- SEVERABILITY
+=======================================================================
+
+If any provision of this License is found to be invalid, illegal,
+or unenforceable under applicable law, such provision shall be
+modified to the minimum extent necessary to make it enforceable,
+and the remaining provisions shall continue in full force and effect.
+
+=======================================================================
+SECTION 11 -- ENTIRE AGREEMENT
+=======================================================================
+
+This License constitutes the entire agreement between the User and
+the Author with respect to the Software and supersedes all prior
+or contemporaneous understandings, representations, or agreements.
+
+=======================================================================
+
+Copyright (c) 2026 Xanixsl. All Rights Reserved.
+
+For permissions beyond the scope of this License, contact the author:
+https://github.com/Xanixsl/YouTube-Fix-for-Yandex/discussions
