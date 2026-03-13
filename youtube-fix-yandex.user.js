@@ -95,7 +95,7 @@
             themeSection: "Settings window theme", themeDesc: "Appearance of this settings window",
             themeAuto: "Auto (system)", themeLight: "Light", themeDark: "Dark", fontSize: "Font size:",
             styleSection: "Color scheme", styleDesc: "Color palette and style of the settings window",
-            styleYoutube: "YouTube", styleImproved: "Improved (glass + dropdowns)", styleMidnight: "Midnight", styleSunset: "Sunset", styleOcean: "Ocean", styleEmerald: "Emerald", styleRose: "Rose", styleDarkPink: "Dark Pink", styleFrost: "Frost", styleSky: "Sky", styleClassic: "Classic", styleCustom: "Custom",
+            styleYoutube: "YouTube", styleImproved: "Improved (glass + dropdowns)", styleMidnight: "Midnight", styleSunset: "Sunset", styleOcean: "Ocean", styleEmerald: "Emerald", styleRose: "Rose", styleDarkPink: "Dark Pink", styleFrost: "Frost", styleSky: "Sky", styleClassic: "Classic", styleAurora: "Aurora", styleCustom: "Custom",
             customColorsSection: "Fine-tune colors", customColorsDesc: "Manually adjust individual colors (overrides current scheme)",
             customColorEnabled: "Enable custom colors", customColorBg: "Background", customColorFg: "Text",
             customColorPrimary: "Accent color", customColorBorder: "Borders", customColorBtnBorder: "Button border",
@@ -103,7 +103,7 @@
             customColorBadgeBg: "Badge background", customColorBadgeFg: "Badge text",
             customColorInputBg: "Input background", customColorInputFg: "Input text", customColorInputBorder: "Input border",
             customColorSelectBg: "Dropdown background", customColorSelectFg: "Dropdown text", customColorSelectBorder: "Dropdown border",
-            customColorReset: "Reset custom colors",
+            customColorReset: "Reset custom colors", customColorLoadFromTheme: "\u21ba Load from theme",
             styleEditorBtn: "Open Style Editor", styleEditorTitle: "Style Editor",
             styleEditorPresets: "Presets", styleEditorColors: "Colors", styleEditorBackground: "Background", styleEditorCSS: "Custom CSS",
             presetSave: "Save preset", presetLoad: "Load", presetDelete: "Delete", presetExport: "Export", presetImport: "Import",
@@ -175,7 +175,7 @@
             themeSection: "Тема окна настроек", themeDesc: "Внешний вид этого окна с настройками",
             themeAuto: "Авто (система)", themeLight: "Светлая", themeDark: "Тёмная", fontSize: "Размер шрифта:",
             styleSection: "Цветовая схема", styleDesc: "Палитра цветов и стиль окна настроек",
-            styleYoutube: "YouTube", styleImproved: "Улучшенная (glass + выпадающие)", styleMidnight: "Полночь", styleSunset: "Закат", styleOcean: "Океан", styleEmerald: "Изумруд", styleRose: "Роза", styleDarkPink: "Тёмно-розовая", styleFrost: "Мороз", styleSky: "Небо", styleClassic: "Классика", styleCustom: "Своя",
+            styleYoutube: "YouTube", styleImproved: "Улучшенная (glass + выпадающие)", styleMidnight: "Полночь", styleSunset: "Закат", styleOcean: "Океан", styleEmerald: "Изумруд", styleRose: "Роза", styleDarkPink: "Тёмно-розовая", styleFrost: "Мороз", styleSky: "Небо", styleClassic: "Классика", styleAurora: "Аврора", styleCustom: "Своя",
             customColorsSection: "Тонкая настройка цветов", customColorsDesc: "Ручная настройка отдельных цветов (переопределяет текущую схему)",
             customColorEnabled: "Включить свои цвета", customColorBg: "Фон", customColorFg: "Текст",
             customColorPrimary: "Акцентный цвет", customColorBorder: "Рамки", customColorBtnBorder: "Рамка кнопки",
@@ -183,7 +183,7 @@
             customColorBadgeBg: "Фон бейджа", customColorBadgeFg: "Текст бейджа",
             customColorInputBg: "Фон ввода", customColorInputFg: "Текст ввода", customColorInputBorder: "Рамка ввода",
             customColorSelectBg: "Фон списка", customColorSelectFg: "Текст списка", customColorSelectBorder: "Рамка списка",
-            customColorReset: "Сбросить свои цвета",
+            customColorReset: "Сбросить свои цвета", customColorLoadFromTheme: "\u21ba Загрузить из темы",
             styleEditorBtn: "Открыть редактор стилей", styleEditorTitle: "Редактор стилей",
             styleEditorPresets: "Пресеты", styleEditorColors: "Цвета", styleEditorBackground: "Фон", styleEditorCSS: "Свой CSS",
             presetSave: "Сохранить пресет", presetLoad: "Загрузить", presetDelete: "Удалить", presetExport: "Экспорт", presetImport: "Импорт",
@@ -1494,6 +1494,118 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings button:hover {
     transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }`,
+        // --- Aurora (Северное сияние) ---
+        aurora: `/* @base */
+:root {
+    --enhancer-radius: 16px !important;
+    --enhancer-btn-radius: 12px !important;
+    --enhancer-transition: all 0.3s ease !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #030d12 !important;
+    --enhancer-fg: #d4f5ee !important;
+    --enhancer-border: rgba(0, 229, 204, 0.15) !important;
+    --enhancer-primary: #00e5cc !important;
+    --enhancer-secondary: #a855f7 !important;
+    --enhancer-accent: #4ade80 !important;
+    --enhancer-btn-border: #00e5cc !important;
+    --enhancer-btn-fg: #00e5cc !important;
+    --enhancer-btn-hover-bg: #00e5cc !important;
+    --enhancer-btn-hover-fg: #030d12 !important;
+    --enhancer-badge-bg: rgba(0, 229, 204, 0.15) !important;
+    --enhancer-badge-fg: #00e5cc !important;
+    --enhancer-badge-exp-bg: rgba(168, 85, 247, 0.2) !important;
+    --enhancer-badge-exp-fg: #d8b4fe !important;
+    --enhancer-input-bg: #051820 !important;
+    --enhancer-input-fg: #d4f5ee !important;
+    --enhancer-input-border: rgba(0, 229, 204, 0.2) !important;
+    --enhancer-tab-active: #00e5cc !important;
+    --enhancer-tab-inactive: #2a8a80 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(0, 229, 204, 0.35), transparent) !important;
+    --enhancer-select-bg: #051820 !important;
+    --enhancer-select-fg: #d4f5ee !important;
+    --enhancer-select-border: rgba(0, 229, 204, 0.22) !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(0, 229, 204, 0.2), 0 8px 40px rgba(0, 0, 0, 0.7), 0 0 60px rgba(0, 229, 204, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(0, 229, 204, 0.18) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(90deg, #00e5cc, #4ade80, #a855f7);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #051820 !important;
+    color: #d4f5ee !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: rgba(240, 255, 254, 0.98) !important;
+    --enhancer-fg: #043237 !important;
+    --enhancer-border: rgba(6, 148, 162, 0.18) !important;
+    --enhancer-primary: #0694a2 !important;
+    --enhancer-secondary: #7c3aed !important;
+    --enhancer-accent: #06b6d4 !important;
+    --enhancer-btn-border: #0694a2 !important;
+    --enhancer-btn-fg: #0694a2 !important;
+    --enhancer-btn-hover-bg: #0694a2 !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: rgba(6, 148, 162, 0.08) !important;
+    --enhancer-badge-fg: #0694a2 !important;
+    --enhancer-badge-exp-bg: rgba(124, 58, 237, 0.1) !important;
+    --enhancer-badge-exp-fg: #7c3aed !important;
+    --enhancer-input-bg: rgba(224, 255, 252, 0.9) !important;
+    --enhancer-input-fg: #043237 !important;
+    --enhancer-input-border: rgba(6, 148, 162, 0.2) !important;
+    --enhancer-tab-active: #0694a2 !important;
+    --enhancer-tab-inactive: #38bdf8 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(6, 148, 162, 0.2), transparent) !important;
+    --enhancer-select-bg: rgba(240, 255, 254, 0.95) !important;
+    --enhancer-select-fg: #043237 !important;
+    --enhancer-select-border: rgba(6, 148, 162, 0.22) !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(6, 148, 162, 0.2), 0 8px 32px rgba(6, 148, 162, 0.1) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(6, 148, 162, 0.18) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(90deg, #0694a2, #06b6d4, #38bdf8);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: rgba(224, 255, 252, 0.95) !important;
+    color: #043237 !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0, 229, 204, 0.3) !important;
 }
 #yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
 #yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
@@ -3583,6 +3695,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 tab.style.borderBottomColor = 'var(--enhancer-primary,#3ea6ff)';
                 editorPanels.forEach((p, j) => { p.style.display = j === i ? 'block' : 'none'; });
             });
+            tab.addEventListener('mouseenter', () => {
+                tab.style.setProperty('background', 'rgba(128,128,128,0.12)', 'important');
+            });
+            tab.addEventListener('mouseleave', () => {
+                tab.style.setProperty('background', 'none', 'important');
+            });
             editorTabs.push(tab);
             editorPanels.push(content);
             tabBar.appendChild(tab);
@@ -3653,6 +3771,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         controlsWrapper.style.cssText = 'transition:opacity 0.25s,filter 0.25s;';
         updateControlsState(!!config.customColorsEnabled);
 
+        // Pre-populate from current theme preset as defaults
+        const themeKey = config.settingsStyle || 'youtube';
+        const isDarkMode = config.enhancerTheme === 'dark' ||
+            (config.enhancerTheme === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        const themePreset = (_BUILTIN_PRESET_COLORS[themeKey] || _BUILTIN_PRESET_COLORS['youtube'])[isDarkMode ? 'dark' : 'light'] || {};
+
         // Color grid (4 columns)
         const grid = document.createElement('div');
         grid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:10px;';
@@ -3665,23 +3789,43 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             ['selectBg', L.customColorSelectBg], ['selectFg', L.customColorSelectFg], ['selectBorder', L.customColorSelectBorder]
         ];
 
-        // Helper: parse any CSS color to hex (for color input)
-        function colorToHex(str) {
-            if (!str) return '#000000';
-            if (/^#[0-9a-f]{6}$/i.test(str)) return str;
+        // Helper: parse any CSS color string → { hex, alpha }
+        function parseColorForPicker(str) {
+            if (!str) return { hex: '#000000', alpha: 1 };
+            const rgbaM = str.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\s*\)/i);
+            if (rgbaM) {
+                const r = +rgbaM[1], g = +rgbaM[2], b = +rgbaM[3];
+                const a = rgbaM[4] !== undefined ? parseFloat(rgbaM[4]) : 1;
+                return { hex: '#' + [r,g,b].map(v => Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join(''), alpha: a };
+            }
+            if (/^#[0-9a-f]{8}$/i.test(str)) {
+                return { hex: str.slice(0,7), alpha: parseInt(str.slice(7,9),16)/255 };
+            }
+            if (/^#[0-9a-f]{6}$/i.test(str)) return { hex: str, alpha: 1 };
             const d = document.createElement('div');
             d.style.color = str;
             document.body.appendChild(d);
             const computed = getComputedStyle(d).color;
             d.remove();
-            const m = computed.match(/(\d+)/g);
-            if (m && m.length >= 3) return '#' + m.slice(0,3).map(c => (+c).toString(16).padStart(2,'0')).join('');
-            return '#000000';
+            const m = computed.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\s*\)/i);
+            if (m) {
+                const r = +m[1], g = +m[2], b = +m[3];
+                const a = m[4] !== undefined ? parseFloat(m[4]) : 1;
+                return { hex: '#' + [r,g,b].map(v => Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join(''), alpha: a };
+            }
+            return { hex: '#000000', alpha: 1 };
+        }
+
+        function buildColorValue(hex, alpha) {
+            if (alpha >= 0.999) return hex;
+            const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+            return 'rgba(' + r + ',' + g + ',' + b + ',' + parseFloat(alpha.toFixed(3)) + ')';
         }
 
         const colorInputs = {};
-
         colorFields.forEach(([key, label]) => {
+            const rawVal = cc[key] || themePreset[key] || '';
+            const { hex: initHex, alpha: initAlpha } = parseColorForPicker(rawVal);
             const cell = document.createElement('div');
             cell.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border-radius:10px;background:var(--enhancer-input-bg,#1f1f1f);border:1px solid var(--enhancer-input-border,#333);transition:all 0.2s;';
             // Color + text input row
@@ -3689,16 +3833,29 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             colorRow.style.cssText = 'display:flex;align-items:center;gap:4px;width:100%;';
             const colorInput = document.createElement('input');
             colorInput.type = 'color';
-            colorInput.value = colorToHex(cc[key]);
+            colorInput.value = initHex;
             colorInput.dataset.colorKey = key;
             colorInput.style.cssText = 'width:32px;height:26px;border:none;border-radius:6px;cursor:pointer;padding:0;background:none;flex-shrink:0;';
             const textInput = document.createElement('input');
             textInput.type = 'text';
-            textInput.value = cc[key] || '';
+            textInput.value = rawVal;
             textInput.placeholder = '#hex / rgba()';
             textInput.style.cssText = 'flex:1;min-width:0;padding:3px 5px;font-size:0.7em;border-radius:5px;border:1px solid var(--enhancer-input-border,#333);background:var(--enhancer-input-bg,#1a1a1a);color:var(--enhancer-input-fg,#ccc);font-family:monospace;';
             colorRow.appendChild(colorInput);
             colorRow.appendChild(textInput);
+            // Alpha slider row
+            const alphaRow = document.createElement('div');
+            alphaRow.style.cssText = 'display:flex;align-items:center;gap:4px;width:100%;';
+            const alphaSlider = document.createElement('input');
+            alphaSlider.type = 'range';
+            alphaSlider.min = '0'; alphaSlider.max = '100'; alphaSlider.step = '1';
+            alphaSlider.value = String(Math.round(initAlpha * 100));
+            alphaSlider.style.cssText = 'flex:1;height:4px;cursor:pointer;accent-color:var(--enhancer-primary,#3ea6ff);';
+            const alphaVal = document.createElement('span');
+            alphaVal.textContent = Math.round(initAlpha * 100) + '%';
+            alphaVal.style.cssText = 'font-size:0.65em;min-width:28px;text-align:right;opacity:0.7;font-family:monospace;';
+            alphaRow.appendChild(alphaSlider);
+            alphaRow.appendChild(alphaVal);
             const lbl = document.createElement('span');
             lbl.textContent = label;
             lbl.style.cssText = 'font-size:0.72em;text-align:center;opacity:0.8;line-height:1.2;';
@@ -3710,41 +3867,61 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             clearBtn.addEventListener('click', () => {
                 colorInput.value = '#000000';
                 textInput.value = '';
+                alphaSlider.value = '100';
+                alphaVal.textContent = '100%';
                 cc[key] = '';
                 config.customColors = cc;
                 storage.set('ytEnhancerConfig', config);
                 if (config.customColorsEnabled) applyGlobalStyles();
             });
-            colorInput.addEventListener('input', () => {
-                textInput.value = colorInput.value;
-                cc[key] = colorInput.value;
+            const updateFromPicker = () => {
+                const a = parseInt(alphaSlider.value) / 100;
+                const val = buildColorValue(colorInput.value, a);
+                textInput.value = val;
+                cc[key] = val;
                 config.customColors = cc;
                 storage.set('ytEnhancerConfig', config);
                 if (config.customColorsEnabled) applyGlobalStyles();
+            };
+            colorInput.addEventListener('input', updateFromPicker);
+            alphaSlider.addEventListener('input', () => {
+                alphaVal.textContent = alphaSlider.value + '%';
+                updateFromPicker();
             });
             textInput.addEventListener('change', () => {
                 const v = textInput.value.trim();
                 cc[key] = v;
                 config.customColors = cc;
-                if (/^#[0-9a-f]{6}$/i.test(v)) colorInput.value = v;
+                const { hex, alpha } = parseColorForPicker(v);
+                colorInput.value = hex;
+                alphaSlider.value = String(Math.round(alpha * 100));
+                alphaVal.textContent = Math.round(alpha * 100) + '%';
                 storage.set('ytEnhancerConfig', config);
                 if (config.customColorsEnabled) applyGlobalStyles();
             });
-            colorInputs[key] = { colorInput, textInput };
+            colorInputs[key] = { colorInput, textInput, alphaSlider, alphaVal };
             cell.appendChild(colorRow);
+            cell.appendChild(alphaRow);
             cell.appendChild(lbl);
             cell.appendChild(clearBtn);
             grid.appendChild(cell);
         });
         controlsWrapper.appendChild(grid);
 
+        // Action buttons row
+        const btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;';
+
         // Reset button
         const resetBtn = document.createElement('button');
         resetBtn.textContent = L.customColorReset;
-        resetBtn.style.cssText = 'margin-top:14px;padding:8px 18px;font-size:0.9em;cursor:pointer;';
+        resetBtn.style.cssText = 'padding:8px 18px;font-size:0.9em;cursor:pointer;';
         resetBtn.addEventListener('click', () => {
             Object.keys(cc).forEach(k => { cc[k] = ''; });
-            Object.values(colorInputs).forEach(({ colorInput, textInput }) => { colorInput.value = '#000000'; textInput.value = ''; });
+            Object.values(colorInputs).forEach(({ colorInput, textInput, alphaSlider, alphaVal }) => {
+                colorInput.value = '#000000'; textInput.value = '';
+                alphaSlider.value = '100'; alphaVal.textContent = '100%';
+            });
             config.customColors = cc;
             config.customColorsEnabled = false;
             toggleCb.checked = false;
@@ -3752,8 +3929,29 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             storage.set('ytEnhancerConfig', config);
             applyGlobalStyles();
         });
-        controlsWrapper.appendChild(resetBtn);
+        btnRow.appendChild(resetBtn);
 
+        // Load from current theme button
+        const loadBtn = document.createElement('button');
+        loadBtn.textContent = L.customColorLoadFromTheme || '\u21ba Load from theme';
+        loadBtn.style.cssText = 'padding:8px 18px;font-size:0.9em;cursor:pointer;';
+        loadBtn.addEventListener('click', () => {
+            colorFields.forEach(([key]) => {
+                const val = themePreset[key] || '';
+                cc[key] = val;
+                const { hex, alpha } = parseColorForPicker(val);
+                colorInputs[key].colorInput.value = hex;
+                colorInputs[key].textInput.value = val;
+                colorInputs[key].alphaSlider.value = String(Math.round(alpha * 100));
+                colorInputs[key].alphaVal.textContent = Math.round(alpha * 100) + '%';
+            });
+            config.customColors = cc;
+            storage.set('ytEnhancerConfig', config);
+            if (config.customColorsEnabled) applyGlobalStyles();
+        });
+        btnRow.appendChild(loadBtn);
+
+        controlsWrapper.appendChild(btnRow);
         container.appendChild(controlsWrapper);
 
         toggleCb.addEventListener('change', () => {
@@ -3809,6 +4007,10 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         classic: {
             dark: { bg:'#111111', fg:'#e5e7eb', border:'rgba(209,213,219,0.15)', primary:'#6b7280', btnBorder:'#6b7280', btnFg:'#d1d5db', btnHoverBg:'#374151', btnHoverFg:'#f9fafb', badgeBg:'rgba(156,163,175,0.15)', badgeFg:'#9ca3af', inputBg:'#1f1f1f', inputFg:'#e5e7eb', inputBorder:'rgba(209,213,219,0.2)', selectBg:'#1f1f1f', selectFg:'#e5e7eb', selectBorder:'rgba(209,213,219,0.2)' },
             light: { bg:'#ffffff', fg:'#1f2937', border:'rgba(209,213,219,0.6)', primary:'#4b5563', btnBorder:'#9ca3af', btnFg:'#4b5563', btnHoverBg:'#4b5563', btnHoverFg:'#ffffff', badgeBg:'rgba(156,163,175,0.1)', badgeFg:'#4b5563', inputBg:'#f9fafb', inputFg:'#1f2937', inputBorder:'rgba(209,213,219,0.8)', selectBg:'#f9fafb', selectFg:'#1f2937', selectBorder:'rgba(209,213,219,0.8)' }
+        },
+        aurora: {
+            dark: { bg:'#030d12', fg:'#d4f5ee', border:'rgba(0,229,204,0.15)', primary:'#00e5cc', btnBorder:'#00e5cc', btnFg:'#00e5cc', btnHoverBg:'#00e5cc', btnHoverFg:'#030d12', badgeBg:'rgba(0,229,204,0.15)', badgeFg:'#00e5cc', inputBg:'#051820', inputFg:'#d4f5ee', inputBorder:'rgba(0,229,204,0.2)', selectBg:'#051820', selectFg:'#d4f5ee', selectBorder:'rgba(0,229,204,0.22)' },
+            light: { bg:'rgba(240,255,254,0.98)', fg:'#043237', border:'rgba(6,148,162,0.18)', primary:'#0694a2', btnBorder:'#0694a2', btnFg:'#0694a2', btnHoverBg:'#0694a2', btnHoverFg:'#ffffff', badgeBg:'rgba(6,148,162,0.08)', badgeFg:'#0694a2', inputBg:'rgba(224,255,252,0.9)', inputFg:'#043237', inputBorder:'rgba(6,148,162,0.2)', selectBg:'rgba(240,255,254,0.95)', selectFg:'#043237', selectBorder:'rgba(6,148,162,0.22)' }
         }
     };
 
@@ -3836,7 +4038,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             { key: 'darkpink', label: L.styleDarkPink },
             { key: 'frost', label: L.styleFrost },
             { key: 'sky', label: L.styleSky },
-            { key: 'classic', label: L.styleClassic }
+            { key: 'classic', label: L.styleClassic },
+            { key: 'aurora', label: L.styleAurora }
         ];
 
         const builtinCards = [];
