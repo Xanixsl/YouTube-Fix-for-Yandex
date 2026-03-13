@@ -1090,6 +1090,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // --- Управление #frosted-glass: скрыть полностью или задать высоту вручную ---
 
     function applyChipbarBgFix() {
+        if (isYandexBrowser()) return;
         if (isPlaylistModeActive && config.playlistModeFeature) return;
 
         if (config.hideChipbarBg) {
