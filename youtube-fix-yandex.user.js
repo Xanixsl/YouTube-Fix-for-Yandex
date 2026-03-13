@@ -1031,15 +1031,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 }
             `;
         }
-        // Фон шапки (чипбара) — для других браузеров
-        if (config.hideChipbarBg) {
-            mainCSS += `
-                ytd-masthead[frosted-glass-mode="with-chipbar"] #background,
-                ytd-masthead #background {
-                    display: none !important;
-                }
-            `;
-        } else {
+        // Высота фона чипбара (CSS fallback; скрытие обрабатывается через JS в applyChipbarBgFix)
+        if (!config.hideChipbarBg) {
             mainCSS += `
                 ytd-masthead[frosted-glass-mode="with-chipbar"] #background,
                 ytd-masthead #background {
@@ -1096,11 +1089,47 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             `;
         }
         addStyles(mainCSS, 'yt-enhancer-main-features');
+        applyChipbarBgFix();
         if (config.fixChannelCard) {
             fixChannelCardOnChannelTabs();
         }
         // Always restore chips on Videos tab so hiding chips on home never breaks channel sorting
         restoreChipsOnVideosTab();
+    }
+
+    // --- Скрыть фон чипбара через прямое DOM-манипулирование (обходит Shadow DOM и inline-стили YouTube) ---
+
+    function applyChipbarBgFix() {
+        if (!config.hideChipbarBg || (isPlaylistModeActive && config.playlistModeFeature)) return;
+        const fixBg = () => {
+            // Попытка 1: обычный DOM
+            let bg = document.querySelector('ytd-masthead #background');
+            // Попытка 2: Shadow DOM
+            if (!bg) {
+                const masthead = document.querySelector('ytd-masthead');
+                if (masthead && masthead.shadowRoot) {
+                    bg = masthead.shadowRoot.querySelector('#background');
+                }
+            }
+            if (bg) {
+                bg.style.setProperty('display', 'none', 'important');
+                bg.style.setProperty('height', '0', 'important');
+                bg.style.setProperty('min-height', '0', 'important');
+            }
+            // Также скрываем через атрибут frosted-glass-mode
+            const mastheadEl = document.querySelector('ytd-masthead');
+            if (mastheadEl) {
+                const bgAlt = mastheadEl.querySelector('#background');
+                if (bgAlt && bgAlt !== bg) {
+                    bgAlt.style.setProperty('display', 'none', 'important');
+                    bgAlt.style.setProperty('height', '0', 'important');
+                }
+            }
+        };
+        fixBg();
+        if (!_unsafeWin.__ytEnhancerChipbarBgInterval) {
+            _unsafeWin.__ytEnhancerChipbarBgInterval = setInterval(fixBg, 2000);
+        }
     }
 
     // --- Фикс карточки канала на всех вкладках ---
