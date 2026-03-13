@@ -3698,12 +3698,15 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             // setProperty 'important' to always beat any stylesheet rule including YouTube's own CSS
             const INACTIVE_COLOR = 'var(--enhancer-tab-inactive,#888)';
             const ACTIVE_COLOR   = 'var(--enhancer-primary,#3ea6ff)';
+            const ACTIVE_BG      = 'rgba(62,166,255,0.13)';
+            const ACTIVE_SHADOW  = '0 0 8px rgba(62,166,255,0.5)';
 
             const setActive = () => {
                 tab.dataset.tabActive = '1';
                 tab.style.setProperty('color', ACTIVE_COLOR, 'important');
                 tab.style.setProperty('border-bottom-color', ACTIVE_COLOR, 'important');
-                tab.style.setProperty('background', 'rgba(var(--enhancer-primary-rgb,62,166,255),0.10)', 'important');
+                tab.style.setProperty('background', ACTIVE_BG, 'important');
+                tab.style.setProperty('text-shadow', ACTIVE_SHADOW, 'important');
                 tab.style.fontWeight = '800';
                 tab.style.fontSize = '1.1em';
                 dot.style.opacity = '1';
@@ -3713,6 +3716,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 tab.style.setProperty('color', INACTIVE_COLOR, 'important');
                 tab.style.setProperty('border-bottom-color', 'transparent', 'important');
                 tab.style.setProperty('background', 'none', 'important');
+                tab.style.setProperty('text-shadow', 'none', 'important');
                 tab.style.fontWeight = '600';
                 tab.style.fontSize = '1.05em';
                 dot.style.opacity = '0';
@@ -3723,26 +3727,24 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             const content = document.createElement('div');
             content.style.cssText = `padding:18px 22px;display:${i === 0 ? 'block' : 'none'};`;
             tab.addEventListener('click', () => {
-                editorTabs.forEach(t => { if (t !== tab) { t.dataset.tabActive = ''; t.style.setProperty('color', INACTIVE_COLOR, 'important'); t.style.setProperty('border-bottom-color', 'transparent', 'important'); t.style.setProperty('background', 'none', 'important'); t.style.fontWeight = '600'; t.style.fontSize = '1.05em'; t.children[0].style.opacity = '0'; } });
+                editorTabs.forEach(t => { if (t !== tab) { t.dataset.tabActive = ''; t.style.setProperty('color', INACTIVE_COLOR, 'important'); t.style.setProperty('border-bottom-color', 'transparent', 'important'); t.style.setProperty('background', 'none', 'important'); t.style.setProperty('text-shadow', 'none', 'important'); t.style.fontWeight = '600'; t.style.fontSize = '1.05em'; t.children[0].style.opacity = '0'; } });
                 setActive();
                 editorPanels.forEach((p, j) => { p.style.display = j === i ? 'block' : 'none'; });
             });
             tab.addEventListener('mouseenter', () => {
-                tab.style.setProperty('background', 'none', 'important');
-                if (!tab.dataset.tabActive) {
-                    const themeKey = config.settingsStyle || 'youtube';
-                    const isDark = config.enhancerTheme === 'dark' ||
-                        (config.enhancerTheme === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
-                    const preset = (_BUILTIN_PRESET_COLORS[themeKey] || _BUILTIN_PRESET_COLORS['youtube'])[isDark ? 'dark' : 'light'] || {};
-                    const hoverColor = preset.fg || (isDark ? '#ffffff' : '#111111');
-                    tab.style.setProperty('color', hoverColor, 'important');
-                }
+                if (tab.dataset.tabActive) return; // активная вкладка — ничего не трогаем
+                const themeKey = config.settingsStyle || 'youtube';
+                const isDark = config.enhancerTheme === 'dark' ||
+                    (config.enhancerTheme === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+                const preset = (_BUILTIN_PRESET_COLORS[themeKey] || _BUILTIN_PRESET_COLORS['youtube'])[isDark ? 'dark' : 'light'] || {};
+                const hoverColor = preset.fg || (isDark ? '#ffffff' : '#111111');
+                tab.style.setProperty('color', hoverColor, 'important');
+                tab.style.setProperty('text-shadow', `0 0 6px ${hoverColor}55`, 'important');
             });
             tab.addEventListener('mouseleave', () => {
-                if (!tab.dataset.tabActive) {
-                    tab.style.setProperty('color', INACTIVE_COLOR, 'important');
-                    tab.style.setProperty('background', 'none', 'important');
-                }
+                if (tab.dataset.tabActive) return; // активная вкладка — ничего не трогаем
+                tab.style.setProperty('color', INACTIVE_COLOR, 'important');
+                tab.style.setProperty('text-shadow', 'none', 'important');
             });
             editorTabs.push(tab);
             editorPanels.push(content);
