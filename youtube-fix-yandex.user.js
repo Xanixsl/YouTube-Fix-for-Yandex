@@ -3051,38 +3051,30 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             fnTm.appendChild(fnDAbold);
             fnTm.appendChild(document.createTextNode(' \u0438 '));
             fnTm.appendChild(fnBBold);
-            fnTm.appendChild(document.createTextNode(' \u043F\u0440\u0438\u043D\u0430\u0434\u043B\u0435\u0436\u0430\u0442 '));
+            fnTm.appendChild(document.createTextNode(' \u044F\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0441\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0441\u0442\u044C\u044E '));
             fnTm.appendChild(fnOwner);
-            fnTm.appendChild(document.createTextNode('. \u0418\u043A\u043E\u043D\u043A\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u044E\u0442\u0441\u044F \u0438\u0441\u043A\u043B\u044E\u0447\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0438\u0434\u0435\u043D\u0442\u0438\u0444\u0438\u043A\u0430\u0446\u0438\u0438 \u0441\u0435\u0440\u0432\u0438\u0441\u043E\u0432.'));
+            fnTm.appendChild(document.createTextNode(' (\u0440\u0435\u0433. \u2116\u00A077667576, \u0413\u043E\u043D\u043A\u043E\u043D\u0433).'));
         } else {
-            fnTm.appendChild(document.createTextNode('Trademarks '));
             fnTm.appendChild(fnDAbold);
             fnTm.appendChild(document.createTextNode(' and '));
             fnTm.appendChild(fnBBold);
-            fnTm.appendChild(document.createTextNode(' are property of '));
+            fnTm.appendChild(document.createTextNode(' are trademarks of '));
             fnTm.appendChild(fnOwner);
-            fnTm.appendChild(document.createTextNode('. Icons used solely for service identification.'));
+            fnTm.appendChild(document.createTextNode(' (reg. \u2116\u00A077667576, Hong Kong).'));
         }
 
-        // Line 2: license notice (bilingual) + CC BY-ND 4.0 link
+        // Line 2: license link only
         const fnLic = document.createElement('span');
         fnLic.style.cssText = 'display:block;margin-top:3px;';
         const fnLicLink = document.createElement('a');
-        fnLicLink.href = 'https://creativecommons.org/licenses/by-nd/4.0/';
+        fnLicLink.href = 'https://creativecommons.org/licenses/by-nd/4.0/deed.en';
         fnLicLink.target = '_blank'; fnLicLink.rel = 'noopener noreferrer';
         fnLicLink.textContent = 'CC BY-ND 4.0';
         fnLicLink.style.cssText = 'color:inherit;text-decoration:underline;';
-        if (_isRu) {
-            fnLic.appendChild(document.createTextNode('\u041B\u0438\u0446\u0435\u043D\u0437\u0438\u044F\u00A0'));
-            fnLic.appendChild(fnLicLink);
-            fnLic.appendChild(document.createTextNode('\u00A0\u2014 \u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0438 \u0440\u0430\u0441\u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u044B, \u0432\u043D\u0435\u0441\u0435\u043D\u0438\u0435 \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439 \u0431\u0435\u0437 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u0440\u0430\u00A0\u2014\u00A0\u043D\u0435\u0442.'));
-        } else {
-            fnLic.appendChild(document.createTextNode('License\u00A0'));
-            fnLic.appendChild(fnLicLink);
-            fnLic.appendChild(document.createTextNode('\u00A0\u2014 copying & distribution allowed, modifications without author\u2019s permission are not.'));
-        }
+        fnLic.appendChild(document.createTextNode(_isRu ? '\u041B\u0438\u0446\u0435\u043D\u0437\u0438\u044F:\u00A0' : 'License:\u00A0'));
+        fnLic.appendChild(fnLicLink);
 
-        // Line 3: copyright
+        // Line 3: copyright + GitHub
         const fnCopy = document.createElement('span');
         fnCopy.style.cssText = 'display:block;margin-top:3px;';
         const fnAuthorB = document.createElement('b'); fnAuthorB.textContent = 'Xanix';
