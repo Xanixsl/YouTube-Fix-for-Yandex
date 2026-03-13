@@ -55,7 +55,7 @@
             confirmReset: "Are you sure you want to reset all settings to default?",
             mainSection: "Interface", mainDesc: "Display and navigation options for all browsers",
             hideChips: "Hide chips (filters)", hideChipsDesc: "Hides the filter bar on the home page and category sections (chips are always preserved on channel pages)",
-            chipbarBgHeight: "Chipbar background height (px)",
+            chipbarBgHeight: "Chipbar background height (px)", chipbarBgHeightDesc: "Adjusts the height of the \"frosted-glass\" background strip below the top bar. Set to 0 to fully remove it.",
             hideChipbarBg: "Hide chipbar background", hideChipbarBgDesc: "Completely hides the masthead background strip (for non-Yandex browsers)",
             compactMode: "Compact mode", compactModeDesc: "Reduces spacing between videos for denser layout",
             hideShorts: "Hide Shorts", hideShortsDesc: "Removes Shorts section and recommendations",
@@ -81,7 +81,9 @@
             yandexFixFullscreen: "Fix fullscreen mode", yandexFixFullscreenDesc: "Fixes toolbar artifacts and z-index issues in fullscreen video mode",
             yandexFixPlayerControls: "Fix player controls", yandexFixPlayerControlsDesc: "Fixes rendering issues with video player controls in Yandex Browser",
             yandexSection: "Yandex grid settings", yandexDesc: "Optimize video grid for Yandex Browser",
-            yandexVideoCount: "Videos per row", yandexChipbarMargin: "Chipbar shift (px)", yandexVideoMargin: "Video block shift (px)",
+            yandexVideoCount: "Videos per row", yandexVideoCountDesc: "Number of video cards displayed in one row on the home feed.",
+            yandexChipbarMargin: "Chipbar shift (px)", yandexChipbarMarginDesc: "Vertical offset of the chip filter bar. Use negative values to move it up when it overlaps the video grid.",
+            yandexVideoMargin: "Video block shift (px)", yandexVideoMarginDesc: "Vertical offset of the video grid block. Compensates for layout gaps caused by Yandex Browser optimizations.",
             yandexExpSection: "Experimental features", yandexExpDesc: "Use with caution, may be unstable",
             yandexGridFix: "Fix video grid", yandexGridFixDesc: "Fixes 3-videos-per-row bug",
             yandexPerf: "Performance mode", yandexPerfDesc: "Improves performance in Yandex Browser",
@@ -133,7 +135,7 @@
             confirmReset: "Вы уверены, что хотите сбросить все настройки к значениям по умолчанию?",
             mainSection: "Интерфейс", mainDesc: "Параметры отображения и навигации для всех браузеров",
             hideChips: "Скрыть чипсы (фильтры)", hideChipsDesc: "Скрывает полосу с фильтрами только на главной странице и разделах (на страницах каналов чипсы всегда сохраняются)",
-            chipbarBgHeight: "Высота фона чипбара (px)",
+            chipbarBgHeight: "Высота фона чипбара (px)", chipbarBgHeightDesc: "Регулирует высоту полосы фона \"frosted-glass\" под топ баром. Значение 0 — полностью убрать.",
             hideChipbarBg: "Скрыть фон чипбара", hideChipbarBgDesc: "Полностью скрывает полосу фона шапки (для других браузеров)",
             compactMode: "Компактный режим", compactModeDesc: "Уменьшает отступы между видео для более плотного расположения",
             hideShorts: "Скрыть Shorts", hideShortsDesc: "Убирает раздел Shorts и рекомендации коротких видео",
@@ -159,7 +161,9 @@
             yandexFixFullscreen: "Фикс полноэкранного режима", yandexFixFullscreenDesc: "Устраняет артефакты панелей и проблемы наложения в полноэкранном режиме видео",
             yandexFixPlayerControls: "Фикс управления плеером", yandexFixPlayerControlsDesc: "Исправляет рендеринг элементов управления видеоплеера в Яндекс Браузере",
             yandexSection: "Настройки сетки видео", yandexDesc: "Оптимизация отображения видео в Яндекс Браузере",
-            yandexVideoCount: "Количество видео в строке", yandexChipbarMargin: "Сдвиг Chipbar (px)", yandexVideoMargin: "Сдвиг блока видео (px)",
+            yandexVideoCount: "Количество видео в строке", yandexVideoCountDesc: "Сколько карточек видео отображается в одной строке на главной странице.",
+            yandexChipbarMargin: "Сдвиг Chipbar (px)", yandexChipbarMarginDesc: "Вертикальный сдвиг полосы чипсов. Отрицательные значения поднимают её вверх, если она накладывается на сетку видео.",
+            yandexVideoMargin: "Сдвиг блока видео (px)", yandexVideoMarginDesc: "Вертикальный сдвиг сетки видео. Компенсирует пробел в макете, вызванный оптимизациями Яндекс Браузера.",
             yandexExpSection: "Экспериментальные функции", yandexExpDesc: "Используйте с осторожностью, могут быть нестабильными",
             yandexGridFix: "Исправить сетку видео", yandexGridFixDesc: "Фиксит проблему с отображением 3 видео в строке",
             yandexPerf: "Режим оптимизации", yandexPerfDesc: "Улучшает производительность в Яндекс Браузере",
@@ -1720,6 +1724,33 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 color: #7a869a;
                 margin-top: 2px;
             }
+            /* Tooltip для числовых полей */
+            .yt-enhancer-num-row {
+                position: relative;
+            }
+            .yt-enhancer-num-row .yt-enhancer-num-desc {
+                display: none;
+                position: absolute;
+                left: 0;
+                top: 100%;
+                margin-top: 4px;
+                z-index: 9999;
+                background: var(--enhancer-bg, #fff);
+                color: var(--enhancer-fg, #030303);
+                border: 1px solid var(--enhancer-border, #e0e0e0);
+                border-radius: 8px;
+                padding: 7px 11px;
+                font-size: 0.82em;
+                line-height: 1.4;
+                max-width: 260px;
+                min-width: 160px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+                pointer-events: none;
+                white-space: normal;
+            }
+            .yt-enhancer-num-row:hover .yt-enhancer-num-desc {
+                display: block;
+            }
             #yt-enhancer-settings .yt-enhancer-number-input {
                 width: 100%;
                 max-width: 100px;
@@ -2249,9 +2280,10 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         // --- Section 1: Interface ---
         const mainSection = section(L.mainSection, L.mainDesc);
         mainSection.appendChild(createCheckbox('hideChips', L.hideChips, config.hideChips, L.hideChipsDesc));
-        const createNumInput = (id, label, value, min, max) => {
+        const createNumInput = (id, label, value, min, max, desc) => {
             const div = document.createElement('div');
-            div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-left:22px;';
+            div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-left:22px;position:relative;';
+            div.classList.add('yt-enhancer-num-row');
             const labelEl = document.createElement('label');
             labelEl.htmlFor = id;
             labelEl.textContent = label;
@@ -2265,6 +2297,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             input.style.cssText = 'width:70px;padding:4px 8px;border-radius:8px;border:1px solid var(--enhancer-input-border,#ddd);background:var(--enhancer-input-bg,#f2f2f2);color:var(--enhancer-fg,#030303);';
             div.appendChild(labelEl);
             div.appendChild(input);
+            if (desc) {
+                const descEl = document.createElement('div');
+                descEl.className = 'yt-enhancer-num-desc';
+                descEl.textContent = desc;
+                div.appendChild(descEl);
+            }
             return div;
         };
         // Настройки фона чипбара — только для не-Яндекс браузеров
@@ -2278,7 +2316,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 _chipbarNaturalMax = _fgEl.scrollHeight || _fgEl.offsetHeight || 80;
                 _fgEl.style.height = _savedH;
             }
-            const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, Math.min(Math.max(config.chipbarBgHeight, 0), _chipbarNaturalMax), 0, _chipbarNaturalMax);
+            const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, Math.min(Math.max(config.chipbarBgHeight, 0), _chipbarNaturalMax), 0, _chipbarNaturalMax, L.chipbarBgHeightDesc);
             // Клamp: не даём ввести меньше 0 и больше max
             const _chipbarInp = chipbarBgHeightRow.querySelector('input');
             _chipbarInp.addEventListener('input', () => {
@@ -2421,6 +2459,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const createNumberInput = (id, label, value, min, max, description = '') => {
             const div = document.createElement('div');
             div.style.marginBottom = '16px';
+            div.style.position = 'relative';
+            div.classList.add('yt-enhancer-num-row');
             const labelDiv = document.createElement('div');
             labelDiv.style.display = 'flex';
             labelDiv.style.justifyContent = 'space-between';
@@ -2430,13 +2470,6 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             labelEl.textContent = label;
             labelEl.style.fontWeight = '500';
             labelDiv.appendChild(labelEl);
-            if (description) {
-                const desc = document.createElement('div');
-                desc.textContent = description;
-                desc.style.fontSize = '0.85em';
-                desc.style.color = 'var(--yt-spec-text-secondary, #606060)';
-                labelDiv.appendChild(desc);
-            }
             div.appendChild(labelDiv);
             const input = document.createElement('input');
             input.type = 'number';
@@ -2449,16 +2482,22 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             input.style.borderRadius = '10px';
             input.style.border = '1px solid var(--enhancer-input-border, #ddd)';
             div.appendChild(input);
+            if (description) {
+                const descEl = document.createElement('div');
+                descEl.className = 'yt-enhancer-num-desc';
+                descEl.textContent = description;
+                div.appendChild(descEl);
+            }
             return div;
         };
         gridSection.appendChild(createNumberInput(
-            'yandexVideoCount', L.yandexVideoCount, config.yandexVideoCount, 1, 6
+            'yandexVideoCount', L.yandexVideoCount, config.yandexVideoCount, 1, 6, L.yandexVideoCountDesc
         ));
         gridSection.appendChild(createNumberInput(
-            'yandexChipbarMargin', L.yandexChipbarMargin, config.yandexChipbarMargin, -100, 100
+            'yandexChipbarMargin', L.yandexChipbarMargin, config.yandexChipbarMargin, -100, 100, L.yandexChipbarMarginDesc
         ));
         const videoMarginInput = createNumberInput(
-            'yandexVideoMargin', L.yandexVideoMargin, config.yandexVideoMargin, 0, 200
+            'yandexVideoMargin', L.yandexVideoMargin, config.yandexVideoMargin, 0, 200, L.yandexVideoMarginDesc
         );
         if (config.yandexExperimentalFix) {
             videoMarginInput.querySelector('input').disabled = true;
