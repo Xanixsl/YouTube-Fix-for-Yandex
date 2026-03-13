@@ -3685,21 +3685,23 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         editorTabNames.forEach((name, i) => {
             const tab = document.createElement('button');
             tab.textContent = name;
-            tab.style.cssText = `background:none!important;border:none!important;border-bottom:2px solid transparent;padding:10px 16px;cursor:pointer;font-weight:600;font-size:0.95em;color:var(--enhancer-tab-inactive,#888);transition:all 0.15s;`;
-            if (i === 0) { tab.style.color = 'var(--enhancer-primary,#3ea6ff)'; tab.style.borderBottomColor = 'var(--enhancer-primary,#3ea6ff)'; }
+            tab.style.cssText = `background:none!important;border:none!important;border-bottom:2px solid transparent;padding:10px 16px;cursor:pointer;font-weight:600;font-size:0.95em;color:var(--enhancer-tab-inactive,#888);transition:color 0.15s;`;
+            if (i === 0) { tab.dataset.tabActive = '1'; tab.style.color = 'var(--enhancer-primary,#3ea6ff)'; tab.style.borderBottomColor = 'var(--enhancer-primary,#3ea6ff)'; }
             const content = document.createElement('div');
             content.style.cssText = `padding:18px 22px;display:${i === 0 ? 'block' : 'none'};`;
             tab.addEventListener('click', () => {
-                editorTabs.forEach(t => { t.style.color = 'var(--enhancer-tab-inactive,#888)'; t.style.borderBottomColor = 'transparent'; });
+                editorTabs.forEach(t => { t.dataset.tabActive = ''; t.style.color = 'var(--enhancer-tab-inactive,#888)'; t.style.borderBottomColor = 'transparent'; });
+                tab.dataset.tabActive = '1';
                 tab.style.color = 'var(--enhancer-primary,#3ea6ff)';
                 tab.style.borderBottomColor = 'var(--enhancer-primary,#3ea6ff)';
                 editorPanels.forEach((p, j) => { p.style.display = j === i ? 'block' : 'none'; });
             });
             tab.addEventListener('mouseenter', () => {
-                tab.style.setProperty('background', 'rgba(128,128,128,0.12)', 'important');
+                tab.style.setProperty('background', 'none', 'important');
+                if (!tab.dataset.tabActive) tab.style.color = 'var(--enhancer-fg,#f1f1f1)';
             });
             tab.addEventListener('mouseleave', () => {
-                tab.style.setProperty('background', 'none', 'important');
+                if (!tab.dataset.tabActive) tab.style.color = 'var(--enhancer-tab-inactive,#888)';
             });
             editorTabs.push(tab);
             editorPanels.push(content);
