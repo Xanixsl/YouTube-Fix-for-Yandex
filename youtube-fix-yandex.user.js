@@ -2111,7 +2111,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 if (input.type === 'checkbox') {
                     config[input.id] = input.checked;
                 } else if (input.type === 'number') {
-                    config[input.id] = parseInt(input.value) || 0;
+                    let v = parseInt(input.value) || 0;
+                    const mn = input.min !== '' ? parseInt(input.min) : -Infinity;
+                    const mx = input.max !== '' ? parseInt(input.max) : Infinity;
+                    if (v < mn) v = mn;
+                    if (v > mx) v = mx;
+                    config[input.id] = v;
                 } else {
                     config[input.id] = input.value;
                 }
@@ -2270,7 +2275,19 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             _chipbarNaturalMax = _fgEl.scrollHeight || _fgEl.offsetHeight || 80;
             _fgEl.style.height = _savedH;
         }
-        const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, Math.min(config.chipbarBgHeight, _chipbarNaturalMax), 0, _chipbarNaturalMax);
+        const chipbarBgHeightRow = createNumInput('chipbarBgHeight', L.chipbarBgHeight, Math.min(Math.max(config.chipbarBgHeight, 0), _chipbarNaturalMax), 0, _chipbarNaturalMax);
+        // Клamp: не даём ввести меньше 0 и больше max
+        const _chipbarInp = chipbarBgHeightRow.querySelector('input');
+        _chipbarInp.addEventListener('input', () => {
+            let v = parseInt(_chipbarInp.value, 10);
+            if (isNaN(v) || v < 0) { _chipbarInp.value = 0; }
+            else if (v > _chipbarNaturalMax) { _chipbarInp.value = _chipbarNaturalMax; }
+        });
+        _chipbarInp.addEventListener('blur', () => {
+            let v = parseInt(_chipbarInp.value, 10);
+            if (isNaN(v) || v < 0) { _chipbarInp.value = 0; }
+            else if (v > _chipbarNaturalMax) { _chipbarInp.value = _chipbarNaturalMax; }
+        });
         const setChipbarBgHeightEnabled = (enabled) => {
             const inp = chipbarBgHeightRow.querySelector('input');
             const lbl = chipbarBgHeightRow.querySelector('label');
