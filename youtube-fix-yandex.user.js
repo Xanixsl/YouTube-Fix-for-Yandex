@@ -3036,36 +3036,69 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
         // --- Footer: attribution + license notice (DOM only — no innerHTML, Trusted Types safe) ---
         const footerNote = document.createElement('div');
-        footerNote.style.cssText = 'margin-top:18px;padding:10px 14px;border-top:1px solid var(--enhancer-border,#e5e7eb);font-size:0.72em;line-height:1.55;color:var(--enhancer-fg,#606060);opacity:0.55;text-align:center;user-select:none;';
+        footerNote.style.cssText = 'margin-top:18px;padding:10px 14px;border-top:1px solid var(--enhancer-border,#e5e7eb);font-size:0.71em;line-height:1.6;color:var(--enhancer-fg,#606060);opacity:0.5;text-align:center;user-select:none;';
 
-        const fnLine1 = document.createElement('span');
-        const fnB1 = document.createElement('b'); fnB1.textContent = 'DonationAlerts\u00AE';
-        const fnB2 = document.createElement('b'); fnB2.textContent = 'Boosty\u00AE';
-        fnLine1.appendChild(document.createTextNode('Icons: '));
-        fnLine1.appendChild(fnB1);
-        fnLine1.appendChild(document.createTextNode(' \u2014 trademark of Zaya Solutions Limited \u00B7 '));
-        fnLine1.appendChild(fnB2);
-        fnLine1.appendChild(document.createTextNode(' \u2014 trademark of Zaya Solutions Limited.'));
-        const fnBr1 = document.createElement('br');
-        const fnSmall = document.createElement('span');
-        fnSmall.style.cssText = 'display:block;margin-top:3px;';
-        const fnBAuthor = document.createElement('b'); fnBAuthor.textContent = 'Xanix';
-        const fnBNoMod = document.createElement('b'); fnBNoMod.textContent = '\u0412\u043D\u0435\u0441\u0435\u043D\u0438\u0435 \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439 \u0431\u0435\u0437 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u0440\u0430 \u0437\u0430\u043F\u0440\u0435\u0449\u0435\u043D\u043E.';
-        const fnLink = document.createElement('a');
-        fnLink.href = 'https://github.com/Xanixsl/YouTube-Fix-for-Yandex-main';
-        fnLink.target = '_blank'; fnLink.rel = 'noopener noreferrer';
-        fnLink.textContent = 'GitHub';
-        fnLink.style.cssText = 'color:inherit;text-decoration:underline;opacity:0.8;';
-        fnSmall.appendChild(document.createTextNode('\u00A9 ' + new Date().getFullYear() + '\u00A0'));
-        fnSmall.appendChild(fnBAuthor);
-        fnSmall.appendChild(document.createTextNode('\u00A0\u00B7\u00A0 \u0420\u0430\u0441\u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u043E\u00A0\u00B7\u00A0 '));
-        fnSmall.appendChild(fnBNoMod);
-        fnSmall.appendChild(document.createTextNode('\u00A0'));
-        fnSmall.appendChild(fnLink);
+        const _isRu = uiLang === 'ru';
 
-        footerNote.appendChild(fnLine1);
-        footerNote.appendChild(fnBr1);
-        footerNote.appendChild(fnSmall);
+        // Line 1: trademark attribution (bilingual)
+        const fnTm = document.createElement('span');
+        fnTm.style.display = 'block';
+        const fnDAbold = document.createElement('b'); fnDAbold.textContent = 'DonationAlerts\u00AE';
+        const fnBBold  = document.createElement('b'); fnBBold.textContent  = 'Boosty\u00AE';
+        const fnOwner  = document.createElement('b'); fnOwner.textContent  = 'Zaya Solutions Limited';
+        if (_isRu) {
+            fnTm.appendChild(document.createTextNode('\u0422\u043E\u0432\u0430\u0440\u043D\u044B\u0435 \u0437\u043D\u0430\u043A\u0438 '));
+            fnTm.appendChild(fnDAbold);
+            fnTm.appendChild(document.createTextNode(' \u0438 '));
+            fnTm.appendChild(fnBBold);
+            fnTm.appendChild(document.createTextNode(' \u043F\u0440\u0438\u043D\u0430\u0434\u043B\u0435\u0436\u0430\u0442 '));
+            fnTm.appendChild(fnOwner);
+            fnTm.appendChild(document.createTextNode('. \u0418\u043A\u043E\u043D\u043A\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u044E\u0442\u0441\u044F \u0438\u0441\u043A\u043B\u044E\u0447\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0438\u0434\u0435\u043D\u0442\u0438\u0444\u0438\u043A\u0430\u0446\u0438\u0438 \u0441\u0435\u0440\u0432\u0438\u0441\u043E\u0432.'));
+        } else {
+            fnTm.appendChild(document.createTextNode('Trademarks '));
+            fnTm.appendChild(fnDAbold);
+            fnTm.appendChild(document.createTextNode(' and '));
+            fnTm.appendChild(fnBBold);
+            fnTm.appendChild(document.createTextNode(' are property of '));
+            fnTm.appendChild(fnOwner);
+            fnTm.appendChild(document.createTextNode('. Icons used solely for service identification.'));
+        }
+
+        // Line 2: license notice (bilingual) + CC BY-ND 4.0 link
+        const fnLic = document.createElement('span');
+        fnLic.style.cssText = 'display:block;margin-top:3px;';
+        const fnLicLink = document.createElement('a');
+        fnLicLink.href = 'https://creativecommons.org/licenses/by-nd/4.0/';
+        fnLicLink.target = '_blank'; fnLicLink.rel = 'noopener noreferrer';
+        fnLicLink.textContent = 'CC BY-ND 4.0';
+        fnLicLink.style.cssText = 'color:inherit;text-decoration:underline;';
+        if (_isRu) {
+            fnLic.appendChild(document.createTextNode('\u041B\u0438\u0446\u0435\u043D\u0437\u0438\u044F\u00A0'));
+            fnLic.appendChild(fnLicLink);
+            fnLic.appendChild(document.createTextNode('\u00A0\u2014 \u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0438 \u0440\u0430\u0441\u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u044B, \u0432\u043D\u0435\u0441\u0435\u043D\u0438\u0435 \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439 \u0431\u0435\u0437 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u0440\u0430\u00A0\u2014\u00A0\u043D\u0435\u0442.'));
+        } else {
+            fnLic.appendChild(document.createTextNode('License\u00A0'));
+            fnLic.appendChild(fnLicLink);
+            fnLic.appendChild(document.createTextNode('\u00A0\u2014 copying & distribution allowed, modifications without author\u2019s permission are not.'));
+        }
+
+        // Line 3: copyright
+        const fnCopy = document.createElement('span');
+        fnCopy.style.cssText = 'display:block;margin-top:3px;';
+        const fnAuthorB = document.createElement('b'); fnAuthorB.textContent = 'Xanix';
+        const fnGhLink = document.createElement('a');
+        fnGhLink.href = 'https://github.com/Xanixsl/YouTube-Fix-for-Yandex-main';
+        fnGhLink.target = '_blank'; fnGhLink.rel = 'noopener noreferrer';
+        fnGhLink.textContent = 'GitHub';
+        fnGhLink.style.cssText = 'color:inherit;text-decoration:underline;';
+        fnCopy.appendChild(document.createTextNode('\u00A9 ' + new Date().getFullYear() + '\u00A0'));
+        fnCopy.appendChild(fnAuthorB);
+        fnCopy.appendChild(document.createTextNode('\u00A0\u00B7\u00A0'));
+        fnCopy.appendChild(fnGhLink);
+
+        footerNote.appendChild(fnTm);
+        footerNote.appendChild(fnLic);
+        footerNote.appendChild(fnCopy);
         dialog.appendChild(footerNote);
 
         // --- Кнопки сохранения/сброса ---
