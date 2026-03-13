@@ -2918,6 +2918,47 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         ghSvg.appendChild(ghPath);
         ghLink.appendChild(ghSvg);
         title.appendChild(ghLink);
+
+        // DonationAlerts link
+        const daLink = document.createElement('a');
+        daLink.href = 'https://www.donationalerts.com/r/saylont';
+        daLink.target = '_blank';
+        daLink.rel = 'noopener noreferrer';
+        daLink.title = 'DonationAlerts';
+        daLink.style.cssText = 'display:inline-flex;align-items:center;margin-left:8px;vertical-align:middle;opacity:0.6;transition:opacity 0.2s;';
+        daLink.addEventListener('mouseenter', () => { daLink.style.opacity = '1'; });
+        daLink.addEventListener('mouseleave', () => { daLink.style.opacity = '0.6'; });
+        const daSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        daSvg.setAttribute('width', '20'); daSvg.setAttribute('height', '20'); daSvg.setAttribute('viewBox', '0 0 24 24'); daSvg.setAttribute('fill', 'none');
+        const daPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        daPath.setAttribute('fill-rule', 'evenodd'); daPath.setAttribute('clip-rule', 'evenodd');
+        daPath.setAttribute('d', 'M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm.354 4.646a.5.5 0 0 0-.708 0l-5 5a.5.5 0 0 0 0 .708l5 5a.5.5 0 0 0 .708 0l5-5a.5.5 0 0 0 0-.708l-5-5z');
+        daPath.setAttribute('fill', '#ff4d28');
+        daSvg.appendChild(daPath);
+        daLink.appendChild(daSvg);
+        title.appendChild(daLink);
+
+        // Boosty link
+        const bLink = document.createElement('a');
+        bLink.href = 'https://boosty.to/saylontoff/donate';
+        bLink.target = '_blank';
+        bLink.rel = 'noopener noreferrer';
+        bLink.title = 'Boosty';
+        bLink.style.cssText = 'display:inline-flex;align-items:center;margin-left:8px;vertical-align:middle;opacity:0.6;transition:opacity 0.2s;';
+        bLink.addEventListener('mouseenter', () => { bLink.style.opacity = '1'; });
+        bLink.addEventListener('mouseleave', () => { bLink.style.opacity = '0.6'; });
+        const bSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        bSvg.setAttribute('width', '20'); bSvg.setAttribute('height', '20'); bSvg.setAttribute('viewBox', '0 0 24 24'); bSvg.setAttribute('fill', 'none');
+        const bPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        bPath1.setAttribute('d', 'M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z');
+        bPath1.setAttribute('fill', '#f15f2c');
+        const bPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        bPath2.setAttribute('d', 'M8 8h4.5C14.433 8 16 9.567 16 11.5S14.433 15 12.5 15H8V8zm2 2v3h2.5a1.5 1.5 0 0 0 0-3H10z');
+        bPath2.setAttribute('fill', '#fff');
+        bSvg.appendChild(bPath1); bSvg.appendChild(bPath2);
+        bLink.appendChild(bSvg);
+        title.appendChild(bLink);
+
         const closeBtn = document.createElement('button');
         closeBtn.className = 'yt-enhancer-close-btn';
         setInnerHTML(closeBtn, '&times;');
