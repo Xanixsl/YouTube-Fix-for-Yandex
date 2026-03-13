@@ -3034,30 +3034,38 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
         tabContents.forEach(content => dialog.appendChild(content));
 
-        // --- Footer: attribution + license notice ---
+        // --- Footer: attribution + license notice (DOM only — no innerHTML, Trusted Types safe) ---
         const footerNote = document.createElement('div');
-        footerNote.style.cssText = `
-            margin-top: 18px;
-            padding: 10px 14px;
-            border-top: 1px solid var(--enhancer-border, #e5e7eb);
-            font-size: 0.72em;
-            line-height: 1.55;
-            color: var(--enhancer-fg, #606060);
-            opacity: 0.55;
-            text-align: center;
-            user-select: none;
-        `;
-        footerNote.innerHTML = `
-            <span>Icons: <b>DonationAlerts®</b> — trademark of Zaya Solutions Limited &nbsp;·&nbsp; <b>Boosty®</b> — trademark of Zaya Solutions Limited.<br>All icons are property of their respective owners and are used solely for identification purposes.</span>
-            <br>
-            <span style="margin-top:4px;display:block;">
-                © ${new Date().getFullYear()} <b>Xanix</b> &nbsp;·&nbsp;
-                Распространение разрешено &nbsp;·&nbsp;
-                <b>Внесение изменений без разрешения автора запрещено.</b>
-                &nbsp;<a href="https://github.com/Xanixsl/YouTube-Fix-for-Yandex-main" target="_blank" rel="noopener noreferrer"
-                    style="color:inherit;text-decoration:underline;opacity:0.8;">GitHub</a>
-            </span>
-        `;
+        footerNote.style.cssText = 'margin-top:18px;padding:10px 14px;border-top:1px solid var(--enhancer-border,#e5e7eb);font-size:0.72em;line-height:1.55;color:var(--enhancer-fg,#606060);opacity:0.55;text-align:center;user-select:none;';
+
+        const fnLine1 = document.createElement('span');
+        const fnB1 = document.createElement('b'); fnB1.textContent = 'DonationAlerts\u00AE';
+        const fnB2 = document.createElement('b'); fnB2.textContent = 'Boosty\u00AE';
+        fnLine1.appendChild(document.createTextNode('Icons: '));
+        fnLine1.appendChild(fnB1);
+        fnLine1.appendChild(document.createTextNode(' \u2014 trademark of Zaya Solutions Limited \u00B7 '));
+        fnLine1.appendChild(fnB2);
+        fnLine1.appendChild(document.createTextNode(' \u2014 trademark of Zaya Solutions Limited.'));
+        const fnBr1 = document.createElement('br');
+        const fnSmall = document.createElement('span');
+        fnSmall.style.cssText = 'display:block;margin-top:3px;';
+        const fnBAuthor = document.createElement('b'); fnBAuthor.textContent = 'Xanix';
+        const fnBNoMod = document.createElement('b'); fnBNoMod.textContent = '\u0412\u043D\u0435\u0441\u0435\u043D\u0438\u0435 \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439 \u0431\u0435\u0437 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u0440\u0430 \u0437\u0430\u043F\u0440\u0435\u0449\u0435\u043D\u043E.';
+        const fnLink = document.createElement('a');
+        fnLink.href = 'https://github.com/Xanixsl/YouTube-Fix-for-Yandex-main';
+        fnLink.target = '_blank'; fnLink.rel = 'noopener noreferrer';
+        fnLink.textContent = 'GitHub';
+        fnLink.style.cssText = 'color:inherit;text-decoration:underline;opacity:0.8;';
+        fnSmall.appendChild(document.createTextNode('\u00A9 ' + new Date().getFullYear() + '\u00A0'));
+        fnSmall.appendChild(fnBAuthor);
+        fnSmall.appendChild(document.createTextNode('\u00A0\u00B7\u00A0 \u0420\u0430\u0441\u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u043E\u00A0\u00B7\u00A0 '));
+        fnSmall.appendChild(fnBNoMod);
+        fnSmall.appendChild(document.createTextNode('\u00A0'));
+        fnSmall.appendChild(fnLink);
+
+        footerNote.appendChild(fnLine1);
+        footerNote.appendChild(fnBr1);
+        footerNote.appendChild(fnSmall);
         dialog.appendChild(footerNote);
 
         // --- Кнопки сохранения/сброса ---
