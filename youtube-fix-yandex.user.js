@@ -3684,12 +3684,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const editorPanels = [];
         editorTabNames.forEach((name, i) => {
             const tab = document.createElement('button');
-            tab.style.cssText = `background:none!important;border:none!important;border-bottom:2px solid transparent;padding:10px 16px;cursor:pointer;font-weight:600;font-size:0.95em;transition:color 0.15s;display:flex;align-items:center;gap:5px;`;
+            tab.style.cssText = `background:none!important;border:none!important;border-bottom:3px solid transparent;padding:10px 18px;cursor:pointer;font-weight:600;font-size:1.05em;transition:color 0.15s,background 0.15s;display:flex;align-items:center;gap:6px;border-radius:8px 8px 0 0;`;
 
             // Active dot indicator
             const dot = document.createElement('span');
             dot.textContent = '●';
-            dot.style.cssText = `font-size:0.45em;opacity:0;transition:opacity 0.15s;flex-shrink:0;`;
+            dot.style.cssText = `font-size:0.5em;opacity:0;transition:opacity 0.15s;flex-shrink:0;margin-top:1px;`;
             const labelSpan = document.createElement('span');
             labelSpan.textContent = name;
             tab.appendChild(dot);
@@ -3698,28 +3698,33 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             // setProperty 'important' to always beat any stylesheet rule including YouTube's own CSS
             const INACTIVE_COLOR = 'var(--enhancer-tab-inactive,#888)';
             const ACTIVE_COLOR   = 'var(--enhancer-primary,#3ea6ff)';
-            tab.style.setProperty('color', INACTIVE_COLOR, 'important');
-            tab.style.setProperty('border-bottom-color', 'transparent', 'important');
 
-            if (i === 0) {
+            const setActive = () => {
                 tab.dataset.tabActive = '1';
                 tab.style.setProperty('color', ACTIVE_COLOR, 'important');
                 tab.style.setProperty('border-bottom-color', ACTIVE_COLOR, 'important');
+                tab.style.setProperty('background', 'rgba(var(--enhancer-primary-rgb,62,166,255),0.10)', 'important');
+                tab.style.fontWeight = '800';
+                tab.style.fontSize = '1.1em';
                 dot.style.opacity = '1';
-            }
+            };
+            const setInactive = () => {
+                tab.dataset.tabActive = '';
+                tab.style.setProperty('color', INACTIVE_COLOR, 'important');
+                tab.style.setProperty('border-bottom-color', 'transparent', 'important');
+                tab.style.setProperty('background', 'none', 'important');
+                tab.style.fontWeight = '600';
+                tab.style.fontSize = '1.05em';
+                dot.style.opacity = '0';
+            };
+
+            if (i === 0) setActive(); else setInactive();
+
             const content = document.createElement('div');
             content.style.cssText = `padding:18px 22px;display:${i === 0 ? 'block' : 'none'};`;
             tab.addEventListener('click', () => {
-                editorTabs.forEach(t => {
-                    t.dataset.tabActive = '';
-                    t.style.setProperty('color', INACTIVE_COLOR, 'important');
-                    t.style.setProperty('border-bottom-color', 'transparent', 'important');
-                    t.children[0].style.opacity = '0';
-                });
-                tab.dataset.tabActive = '1';
-                tab.style.setProperty('color', ACTIVE_COLOR, 'important');
-                tab.style.setProperty('border-bottom-color', ACTIVE_COLOR, 'important');
-                dot.style.opacity = '1';
+                editorTabs.forEach(t => { if (t !== tab) { t.dataset.tabActive = ''; t.style.setProperty('color', INACTIVE_COLOR, 'important'); t.style.setProperty('border-bottom-color', 'transparent', 'important'); t.style.setProperty('background', 'none', 'important'); t.style.fontWeight = '600'; t.style.fontSize = '1.05em'; t.children[0].style.opacity = '0'; } });
+                setActive();
                 editorPanels.forEach((p, j) => { p.style.display = j === i ? 'block' : 'none'; });
             });
             tab.addEventListener('mouseenter', () => {
@@ -3736,6 +3741,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             tab.addEventListener('mouseleave', () => {
                 if (!tab.dataset.tabActive) {
                     tab.style.setProperty('color', INACTIVE_COLOR, 'important');
+                    tab.style.setProperty('background', 'none', 'important');
                 }
             });
             editorTabs.push(tab);
