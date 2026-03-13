@@ -2919,47 +2919,36 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         ghLink.appendChild(ghSvg);
         title.appendChild(ghLink);
 
-        // DonationAlerts link — red bg + white diamond (original badge logo)
+        // DonationAlerts link — official header logo from donationalerts.com
         const daLink = document.createElement('a');
         daLink.href = 'https://www.donationalerts.com/r/saylont';
         daLink.target = '_blank';
         daLink.rel = 'noopener noreferrer';
         daLink.title = 'DonationAlerts';
-        daLink.style.cssText = 'display:inline-flex;align-items:center;margin-left:8px;vertical-align:middle;opacity:0.6;transition:opacity 0.2s;';
+        daLink.style.cssText = 'display:inline-flex;align-items:center;margin-left:10px;vertical-align:middle;opacity:0.6;transition:opacity 0.2s;';
         daLink.addEventListener('mouseenter', () => { daLink.style.opacity = '1'; });
         daLink.addEventListener('mouseleave', () => { daLink.style.opacity = '0.6'; });
-        const daSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        daSvg.setAttribute('width', '20'); daSvg.setAttribute('height', '20'); daSvg.setAttribute('viewBox', '0 0 24 24'); daSvg.setAttribute('fill', 'none');
-        const daBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        daBg.setAttribute('width', '24'); daBg.setAttribute('height', '24'); daBg.setAttribute('rx', '5'); daBg.setAttribute('fill', '#FF5500');
-        const daPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        daPath.setAttribute('d', 'M11.6462 6.64625C11.875 6.4175 12.125 6.4175 12.3538 6.64625L17.3538 11.6463C17.5462 11.8387 17.5462 12.1625 17.3538 12.355L12.3538 17.355C12.125 17.5837 11.875 17.5837 11.6462 17.355L6.64625 12.355C6.45375 12.1625 6.45375 11.8387 6.64625 11.6463L11.6462 6.64625Z');
-        daPath.setAttribute('fill', 'white');
-        daSvg.appendChild(daBg); daSvg.appendChild(daPath);
-        daLink.appendChild(daSvg);
+        const daImg = document.createElement('img');
+        daImg.src = 'https://www.donationalerts.com/img/header/logo.svg';
+        daImg.alt = 'DonationAlerts';
+        daImg.style.cssText = 'height:20px;width:auto;display:block;';
+        daLink.appendChild(daImg);
         title.appendChild(daLink);
 
-        // Boosty link — purple bg + white ring/donut (original badge logo)
+        // Boosty link — official favicon from boosty.to
         const bLink = document.createElement('a');
         bLink.href = 'https://boosty.to/saylontoff/donate';
         bLink.target = '_blank';
         bLink.rel = 'noopener noreferrer';
         bLink.title = 'Boosty';
-        bLink.style.cssText = 'display:inline-flex;align-items:center;margin-left:8px;vertical-align:middle;opacity:0.6;transition:opacity 0.2s;';
+        bLink.style.cssText = 'display:inline-flex;align-items:center;margin-left:10px;vertical-align:middle;opacity:0.6;transition:opacity 0.2s;';
         bLink.addEventListener('mouseenter', () => { bLink.style.opacity = '1'; });
         bLink.addEventListener('mouseleave', () => { bLink.style.opacity = '0.6'; });
-        const bSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        bSvg.setAttribute('width', '20'); bSvg.setAttribute('height', '20'); bSvg.setAttribute('viewBox', '0 0 24 24'); bSvg.setAttribute('fill', 'none');
-        const bBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        bBg.setAttribute('width', '24'); bBg.setAttribute('height', '24'); bBg.setAttribute('rx', '5'); bBg.setAttribute('fill', '#8A2BE2');
-        const bPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        bPath1.setAttribute('d', 'M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z');
-        bPath1.setAttribute('fill', 'white');
-        const bPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        bPath2.setAttribute('d', 'M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z');
-        bPath2.setAttribute('fill', '#8A2BE2');
-        bSvg.appendChild(bBg); bSvg.appendChild(bPath1); bSvg.appendChild(bPath2);
-        bLink.appendChild(bSvg);
+        const bImg = document.createElement('img');
+        bImg.src = 'https://boosty.to/favicon.png?v=14';
+        bImg.alt = 'Boosty';
+        bImg.style.cssText = 'width:20px;height:20px;display:block;border-radius:4px;';
+        bLink.appendChild(bImg);
         title.appendChild(bLink);
 
         const closeBtn = document.createElement('button');
