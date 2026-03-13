@@ -3033,6 +3033,33 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             createAppearanceTab(tabContents[1]);
         }
         tabContents.forEach(content => dialog.appendChild(content));
+
+        // --- Footer: attribution + license notice ---
+        const footerNote = document.createElement('div');
+        footerNote.style.cssText = `
+            margin-top: 18px;
+            padding: 10px 14px;
+            border-top: 1px solid var(--enhancer-border, #e5e7eb);
+            font-size: 0.72em;
+            line-height: 1.55;
+            color: var(--enhancer-fg, #606060);
+            opacity: 0.55;
+            text-align: center;
+            user-select: none;
+        `;
+        footerNote.innerHTML = `
+            <span>Icons: <b>DonationAlerts®</b> — trademark of Zaya Solutions Limited &nbsp;·&nbsp; <b>Boosty®</b> — trademark of Zaya Solutions Limited.<br>All icons are property of their respective owners and are used solely for identification purposes.</span>
+            <br>
+            <span style="margin-top:4px;display:block;">
+                © ${new Date().getFullYear()} <b>Xanix</b> &nbsp;·&nbsp;
+                Распространение разрешено &nbsp;·&nbsp;
+                <b>Внесение изменений без разрешения автора запрещено.</b>
+                &nbsp;<a href="https://github.com/Xanixsl/YouTube-Fix-for-Yandex-main" target="_blank" rel="noopener noreferrer"
+                    style="color:inherit;text-decoration:underline;opacity:0.8;">GitHub</a>
+            </span>
+        `;
+        dialog.appendChild(footerNote);
+
         // --- Кнопки сохранения/сброса ---
         const buttons = document.createElement('div');
         buttons.style.display = 'flex';
