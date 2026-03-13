@@ -95,7 +95,7 @@
             themeSection: "Settings window theme", themeDesc: "Appearance of this settings window",
             themeAuto: "Auto (system)", themeLight: "Light", themeDark: "Dark", fontSize: "Font size:",
             styleSection: "Color scheme", styleDesc: "Color palette and style of the settings window",
-            styleYoutube: "YouTube", styleImproved: "Improved (glass + dropdowns)", styleMidnight: "Midnight", styleSunset: "Sunset", styleCustom: "Custom",
+            styleYoutube: "YouTube", styleImproved: "Improved (glass + dropdowns)", styleMidnight: "Midnight", styleSunset: "Sunset", styleOcean: "Ocean", styleEmerald: "Emerald", styleRose: "Rose", styleCustom: "Custom",
             customColorsSection: "Fine-tune colors", customColorsDesc: "Manually adjust individual colors (overrides current scheme)",
             customColorEnabled: "Enable custom colors", customColorBg: "Background", customColorFg: "Text",
             customColorPrimary: "Accent color", customColorBorder: "Borders", customColorBtnBorder: "Button border",
@@ -175,7 +175,7 @@
             themeSection: "Тема окна настроек", themeDesc: "Внешний вид этого окна с настройками",
             themeAuto: "Авто (система)", themeLight: "Светлая", themeDark: "Тёмная", fontSize: "Размер шрифта:",
             styleSection: "Цветовая схема", styleDesc: "Палитра цветов и стиль окна настроек",
-            styleYoutube: "YouTube", styleImproved: "Улучшенная (glass + выпадающие)", styleMidnight: "Полночь", styleSunset: "Закат", styleCustom: "Своя",
+            styleYoutube: "YouTube", styleImproved: "Улучшенная (glass + выпадающие)", styleMidnight: "Полночь", styleSunset: "Закат", styleOcean: "Океан", styleEmerald: "Изумруд", styleRose: "Роза", styleCustom: "Своя",
             customColorsSection: "Тонкая настройка цветов", customColorsDesc: "Ручная настройка отдельных цветов (переопределяет текущую схему)",
             customColorEnabled: "Включить свои цвета", customColorBg: "Фон", customColorFg: "Текст",
             customColorPrimary: "Акцентный цвет", customColorBorder: "Рамки", customColorBtnBorder: "Рамка кнопки",
@@ -312,7 +312,11 @@
 }
 #yt-enhancer-settings button:hover {
     background: var(--enhancer-btn-hover-bg) !important;
-}`,
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }`,
         // --- Улучшенная тема (glass + стилизованные YouTube-выпадающие) ---
         improved: `/* @base */
 :root {
@@ -611,7 +615,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings button:hover {
     transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
-}`,
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }`,
         // --- Тема Sunset (тёплый закат) ---
         sunset: `/* @base */
 :root {
@@ -713,7 +721,339 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 }
 #yt-enhancer-settings button:hover {
     transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
-}`
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }`,
+        // --- Тема Ocean (глубокий океан) ---
+        ocean: `/* @base */
+:root {
+    --enhancer-radius: 18px !important;
+    --enhancer-btn-radius: 14px !important;
+    --enhancer-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #0a1628 !important;
+    --enhancer-fg: #cff4fc !important;
+    --enhancer-border: #0e2a45 !important;
+    --enhancer-primary: #06b6d4 !important;
+    --enhancer-secondary: #22d3ee !important;
+    --enhancer-accent: #67e8f9 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #0a1628 !important;
+    --enhancer-badge-bg: rgba(6, 182, 212, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(34, 211, 238, 0.2) !important;
+    --enhancer-badge-exp-fg: #22d3ee !important;
+    --enhancer-input-bg: #0d1f38 !important;
+    --enhancer-input-fg: #cff4fc !important;
+    --enhancer-input-border: #1a3a55 !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #4a8fa8 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.4), transparent) !important;
+    --enhancer-select-bg: #0d1f38 !important;
+    --enhancer-select-fg: #cff4fc !important;
+    --enhancer-select-border: #1a3a55 !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.25), 0 8px 40px rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(16px) saturate(1.6) !important;
+    border: 1px solid rgba(6, 182, 212, 0.18) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(135deg, #06b6d4, #22d3ee, #67e8f9);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #0d1f38 !important;
+    color: #cff4fc !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: #f0f9ff !important;
+    --enhancer-fg: #0c4a6e !important;
+    --enhancer-border: #bae6fd !important;
+    --enhancer-primary: #0891b2 !important;
+    --enhancer-secondary: #0ea5e9 !important;
+    --enhancer-accent: #38bdf8 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: rgba(8, 145, 178, 0.08) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(14, 165, 233, 0.12) !important;
+    --enhancer-badge-exp-fg: #0369a1 !important;
+    --enhancer-input-bg: #e0f2fe !important;
+    --enhancer-input-fg: #0c4a6e !important;
+    --enhancer-input-border: #7dd3fc !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #6098b8 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(8, 145, 178, 0.2), transparent) !important;
+    --enhancer-select-bg: #f0f9ff !important;
+    --enhancer-select-fg: #0c4a6e !important;
+    --enhancer-select-border: #7dd3fc !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.1), 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(8, 145, 178, 0.12) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #e0f2fe !important;
+    color: #0c4a6e !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 16px rgba(6, 182, 212, 0.25) !important;
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }`,
+        // --- Тема Emerald (изумрудный лес) ---
+        emerald: `/* @base */
+:root {
+    --enhancer-radius: 16px !important;
+    --enhancer-btn-radius: 12px !important;
+    --enhancer-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #0a1f0f !important;
+    --enhancer-fg: #d1fae5 !important;
+    --enhancer-border: #134e22 !important;
+    --enhancer-primary: #10b981 !important;
+    --enhancer-secondary: #34d399 !important;
+    --enhancer-accent: #6ee7b7 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #0a1f0f !important;
+    --enhancer-badge-bg: rgba(16, 185, 129, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(52, 211, 153, 0.2) !important;
+    --enhancer-badge-exp-fg: #34d399 !important;
+    --enhancer-input-bg: #0f2918 !important;
+    --enhancer-input-fg: #d1fae5 !important;
+    --enhancer-input-border: #1a4a28 !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #4a8a60 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.35), transparent) !important;
+    --enhancer-select-bg: #0f2918 !important;
+    --enhancer-select-fg: #d1fae5 !important;
+    --enhancer-select-border: #1a4a28 !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(12px) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #0f2918 !important;
+    color: #d1fae5 !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: #f0fdf4 !important;
+    --enhancer-fg: #14532d !important;
+    --enhancer-border: #bbf7d0 !important;
+    --enhancer-primary: #059669 !important;
+    --enhancer-secondary: #10b981 !important;
+    --enhancer-accent: #34d399 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: rgba(5, 150, 105, 0.08) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(16, 185, 129, 0.12) !important;
+    --enhancer-badge-exp-fg: #047857 !important;
+    --enhancer-input-bg: #dcfce7 !important;
+    --enhancer-input-fg: #14532d !important;
+    --enhancer-input-border: #86efac !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #4a9060 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.18), transparent) !important;
+    --enhancer-select-bg: #f0fdf4 !important;
+    --enhancer-select-fg: #14532d !important;
+    --enhancer-select-border: #86efac !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    backdrop-filter: blur(8px) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #dcfce7 !important;
+    color: #14532d !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }`,
+        // --- Тема Rose (ночная роза) ---
+        rose: `/* @base */
+:root {
+    --enhancer-radius: 18px !important;
+    --enhancer-btn-radius: 14px !important;
+    --enhancer-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #1a0a0f !important;
+    --enhancer-fg: #ffe4e6 !important;
+    --enhancer-border: #3f1220 !important;
+    --enhancer-primary: #f43f5e !important;
+    --enhancer-secondary: #fb7185 !important;
+    --enhancer-accent: #fda4af !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #1a0a0f !important;
+    --enhancer-badge-bg: rgba(244, 63, 94, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(251, 113, 133, 0.2) !important;
+    --enhancer-badge-exp-fg: #fb7185 !important;
+    --enhancer-input-bg: #27101a !important;
+    --enhancer-input-fg: #ffe4e6 !important;
+    --enhancer-input-border: #5a1a2a !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #8a4a5a !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(244, 63, 94, 0.35), transparent) !important;
+    --enhancer-select-bg: #27101a !important;
+    --enhancer-select-fg: #ffe4e6 !important;
+    --enhancer-select-border: #5a1a2a !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.25), 0 8px 40px rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(16px) saturate(1.5) !important;
+    border: 1px solid rgba(244, 63, 94, 0.18) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(135deg, #f43f5e, #fb7185, #fda4af);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #27101a !important;
+    color: #ffe4e6 !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: #fff1f2 !important;
+    --enhancer-fg: #4c0519 !important;
+    --enhancer-border: #fecdd3 !important;
+    --enhancer-primary: #e11d48 !important;
+    --enhancer-secondary: #f43f5e !important;
+    --enhancer-accent: #fb7185 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: rgba(225, 29, 72, 0.08) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(244, 63, 94, 0.12) !important;
+    --enhancer-badge-exp-fg: #be123c !important;
+    --enhancer-input-bg: #ffe4e6 !important;
+    --enhancer-input-fg: #4c0519 !important;
+    --enhancer-input-border: #fda4af !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #a06070 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(225, 29, 72, 0.18), transparent) !important;
+    --enhancer-select-bg: #fff1f2 !important;
+    --enhancer-select-fg: #4c0519 !important;
+    --enhancer-select-border: #fda4af !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.1), 0 4px 24px rgba(0, 0, 0, 0.07) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(225, 29, 72, 0.1) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #ffe4e6 !important;
+    color: #4c0519 !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 16px rgba(244, 63, 94, 0.3) !important;
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }`
     };
     const _BUILTIN_THEME_CSS = _BUILTIN_THEMES.youtube;
 
@@ -1808,7 +2148,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const extCSS = _loadResource('themeCSS');
         const themeRaw = extCSS || _getThemeRaw(themeStyle);
         // Pass theme name so _parseThemeCSS can extract the right block from multi-theme file
-        const _themeCSS = _parseThemeCSS(themeRaw, extCSS ? themeStyle : null);
+        let _themeCSS = _parseThemeCSS(themeRaw, extCSS ? themeStyle : null);
+        // Fallback: if external CSS is stale (missing this theme), use _BUILTIN_THEMES
+        if (!_themeCSS) {
+            _themeCSS = _parseThemeCSS(_getThemeRaw(themeStyle), null);
+        }
         if (_themeCSS) {
             css += _themeCSS.base;
             if (showDark) css += darkOpen + _themeCSS.dark + darkClose;
@@ -2992,6 +3336,18 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         sunset: {
             dark: { bg:'#1a1412', fg:'#fef3c7', border:'#44332a', primary:'#f59e0b', btnBorder:'#f59e0b', btnFg:'#f59e0b', btnHoverBg:'#f59e0b', btnHoverFg:'#1a1412', badgeBg:'rgba(245,158,11,0.15)', badgeFg:'#f59e0b', inputBg:'#241c17', inputFg:'#fef3c7', inputBorder:'#4a3628', selectBg:'#241c17', selectFg:'#fef3c7', selectBorder:'#4a3628' },
             light: { bg:'#fffbeb', fg:'#451a03', border:'#fed7aa', primary:'#d97706', btnBorder:'#d97706', btnFg:'#d97706', btnHoverBg:'#d97706', btnHoverFg:'#ffffff', badgeBg:'rgba(217,119,6,0.08)', badgeFg:'#d97706', inputBg:'#fff8e1', inputFg:'#451a03', inputBorder:'#fde68a', selectBg:'#fffbeb', selectFg:'#451a03', selectBorder:'#fde68a' }
+        },
+        ocean: {
+            dark: { bg:'#0a1628', fg:'#cff4fc', border:'#0e2a45', primary:'#06b6d4', btnBorder:'#06b6d4', btnFg:'#06b6d4', btnHoverBg:'#06b6d4', btnHoverFg:'#0a1628', badgeBg:'rgba(6,182,212,0.15)', badgeFg:'#06b6d4', inputBg:'#0d1f38', inputFg:'#cff4fc', inputBorder:'#1a3a55', selectBg:'#0d1f38', selectFg:'#cff4fc', selectBorder:'#1a3a55' },
+            light: { bg:'#f0f9ff', fg:'#0c4a6e', border:'#bae6fd', primary:'#0891b2', btnBorder:'#0891b2', btnFg:'#0891b2', btnHoverBg:'#0891b2', btnHoverFg:'#ffffff', badgeBg:'rgba(8,145,178,0.08)', badgeFg:'#0891b2', inputBg:'#e0f2fe', inputFg:'#0c4a6e', inputBorder:'#7dd3fc', selectBg:'#f0f9ff', selectFg:'#0c4a6e', selectBorder:'#7dd3fc' }
+        },
+        emerald: {
+            dark: { bg:'#0a1f0f', fg:'#d1fae5', border:'#134e22', primary:'#10b981', btnBorder:'#10b981', btnFg:'#10b981', btnHoverBg:'#10b981', btnHoverFg:'#0a1f0f', badgeBg:'rgba(16,185,129,0.15)', badgeFg:'#10b981', inputBg:'#0f2918', inputFg:'#d1fae5', inputBorder:'#1a4a28', selectBg:'#0f2918', selectFg:'#d1fae5', selectBorder:'#1a4a28' },
+            light: { bg:'#f0fdf4', fg:'#14532d', border:'#bbf7d0', primary:'#059669', btnBorder:'#059669', btnFg:'#059669', btnHoverBg:'#059669', btnHoverFg:'#ffffff', badgeBg:'rgba(5,150,105,0.08)', badgeFg:'#059669', inputBg:'#dcfce7', inputFg:'#14532d', inputBorder:'#86efac', selectBg:'#f0fdf4', selectFg:'#14532d', selectBorder:'#86efac' }
+        },
+        rose: {
+            dark: { bg:'#1a0a0f', fg:'#ffe4e6', border:'#3f1220', primary:'#f43f5e', btnBorder:'#f43f5e', btnFg:'#f43f5e', btnHoverBg:'#f43f5e', btnHoverFg:'#1a0a0f', badgeBg:'rgba(244,63,94,0.15)', badgeFg:'#f43f5e', inputBg:'#27101a', inputFg:'#ffe4e6', inputBorder:'#5a1a2a', selectBg:'#27101a', selectFg:'#ffe4e6', selectBorder:'#5a1a2a' },
+            light: { bg:'#fff1f2', fg:'#4c0519', border:'#fecdd3', primary:'#e11d48', btnBorder:'#e11d48', btnFg:'#e11d48', btnHoverBg:'#e11d48', btnHoverFg:'#ffffff', badgeBg:'rgba(225,29,72,0.08)', badgeFg:'#e11d48', inputBg:'#ffe4e6', inputFg:'#4c0519', inputBorder:'#fda4af', selectBg:'#fff1f2', selectFg:'#4c0519', selectBorder:'#fda4af' }
         }
     };
 
@@ -3006,13 +3362,16 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         container.appendChild(builtinHeader);
 
         const builtinGrid = document.createElement('div');
-        builtinGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;';
+        builtinGrid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:20px;';
 
         const builtinThemes = [
             { key: 'youtube', label: L.styleYoutube },
             { key: 'improved', label: L.styleImproved },
             { key: 'midnight', label: L.styleMidnight },
-            { key: 'sunset', label: L.styleSunset }
+            { key: 'sunset', label: L.styleSunset },
+            { key: 'ocean', label: L.styleOcean },
+            { key: 'emerald', label: L.styleEmerald },
+            { key: 'rose', label: L.styleRose }
         ];
 
         const builtinCards = [];

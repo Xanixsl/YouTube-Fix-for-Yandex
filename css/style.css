@@ -114,6 +114,10 @@
 #yt-enhancer-settings button:hover {
     background: var(--enhancer-btn-hover-bg) !important;
 }
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }
 
 /* @theme improved */
 /* @base */
@@ -417,6 +421,10 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 #yt-enhancer-settings button:hover {
     transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
 }
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }
 
 /* @theme sunset */
 /* @base */
@@ -522,3 +530,338 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 #yt-enhancer-settings button:hover {
     transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
 }
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }
+
+/* @theme ocean */
+/* @base */
+:root {
+    --enhancer-radius: 18px !important;
+    --enhancer-btn-radius: 14px !important;
+    --enhancer-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #0a1628 !important;
+    --enhancer-fg: #cff4fc !important;
+    --enhancer-border: #0e2a45 !important;
+    --enhancer-primary: #06b6d4 !important;
+    --enhancer-secondary: #22d3ee !important;
+    --enhancer-accent: #67e8f9 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #0a1628 !important;
+    --enhancer-badge-bg: rgba(6, 182, 212, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(34, 211, 238, 0.2) !important;
+    --enhancer-badge-exp-fg: #22d3ee !important;
+    --enhancer-input-bg: #0d1f38 !important;
+    --enhancer-input-fg: #cff4fc !important;
+    --enhancer-input-border: #1a3a55 !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #4a8fa8 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.4), transparent) !important;
+    --enhancer-select-bg: #0d1f38 !important;
+    --enhancer-select-fg: #cff4fc !important;
+    --enhancer-select-border: #1a3a55 !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.25), 0 8px 40px rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(16px) saturate(1.6) !important;
+    border: 1px solid rgba(6, 182, 212, 0.18) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(135deg, #06b6d4, #22d3ee, #67e8f9);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #0d1f38 !important;
+    color: #cff4fc !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: #f0f9ff !important;
+    --enhancer-fg: #0c4a6e !important;
+    --enhancer-border: #bae6fd !important;
+    --enhancer-primary: #0891b2 !important;
+    --enhancer-secondary: #0ea5e9 !important;
+    --enhancer-accent: #38bdf8 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: rgba(8, 145, 178, 0.08) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(14, 165, 233, 0.12) !important;
+    --enhancer-badge-exp-fg: #0369a1 !important;
+    --enhancer-input-bg: #e0f2fe !important;
+    --enhancer-input-fg: #0c4a6e !important;
+    --enhancer-input-border: #7dd3fc !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #6098b8 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(8, 145, 178, 0.2), transparent) !important;
+    --enhancer-select-bg: #f0f9ff !important;
+    --enhancer-select-fg: #0c4a6e !important;
+    --enhancer-select-border: #7dd3fc !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.1), 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(8, 145, 178, 0.12) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #e0f2fe !important;
+    color: #0c4a6e !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 16px rgba(6, 182, 212, 0.25) !important;
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }
+
+/* @theme emerald */
+/* @base */
+:root {
+    --enhancer-radius: 16px !important;
+    --enhancer-btn-radius: 12px !important;
+    --enhancer-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #0a1f0f !important;
+    --enhancer-fg: #d1fae5 !important;
+    --enhancer-border: #134e22 !important;
+    --enhancer-primary: #10b981 !important;
+    --enhancer-secondary: #34d399 !important;
+    --enhancer-accent: #6ee7b7 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #0a1f0f !important;
+    --enhancer-badge-bg: rgba(16, 185, 129, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(52, 211, 153, 0.2) !important;
+    --enhancer-badge-exp-fg: #34d399 !important;
+    --enhancer-input-bg: #0f2918 !important;
+    --enhancer-input-fg: #d1fae5 !important;
+    --enhancer-input-border: #1a4a28 !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #4a8a60 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.35), transparent) !important;
+    --enhancer-select-bg: #0f2918 !important;
+    --enhancer-select-fg: #d1fae5 !important;
+    --enhancer-select-border: #1a4a28 !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(12px) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #0f2918 !important;
+    color: #d1fae5 !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: #f0fdf4 !important;
+    --enhancer-fg: #14532d !important;
+    --enhancer-border: #bbf7d0 !important;
+    --enhancer-primary: #059669 !important;
+    --enhancer-secondary: #10b981 !important;
+    --enhancer-accent: #34d399 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: rgba(5, 150, 105, 0.08) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(16, 185, 129, 0.12) !important;
+    --enhancer-badge-exp-fg: #047857 !important;
+    --enhancer-input-bg: #dcfce7 !important;
+    --enhancer-input-fg: #14532d !important;
+    --enhancer-input-border: #86efac !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #4a9060 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.18), transparent) !important;
+    --enhancer-select-bg: #f0fdf4 !important;
+    --enhancer-select-fg: #14532d !important;
+    --enhancer-select-border: #86efac !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+    backdrop-filter: blur(8px) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #dcfce7 !important;
+    color: #14532d !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }
+
+/* @theme rose */
+/* @base */
+:root {
+    --enhancer-radius: 18px !important;
+    --enhancer-btn-radius: 14px !important;
+    --enhancer-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+/* @dark */
+:root {
+    --enhancer-bg: #1a0a0f !important;
+    --enhancer-fg: #ffe4e6 !important;
+    --enhancer-border: #3f1220 !important;
+    --enhancer-primary: #f43f5e !important;
+    --enhancer-secondary: #fb7185 !important;
+    --enhancer-accent: #fda4af !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #1a0a0f !important;
+    --enhancer-badge-bg: rgba(244, 63, 94, 0.15) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(251, 113, 133, 0.2) !important;
+    --enhancer-badge-exp-fg: #fb7185 !important;
+    --enhancer-input-bg: #27101a !important;
+    --enhancer-input-fg: #ffe4e6 !important;
+    --enhancer-input-border: #5a1a2a !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #8a4a5a !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(244, 63, 94, 0.35), transparent) !important;
+    --enhancer-select-bg: #27101a !important;
+    --enhancer-select-fg: #ffe4e6 !important;
+    --enhancer-select-border: #5a1a2a !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.25), 0 8px 40px rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(16px) saturate(1.5) !important;
+    border: 1px solid rgba(244, 63, 94, 0.18) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    background: linear-gradient(135deg, #f43f5e, #fb7185, #fda4af);
+    -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #27101a !important;
+    color: #ffe4e6 !important;
+}
+/* @light */
+:root {
+    --enhancer-bg: #fff1f2 !important;
+    --enhancer-fg: #4c0519 !important;
+    --enhancer-border: #fecdd3 !important;
+    --enhancer-primary: #e11d48 !important;
+    --enhancer-secondary: #f43f5e !important;
+    --enhancer-accent: #fb7185 !important;
+    --enhancer-btn-border: var(--enhancer-primary) !important;
+    --enhancer-btn-fg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-bg: var(--enhancer-primary) !important;
+    --enhancer-btn-hover-fg: #ffffff !important;
+    --enhancer-badge-bg: rgba(225, 29, 72, 0.08) !important;
+    --enhancer-badge-fg: var(--enhancer-primary) !important;
+    --enhancer-badge-exp-bg: rgba(244, 63, 94, 0.12) !important;
+    --enhancer-badge-exp-fg: #be123c !important;
+    --enhancer-input-bg: #ffe4e6 !important;
+    --enhancer-input-fg: #4c0519 !important;
+    --enhancer-input-border: #fda4af !important;
+    --enhancer-tab-active: var(--enhancer-primary) !important;
+    --enhancer-tab-inactive: #a06070 !important;
+    --enhancer-divider: linear-gradient(90deg, transparent, rgba(225, 29, 72, 0.18), transparent) !important;
+    --enhancer-select-bg: #fff1f2 !important;
+    --enhancer-select-fg: #4c0519 !important;
+    --enhancer-select-border: #fda4af !important;
+}
+#yt-enhancer-settings {
+    box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.1), 0 4px 24px rgba(0, 0, 0, 0.07) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(225, 29, 72, 0.1) !important;
+}
+#yt-enhancer-settings h2 {
+    font-weight: 700; font-size: 1.5em;
+    color: var(--enhancer-primary) !important; margin-bottom: 24px;
+}
+#yt-enhancer-settings select option,
+#yt-style-editor select option {
+    background: #ffe4e6 !important;
+    color: #4c0519 !important;
+}
+/* @common */
+#yt-enhancer-settings h3 {
+    font-weight: 600; color: var(--enhancer-fg) !important;
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--enhancer-border);
+}
+.yt-enhancer-section { position: relative; padding-bottom: 16px; margin-bottom: 24px; }
+.yt-enhancer-section::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+    background: var(--enhancer-divider);
+}
+#yt-enhancer-settings button {
+    transition: var(--enhancer-transition) !important; position: relative; overflow: hidden;
+}
+#yt-enhancer-settings button:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 16px rgba(244, 63, 94, 0.3) !important;
+}
+#yt-enhancer-settings ::-webkit-scrollbar { width: 6px; }
+#yt-enhancer-settings ::-webkit-scrollbar-track { background: transparent; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb { background: var(--enhancer-border); border-radius: 3px; }
+#yt-enhancer-settings ::-webkit-scrollbar-thumb:hover { background: var(--enhancer-primary); }
