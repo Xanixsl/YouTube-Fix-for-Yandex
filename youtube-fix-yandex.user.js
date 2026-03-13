@@ -3709,14 +3709,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             tab.addEventListener('mouseenter', () => {
                 tab.style.setProperty('background', 'none', 'important');
                 if (!tab.dataset.tabActive) {
-                    // Read actual computed background of panel (resolves var(--enhancer-bg))
-                    // and compute luminance to pick a guaranteed-visible text color
-                    const bgRaw = getComputedStyle(panel).backgroundColor;
-                    const m = bgRaw.match(/[\d.]+/g);
-                    const luma = (m && m.length >= 3)
-                        ? 0.299 * +m[0] + 0.587 * +m[1] + 0.114 * +m[2]
-                        : 0;
-                    tab.style.color = luma > 128 ? '#111111' : '#ffffff';
+                    const themeKey = config.settingsStyle || 'youtube';
+                    const isDark = config.enhancerTheme === 'dark' ||
+                        (config.enhancerTheme === 'auto' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+                    const preset = (_BUILTIN_PRESET_COLORS[themeKey] || _BUILTIN_PRESET_COLORS['youtube'])[isDark ? 'dark' : 'light'] || {};
+                    tab.style.color = preset.fg || (isDark ? '#ffffff' : '#111111');
                 }
             });
             tab.addEventListener('mouseleave', () => {
