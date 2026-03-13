@@ -56,6 +56,7 @@
             mainSection: "Interface", mainDesc: "Display and navigation options for all browsers",
             hideChips: "Hide chips (filters)", hideChipsDesc: "Hides the filter bar on the home page and category sections (chips are always preserved on channel pages)",
             chipbarBgHeight: "Chipbar background height (px)",
+            hideChipbarBg: "Hide chipbar background", hideChipbarBgDesc: "Completely hides the masthead background strip (for non-Yandex browsers)",
             compactMode: "Compact mode", compactModeDesc: "Reduces spacing between videos for denser layout",
             hideShorts: "Hide Shorts", hideShortsDesc: "Removes Shorts section and recommendations",
             hideTopicShelves: "Hide \"More topics\"", hideTopicShelvesDesc: "Removes topic video shelves (\"More topics\") from the home page",
@@ -133,6 +134,7 @@
             mainSection: "Интерфейс", mainDesc: "Параметры отображения и навигации для всех браузеров",
             hideChips: "Скрыть чипсы (фильтры)", hideChipsDesc: "Скрывает полосу с фильтрами только на главной странице и разделах (на страницах каналов чипсы всегда сохраняются)",
             chipbarBgHeight: "Высота фона чипбара (px)",
+            hideChipbarBg: "Скрыть фон чипбара", hideChipbarBgDesc: "Полностью скрывает полосу фона шапки (для других браузеров)",
             compactMode: "Компактный режим", compactModeDesc: "Уменьшает отступы между видео для более плотного расположения",
             hideShorts: "Скрыть Shorts", hideShortsDesc: "Убирает раздел Shorts и рекомендации коротких видео",
             hideTopicShelves: "Скрыть \"Ещё темы\"", hideTopicShelvesDesc: "Убирает секции с тематическими подборками видео (\"Ещё темы\") на главной странице",
@@ -846,6 +848,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     const defaultConfig = {
         hideChips: false,
         chipbarBgHeight: 10,
+        hideChipbarBg: false,
         compactMode: false,
         hideShorts: true,
         hideTopicShelves: false,
@@ -1028,14 +1031,23 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 }
             `;
         }
-        // Высота фона шапки — работает всегда, независимо от hideChips
-        mainCSS += `
-            ytd-masthead[frosted-glass-mode="with-chipbar"] #background,
-            ytd-masthead #background {
-                height: ${config.chipbarBgHeight}px !important;
-                min-height: unset !important;
-            }
-        `;
+        // Фон шапки (чипбара) — для других браузеров
+        if (config.hideChipbarBg) {
+            mainCSS += `
+                ytd-masthead[frosted-glass-mode="with-chipbar"] #background,
+                ytd-masthead #background {
+                    display: none !important;
+                }
+            `;
+        } else {
+            mainCSS += `
+                ytd-masthead[frosted-glass-mode="with-chipbar"] #background,
+                ytd-masthead #background {
+                    height: ${config.chipbarBgHeight}px !important;
+                    min-height: unset !important;
+                }
+            `;
+        }
         // Принудительно показываем чипсы на вкладке Videos
         if (/\/@[^/]+\/videos/.test(location.pathname)) {
             mainCSS += `
@@ -2198,6 +2210,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             return div;
         };
         mainSection.appendChild(createNumInput('chipbarBgHeight', L.chipbarBgHeight, config.chipbarBgHeight, -200, 200));
+        mainSection.appendChild(createCheckbox('hideChipbarBg', L.hideChipbarBg, config.hideChipbarBg, L.hideChipbarBgDesc));
         mainSection.appendChild(createCheckbox('compactMode', L.compactMode, config.compactMode, L.compactModeDesc));
         mainSection.appendChild(createCheckbox('hideShorts', L.hideShorts, config.hideShorts, L.hideShortsDesc));
         mainSection.appendChild(createCheckbox('hideTopicShelves', L.hideTopicShelves, config.hideTopicShelves, L.hideTopicShelvesDesc, true));

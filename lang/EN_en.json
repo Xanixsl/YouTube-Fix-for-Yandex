@@ -7,6 +7,7 @@
             "mainSection": "Interface", "mainDesc": "Display and navigation options for all browsers",
             "hideChips": "Hide chips (filters)", "hideChipsDesc": "Hides the filter bar on the home page and category sections (chips are always preserved on channel pages)",
             "chipbarBgHeight": "Chipbar background height (px)",
+            "hideChipbarBg": "Hide chipbar background", "hideChipbarBgDesc": "Completely hides the masthead background strip (for non-Yandex browsers)",
             "compactMode": "Compact mode", "compactModeDesc": "Reduces spacing between videos for denser layout",
             "hideShorts": "Hide Shorts", "hideShortsDesc": "Removes Shorts section and recommendations",
             "hideTopicShelves": "Hide \"More topics\"", "hideTopicShelvesDesc": "Removes topic video shelves (\"More topics\") from the home page",
