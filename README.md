@@ -153,7 +153,7 @@ The settings panel has **3 tabs**:
 
 ### 🗂 Tab 3 — Settings
 
-**Appearance** — dark mode support, thumbnail size (4 options)
+**Appearance** — thumbnail size (4 options)
 
 **Window** — position (5 options), font size, width, corner radius, smooth animation toggle
 
