@@ -21,7 +21,7 @@
 
 <br/>
 
-<sub>👥 Проект посетило</sub><br/>
+<sub>👥 Проект посетило</sub><br/><br/>
 <a href="https://github.com/Xanixsl/YouTube-Fix-for-Yandex">
   <img src="https://count.getloli.com/@Xanixsl-YouTube-Fix-for-Yandex?name=Xanixsl-YouTube-Fix-for-Yandex&theme=booru-lewd&padding=1&offset=0&align=center&scale=1&pixelated=1&darkmode=0" alt="Visitors" />
 </a>
@@ -35,7 +35,7 @@
 [![Установок](https://img.shields.io/badge/Установок-5.8k%2B-238636?style=for-the-badge&logo=tampermonkey&logoColor=white&labelColor=0d1117)](https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js)
 
 <br/>
-<sub>📋 Быстрая навигация</sub><br/>
+<sub>📋 Быстрая навигация</sub><br/><br/>
 
 [![README](https://img.shields.io/badge/-README-0078D4?style=for-the-badge&logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MCAzMCI+PHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjMwIiBmaWxsPSIjMDEyMTY5Ii8+PHBhdGggZD0iTTAsMCBMNjAsMzAgTTYwLDAgTDAsMzAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI2Ii8+PHBhdGggZD0iTTAsMCBMNjAsMzAgTTYwLDAgTDAsMzAiIHN0cm9rZT0iI0M4MTAyRSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTMwLDAgVjMwIE0wLDE1IEg2MCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTMwLDAgVjMwIE0wLDE1IEg2MCIgc3Ryb2tlPSIjQzgxMDJFIiBzdHJva2Utd2lkdGg9IjYiLz48L3N2Zz4=&labelColor=0d1117)](../README.md)&nbsp;
 [![Установка](https://img.shields.io/badge/📥_Установка-Руководство-238636?style=for-the-badge&labelColor=0d1117)](#-установка)&nbsp;
@@ -50,7 +50,7 @@
 ## 📸 Скриншоты
 
 <p align="center">  <sub>🌍 Кнопка-шестерёнка — появляется на верхней панели YouTube, рядом с +Создать и иконкой профиля</sub><br/><br/>
-  <img src="https://github.com/user-attachments/assets/107aca06-5722-4201-ac93-eea26ff20aee" width="600" height="auto" alt="Кнопка панели на странице YouTube"/>
+  <img src="https://github.com/user-attachments/assets/107aca06-5722-4201-ac93-eea26ff20aee" width="1000" height="auto" alt="Кнопка панели на странице YouTube"/>
 </p>
 
 <p align="center">  <img src="https://github.com/user-attachments/assets/c34d6782-a4ae-4910-9be0-50273b92cf33" width="300" alt="Основной интерфейс"/>
