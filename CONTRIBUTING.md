@@ -69,15 +69,18 @@ Please include:
 - For large changes, open an issue first to discuss before writing code
 - The project is a **single-file userscript** — all logic is in `youtube-fix-yandex.user.js`
 
+> ⚠️ **Important — license restriction:** Forking this repository is permitted **only** for the purpose of submitting a Pull Request back to the original project. Your fork must not be published, redistributed, or maintained as a standalone project or distribution. See [License](#️-license) below.
+
 ### Workflow
 
 ```
-1. Fork the repository
+1. Fork the repository (for PR purposes only — see license)
 2. Create a branch: git checkout -b fix/describe-your-change
 3. Make your changes
 4. Test in Yandex Browser and Chrome with Violentmonkey
 5. Commit with a clear message: git commit -m "fix: describe what was fixed"
 6. Push and open a Pull Request
+7. Delete your fork after the PR is merged or closed
 ```
 
 ### Pull Request checklist
@@ -88,6 +91,7 @@ Please include:
 - [ ] Existing features are not broken
 - [ ] Code is readable and follows existing style
 - [ ] PR description explains what was changed and why
+- [ ] Fork will not be kept as an independent distribution
 
 ---
 
@@ -123,24 +127,45 @@ The script is intentionally kept as a **single file** for easy userscript distri
 
 ### Section markers in the script
 
+Major sections use a box-style header:
+
 ```js
-// === SECTION NAME ===
+// ┌──────────────────────────────────────────────────────────────────┐
+// │  § N  SECTION NAME                                               │
+// │  Brief description of what this section contains.               │
+// └──────────────────────────────────────────────────────────────────┘
 ```
 
-Keep this pattern when adding new sections so the file remains easy to navigate.
+Sub-sections within a major section use the short dash style:
+
+```js
+// --- Sub-section name ---
+```
+
+Keep these patterns when adding new code so the file remains easy to navigate.
 
 ---
 
 ## ⚖️ License
 
-By contributing, you agree that your contributions will be licensed under the same license as the project:
+By submitting a Pull Request, you agree that your contribution will be governed by the project's license:
 
-**Custom All Rights Reserved license** — see [LICENSE](LICENSE)
+**[Proprietary Software License](LICENSE)** — Copyright (c) 2026 Xanixsl. All Rights Reserved.
 
-This means:
-- Others can freely use and redistribute the project in original form with attribution
-- **Modifications, derivative works and rebranding are not permitted**
-- Your contribution becomes part of the main project under this license
+Key terms relevant to contributors:
+
+| What | Allowed? |
+|------|----------|
+| Personal use and redistribution of the **original, unmodified** script | ✅ With attribution |
+| Forking **solely** to submit a Pull Request | ✅ Temporarily |
+| Publishing or maintaining your fork as a standalone project | ❌ Prohibited (§ 3b) |
+| Modifying the code outside of preparing a PR contribution | ❌ Prohibited (§ 3a) |
+| Creating derivative works, spin-offs, or rebranded versions | ❌ Prohibited (§ 3b, 3f) |
+| Commercial use or sublicensing | ❌ Prohibited (§ 3d) |
+
+Once a contribution is accepted, it becomes part of the Software and the **exclusive intellectual property of the author** (Xanixsl) under the terms of this license (§ 4). You retain no separate rights over the contributed code.
+
+For any use beyond submitting a PR, request explicit written permission via [GitHub Discussions](https://github.com/Xanixsl/YouTube-Fix-for-Yandex/discussions).
 
 ---
 

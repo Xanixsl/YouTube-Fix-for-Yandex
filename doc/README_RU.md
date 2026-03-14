@@ -1,4 +1,4 @@
-<div align="center">
+﻿<div align="center">
 
 # 📺 YouTube Fix for Yandex
 
@@ -16,11 +16,12 @@
 <td align="center"><b>🌍 Яндекс-фиксы</b><br/><sub>SPA-навигация, артефакты в полноэкранном,<br/>двойной скролл, элементы плеера</sub></td>
 <td align="center"><b>🎨 Редактор стилей</b><br/><sub>13 тем, свой CSS,<br/>фоны, настройка цветов</sub></td>
 <td align="center"><b>🖥️ Интерфейс</b><br/><sub>Компактный режим, скрыть Shorts,<br/>сетка видео, управление чипсами</sub></td>
+<td align="center"><b>🎬 Режим кинотеатра</b><br/><sub>Тёмный центрированный плеер,<br/>атмосферная подсветка, быстрые настройки</sub></td>
 </tr></table>
 
 <br/>
 
-<sub>👥 Проект посетило</sub><br/><br/>
+<sub>👥 Проект посетило</sub><br/>
 <a href="https://github.com/Xanixsl/YouTube-Fix-for-Yandex">
   <img src="https://count.getloli.com/@Xanixsl-YouTube-Fix-for-Yandex?name=Xanixsl-YouTube-Fix-for-Yandex&theme=booru-lewd&padding=1&offset=0&align=center&scale=1&pixelated=1&darkmode=0" alt="Visitors" />
 </a>
@@ -34,7 +35,7 @@
 [![Установок](https://img.shields.io/badge/Установок-5.8k%2B-238636?style=for-the-badge&logo=tampermonkey&logoColor=white&labelColor=0d1117)](https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js)
 
 <br/>
-<sub>📋 Быстрая навигация</sub><br/><br/>
+<sub>📋 Быстрая навигация</sub><br/>
 
 [![README](https://img.shields.io/badge/-README-0078D4?style=for-the-badge&logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MCAzMCI+PHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjMwIiBmaWxsPSIjMDEyMTY5Ii8+PHBhdGggZD0iTTAsMCBMNjAsMzAgTTYwLDAgTDAsMzAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI2Ii8+PHBhdGggZD0iTTAsMCBMNjAsMzAgTTYwLDAgTDAsMzAiIHN0cm9rZT0iI0M4MTAyRSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTMwLDAgVjMwIE0wLDE1IEg2MCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTMwLDAgVjMwIE0wLDE1IEg2MCIgc3Ryb2tlPSIjQzgxMDJFIiBzdHJva2Utd2lkdGg9IjYiLz48L3N2Zz4=&labelColor=0d1117)](../README.md)&nbsp;
 [![Установка](https://img.shields.io/badge/📥_Установка-Руководство-238636?style=for-the-badge&labelColor=0d1117)](#-установка)&nbsp;
@@ -46,10 +47,10 @@
 
 ---
 
-## � Скриншоты
+## 📸 Скриншоты
 
 <p align="center">  <sub>🌍 Кнопка-шестерёнка — появляется на верхней панели YouTube, рядом с +Создать и иконкой профиля</sub><br/><br/>
-  <img src="https://github.com/user-attachments/assets/107aca06-5722-4201-ac93-eea26ff20aee" width="1000" height="auto" alt="Кнопка панели на странице YouTube"/>
+  <img src="https://github.com/user-attachments/assets/107aca06-5722-4201-ac93-eea26ff20aee" width="600" height="auto" alt="Кнопка панели на странице YouTube"/>
 </p>
 
 <p align="center">  <img src="https://github.com/user-attachments/assets/c34d6782-a4ae-4910-9be0-50273b92cf33" width="300" alt="Основной интерфейс"/>
@@ -115,6 +116,7 @@
 | **Фикс карточки канала на вкладках** | Исправляет «съезжающую» карточку канала на всех вкладках |
 | **Восстановить чипсы на вкладке Videos** | Гарантирует отображение сортировочных чипсов на странице канала |
 | **Плейлисты на каналах** | Возвращает плейлисты на страницы каналов (отключает оптимизацию Яндекса) |
+| **Режим кинотеатра** | Автоматически входит в режим кинотеатра при открытии видео: центрирует плеер на тёмном фоне, скрывает шапку, боковую панель и навигацию. Настройки — кнопка с ползунками (≡) в управлении плеером; выход — кнопка с иконкой кинокамеры |
 
 #### 🐛 Раздел «Исправления багов»
 
@@ -135,7 +137,7 @@
 
 ---
 
-### � Вкладка 2 — Яндекс-Фиксы *(только для Яндекс Браузера)*
+### 🌍 кладка 2 — Яндекс-иксы *(только для Яндекс раузера)*
 
 #### 🏷 Раздел «Фиксы Яндекс Браузера»
 
@@ -166,9 +168,9 @@
 
 ---
 
-### � Вкладка 3 — Настройки
+### ⚙️ кладка 3 — астройки
 
-#### 🖼 Раздел «Размер миниатюр видео»
+#### 📐 аздел «азмер миниатюр видео»
 
 | Вариант | Пропорции |
 |---------|-----------|
@@ -255,6 +257,29 @@
 
 ---
 
+### 🎬 Режим кинотеатра
+
+Включается переключателем **Режим кинотеатра** во вкладке **Общее**, раздел «Интерфейс». При включении автоматически активируется при каждом открытии страницы просмотра — плеер центрируется на тёмном фоне, шапка, боковая панель и навигация скрываются.
+
+**Панель быстрых настроек** — нажмите кнопку с ползунками (≡) в правом верхнем углу управления плеером:
+
+| Параметр | Описание |
+|----------|----------|
+| **Цвет фона** | Цвет тёмного холста за плеером |
+| **Размытие (px)** | Размытие фоновых элементов за плеером |
+| **Яркость фона (%)** | Яркость фона — 0 полный чёрный, 80 полупрозрачный |
+| **Тень (px)** | Тёмная тень вокруг плеера |
+| **Макс. ширина плеера (vw)** | Ограничение ширины плеера в % от экрана (100 = полный экран) |
+| **Боковой занавес (vw)** | Тёмные градиентные занавесы по краям экрана (0 = откл.) |
+| **Скрыть описание и комментарии** | Полностью убирает блок ниже плеера |
+| **Атмосферная подсветка** | Считывает цвета видео и создаёт свечение вокруг плеера |
+
+Кнопки панели: **Сброс настроек** · **Сохранить** · **Закрыть**
+
+> Выход — кнопка с **иконкой кинокамеры**. После выхода в управлении плеером появляется кнопка **Войти в режим кинотеатра** для быстрого повторного входа.
+
+---
+
 ## 🎨 Примеры CSS
 
 Вставьте в **Редактор стилей → Свой CSS**:
@@ -335,14 +360,14 @@ ytd-guide-section-renderer:has(a[href="/premium"]) {
 
 ---
 
-## � Технические детали
+## 🔩 Технические детали
 
 ### 📄 Метаданные скрипта
 
 | Параметр | Значение |
 |----------|----------|
 | Название | `YouTube Fix for Yandex` |
-| Версия | `4.4.5` |
+| Версия | `4.4.6` |
 | Автор | [Xanixsl](https://github.com/Xanixsl) |
 | Namespace | `https://github.com/Xanixsl/YouTube-Fix-for-Yandex` |
 | Лицензия | All Rights Reserved |
@@ -360,8 +385,8 @@ ytd-guide-section-renderer:has(a[href="/premium"]) {
 
 | Метрика | Значение |
 |---------|----------|
-| Общее количество строк | ~5 515 |
-| Размер файла | ~283 KB |
+| Общее количество строк | ~6 560 |
+| Размер файла | ~348 KB |
 | Функции | 73 |
 | Экземпляры MutationObserver | 7 |
 | CSS-переменные (`--yt-*`) | 49 |
