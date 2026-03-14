@@ -1,7 +1,7 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace https://github.com/Xanixsl/YouTube-Fix-for-Yandex
-// @version      4.4.5
+// @version      4.4.6
 // @description  Оптимизация и исправления YouTube для Яндекс Браузера: сетка, производительность, интерфейс, фикс пустых блоков, кодеков, авто-паузы, скролла, нативный YouTube UI
 // @author       Xanix
 // @match        https://www.youtube.com/*
@@ -14,6 +14,7 @@
 // @grant        GM_getResourceText
 // @grant        GM_xmlhttpRequest
 // @connect      raw.githubusercontent.com
+// @require      https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/src/debug.js
 // @connect      www.youtube.com
 // @connect      googlevideo.com
 // @homepage     https://github.com/Xanixsl/YouTube-Fix-for-Yandex
@@ -29,26 +30,125 @@
 (function() {
     'use strict';
 
-    // --- Доступ к реальному window (sandbox-safe) ---
+    // ╔══════════════════════════════════════════════════════════════════╗
+    // ║          YouTube Fix for Yandex  •  v4.4.6  •  by Xanix         ║
+    // ║    github.com/Xanixsl/YouTube-Fix-for-Yandex                     ║
+    // ╠══════════════════════════════════════════════════════════════════╣
+    // ║  СОДЕРЖИМОЕ                                                       ║
+    // ║  § 1  USER_DEFAULTS ........... Настройки по умолчанию (здесь!)  ║
+    // ║  § 2  Внутренние константы ..... Флаги, карты, хелперы           ║
+    // ║  § 3  _BUILTIN_LANGS ........... Языковые строки (EN / RU)       ║
+    // ║  § 4  _BUILTIN_THEMES .......... Встроенные CSS-темы             ║
+    // ║  § 5  defaultConfig + storage .. Конфигурация и хранилище        ║
+    // ║  § 6  Функции ядра ............ applyFixes, fix✱, темы, DOM       ║
+    // ║  § 7  UI — Панель настроек ..... createSettingsUI()               ║
+    // ║  § 8  UI — Редактор стилей ..... createStyleEditor()              ║
+    // ║  § 9  Интеграция с YouTube ..... Кнопка, плейлисты, Яндекс-фиксы  ║
+    // ║  § 10 Cinema Mode .............. Режим кинотеатра                 ║
+    // ║  § 11 Инициализация ............ init() + точка входа             ║
+    // ╚══════════════════════════════════════════════════════════════════╝
+
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 1  НАСТРОЙКИ ПО УМОЛЧАНИЮ                                     │
+    // │  Менять только здесь. Применяются при первом запуске или после   │
+    // │  «Reset settings». Уже сохранённые настройки не затрагиваются.  │
+    // └──────────────────────────────────────────────────────────────────┘
+    const USER_DEFAULTS = {
+
+        // ── Интерфейс ─────────────────────────────────────────────────
+        hideChips:           true,   // Скрыть чипсы (фильтры) на главной странице
+        chipbarBgHeight:     10,     // Высота фона чипбара (px); 0 = убрать полностью
+        hideChipbarBg:       true,   // Скрыть frosted-glass полосу под шапкой
+        compactMode:         false,  // Компактный режим: уменьшенные отступы между видео
+        hideShorts:          true,   // Скрыть раздел Shorts и рекомендации
+        hideTopicShelves:    true,   // Скрыть блоки «Ещё темы» на главной
+        hideRFSlowWarning:   true,   // Скрыть уведомление о замедлении YouTube в РФ
+        fixChannelCard:      true,   // Фикс «съезжающей» карточки канала
+        restoreChips:        true,   // Восстановить чипсы-сортировки на вкладке Videos
+        playlistModeFeature: true,   // Плейлисты на каналах (отключает оптимизацию Яндекса)
+        forceH264:           true,   // Принудительный H264: отключает VP9/AV1 (убирает фризы)
+
+        // ── Исправления багов ─────────────────────────────────────────
+        fixAutoPause:        true,   // Авто-закрытие попапа «Видео приостановлено»
+        fixDarkFlash:        true,   // Фикс белой вспышки при навигации в тёмной теме
+        fixSearchGrid:       true,   // Фикс сетки видео на странице поиска
+        fixMiniPlayer:       true,   // Фикс наложения мини-плеера (z-index)
+        scrollOptimization:  true,   // Оптимизация скролла (меньше подтормаживаний)
+        fixSidebar:          true,   // Фикс глитчей боковой панели при навигации
+        hideEmptyBlocks:     true,   // Скрыть пустые плейсхолдеры и сломанные промо-блоки
+
+        // ── Яндекс — сетка видео ──────────────────────────────────────
+        yandexVideoCount:    4,      // Количество видео в строке на главной
+        yandexChipbarMargin: -100,   // Вертикальный сдвиг полосы чипсов (px)
+        yandexVideoMargin:   5,      // Вертикальный сдвиг сетки видео (px)
+
+        // ── Окно настроек ─────────────────────────────────────────────
+        enhancerWidth:       750,    // Ширина окна настроек (px)
+        settingsRadius:      20,     // Скругление углов окна (px)
+
+        // ── Редактор стилей ───────────────────────────────────────────
+        editorFontSize:      15,     // Размер шрифта в редакторе стилей (px)
+        editorWidth:         800,    // Ширина окна редактора стилей (px)
+
+        // ── Отладка ───────────────────────────────────────────────────
+        // Чтобы включить: 1) поставь debugMode: true здесь
+        //                 2) для локальной разработки замени @require в заголовке на:
+        //                    file:///ПУТЬ/к/src/debug.js
+        debugMode:           false,  // Красивый дебаг в консоли (требует src/debug.js через @require)
+    };
+
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 2  ВНУТРЕННИЕ КОНСТАНТЫ И ФЛАГИ                               │
+    // └──────────────────────────────────────────────────────────────────┘
+
+    // Доступ к реальному window (sandbox-safe для Tampermonkey/Violentmonkey)
     const _unsafeWin = typeof unsafeWindow !== 'undefined' ? unsafeWindow : window;
 
-    // --- Константы для режима плейлистов ---
+    // Режим плейлистов
     const PLAYLIST_MODE_CLASS = 'yt-enhancer-playlist-mode';
-    const PLAYLIST_URL_REGEX = /^\/@[^/]+\/playlists\/?$/;
-    let isPlaylistModeActive = false;
+    const PLAYLIST_URL_REGEX  = /^\/@[^/]+\/playlists\/?$/;
+
+    // Состояние
+    let isPlaylistModeActive  = false;
     let playlistModeNotification = null;
-    let _isYandex = null;
-    let _initDone = false;
+    let _isYandex             = null;
+    let _initDone             = false;
+
+    // Коллекции управляемых стилей и наблюдателей
     const _managedStyles = new Map();
-    const _observers = [];
+    const _observers     = [];
 
-    // --- Автоматический редирект на /featured для каналов (отключён: YouTube убрал /featured, вызывает бесконечный цикл редиректов) ---
-    // (function autoRedirectToFeatured() { ... })();
+    // (autoRedirectToFeatured отключён — YouTube убрал /featured, бесконечный редирект)
 
+    // ── Debug-шина ────────────────────────────────────────────────────────────
+    // Если src/debug.js загружен через @require — используем его; иначе no-op заглушка.
+    // Создаём dbg до §3/_BUILTIN_LANGS, чтобы _loadResource мог логировать.
+    /* eslint-disable no-undef */
+    const dbg = (typeof __ytfixDbg !== 'undefined') ? __ytfixDbg : {
+        enabled: false,
+        init()      {},
+        log()       {},
+        warn()      {},
+        error()     {},
+        group()     {},
+        groupEnd()  {},
+        timeStart() {},
+        timeEnd()   {},
+        dumpConfig(){},
+        separator() {},
+        fn: (_, f) => f,   // pass-through: нет overhead без debug.js
+    };
+    /* eslint-enable no-undef */
+
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 3  ЯЗЫКОВЫЕ СТРОКИ  (_BUILTIN_LANGS)                          │
+    // │  Встроенные переводы EN / RU. Загружаются из @resource если      │
+    // │  доступен, иначе используются значения здесь.                    │
+    // └──────────────────────────────────────────────────────────────────┘
     // --- Мультиязычность (встроенные данные + опциональное обновление из @resource / GitHub API) ---
     const _BUILTIN_LANGS = {
         en: {
-            title: "YouTube Fix for Yandex", version: "v4.4.5",
+            title: "YouTube Fix for Yandex", version: "v4.4.6",
             tabs: ["General", "Yandex Fixes", "Settings"], tabsNoYandex: ["General", "Settings"],
             save: "Save settings", reset: "Reset settings",
             saved: "Settings saved! Page will reload...", reseted: "Settings reset! Page will reload...",
@@ -73,6 +173,22 @@
             scrollOptimization: "Smooth scroll optimization", scrollOptimizationDesc: "Reduces scroll stuttering on feed pages",
             fixSidebar: "Fix sidebar rendering", fixSidebarDesc: "Fixes sidebar display glitches during navigation",
             hideEmptyBlocks: "Hide empty blocks", hideEmptyBlocksDesc: "Hides empty video placeholders and broken promo blocks on the feed",
+            cinemaModeOnWatch: "Cinema mode on watch pages", cinemaModeOnWatchDesc: "Centers the player on a dark dimmed background, hides the header, navigation and sidebar. Adjustable via in-player quick-settings panel: blur, brightness, shadow, width, ambient glow.",
+            cinemaModeExit: "Exit Cinema Mode", cinemaEnterBtn: "Enter Cinema Mode",
+            cinemaTuneSection: "Cinema mode settings", cinemaTuneSectionDesc: "Fine-tune how the cinema overlay looks and behaves",
+            cinemaBgColor: "Background color", cinemaBgColorDesc: "Dark canvas color behind the centered player",
+            cinemaBlur: "Blur (px)", cinemaBlurDesc: "Gaussian blur on background elements behind player",
+            cinemaBrightness: "Brightness (%)", cinemaBrightnessDesc: "Background brightness \u2014 0 is pitch black, 80 is semi-visible",
+            cinemaShadow: "Shadow spread (px)", cinemaShadowDesc: "Size of the outward dark shadow radiating from player edges",
+            cinemaPlayerWidth: "Max player width (vw)", cinemaPlayerWidthDesc: "Player width limit as % of viewport \u2014 100 fills entire screen",
+            cinemaCurtain: "Side curtain width (vw)", cinemaCurtainDesc: "Dark gradient curtains on left/right screen edges (0 = disabled)",
+            cinemaHideBelow: "Hide description & comments", cinemaBelowDesc: "Completely removes the area below the player",
+            cinemaQuickSettings: "Quick settings",
+            cinemaReset: "Reset defaults", cinemaSaveApply: "Save & Apply", cinemaClose: "Close",
+            cinemaAmbient: "Ambient lighting", cinemaAmbientDesc: "Samples colors from the video frame and glows them behind the player",
+            cinemaAmbientIntensity: "Glow intensity (%)", cinemaAmbientIntensityDesc: "Brightness of the ambient glow",
+            cinemaAmbientBlur: "Glow blur (px)", cinemaAmbientSpread: "Glow spread (%)", cinemaAmbientSaturate: "Color saturation (%)",
+            cinemaPanelReset: "Reset panel position",
             fixesSection: "Bug fixes", fixesDesc: "General fixes for YouTube issues in all browsers",
             langSection: "Interface language", langDesc: "Choose the extension interface language", langAuto: "Auto (browser)",
             yandexFixesSection: "Yandex Browser fixes", yandexFixesDesc: "Fixes for known issues specific to Yandex Browser",
@@ -131,7 +247,7 @@
             exitPlaylistModeNotification: "Extension will reload in {seconds} seconds to restore functionality"
         },
         ru: {
-            title: "YouTube Fix for Yandex", version: "v4.4.5",
+            title: "YouTube Fix for Yandex", version: "v4.4.6",
             tabs: ["Общее", "Яндекс-Фиксы", "Настройки"], tabsNoYandex: ["Общее", "Настройки"],
             save: "Сохранить настройки", reset: "Сбросить настройки",
             saved: "Настройки сохранены! Страница будет перезагружена...", reseted: "Настройки сброшены! Страница будет перезагружена...",
@@ -156,6 +272,22 @@
             scrollOptimization: "Оптимизация скролла", scrollOptimizationDesc: "Уменьшает подтормаживания при прокрутке ленты",
             fixSidebar: "Фикс боковой панели", fixSidebarDesc: "Устраняет глитчи боковой панели при навигации",
             hideEmptyBlocks: "Скрыть пустые блоки", hideEmptyBlocksDesc: "Скрывает пустые плейсхолдеры видео и сломанные промо-блоки в ленте",
+            cinemaModeOnWatch: "Режим кинотеатра", cinemaModeOnWatchDesc: "Центрирует плеер на тёмном затемнённом фоне, скрывает шапку, навигацию и боковую панель. Быстрые настройки прямо в плеере: размытие, яркость, тень, ширина, атмосферная подсветка.",
+            cinemaModeExit: "Выйти из режима кинотеатра", cinemaEnterBtn: "Войти в режим кинотеатра",
+            cinemaTuneSection: "Настройки кинотеатра", cinemaTuneSectionDesc: "Тонкая настройка внешнего вида и поведения режима",
+            cinemaBgColor: "Цвет фона", cinemaBgColorDesc: "Цвет тёмного холста за плеером",
+            cinemaBlur: "Размытие (px)", cinemaBlurDesc: "Степень размытия фоновых элементов за плеером",
+            cinemaBrightness: "Яркость фона (%)", cinemaBrightnessDesc: "Яркость фоновых элементов — 0 полный чёрный, 80 полупрозрачный",
+            cinemaShadow: "Тень (px)", cinemaShadowDesc: "Радиус внешней тёмной тени вокруг плеера (outward, не inset)",
+            cinemaPlayerWidth: "Макс. ширина плеера (vw)", cinemaPlayerWidthDesc: "Ограничение ширины плеера в % от экрана — 100 заполняет весь экран",
+            cinemaCurtain: "Боковой занавес (vw)", cinemaCurtainDesc: "Тёмные градиентные занавесы по бокам экрана (0 = отключено)",
+            cinemaHideBelow: "Скрыть описание и комментарии", cinemaBelowDesc: "Полностью убирает блок ниже плеера",
+            cinemaQuickSettings: "Быстрые настройки",
+            cinemaReset: "Сброс настроек", cinemaSaveApply: "Сохранить", cinemaClose: "Закрыть",
+            cinemaAmbient: "Атмосферная подсветка", cinemaAmbientDesc: "Считывает цвета видео и создаёт свечение вокруг плеера",
+            cinemaAmbientIntensity: "Интенсивность (%)", cinemaAmbientIntensityDesc: "Яркость эффекта атмосферной подсветки",
+            cinemaAmbientBlur: "Размытие свечения (px)", cinemaAmbientSpread: "Размах свечения (%)", cinemaAmbientSaturate: "Насыщенность (%)",
+            cinemaPanelReset: "Сбросить положение панели",
             fixesSection: "Исправления багов", fixesDesc: "Общие исправления для YouTube во всех браузерах",
             langSection: "Язык интерфейса", langDesc: "Выберите язык интерфейса расширения", langAuto: "Автоматически (по браузеру)",
             yandexFixesSection: "Фиксы Яндекс Браузера", yandexFixesDesc: "Исправления проблем, специфичных для Яндекс Браузера",
@@ -215,6 +347,11 @@
         }
     };
 
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 4  ВСТРОЕННЫЕ ТЕМЫ  (_BUILTIN_THEMES)                         │
+    // │  CSS-строки для 13 цветовых схем. Используются если @resource    │
+    // │  (внешний CSS-файл) по какой-то причине не загрузился.           │
+    // └──────────────────────────────────────────────────────────────────┘
     // Встроенные темы (dark/light/common) — используются если @resource не загрузился
     const _BUILTIN_THEMES = {
         // --- Тема YouTube (авто) ---
@@ -1633,9 +1770,13 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         try {
             if (typeof GM_getResourceText === 'function') {
                 const txt = GM_getResourceText(name);
-                if (txt && txt.length > 10) return txt;
+                if (txt && txt.length > 10) {
+                    dbg.ok('INIT', `@resource '${name}' — ${(txt.length / 1024).toFixed(1)} KB — загружен из GitHub ✓`);
+                    return txt;
+                }
             }
         } catch (e) { /* fallback */ }
+        dbg.notice('INIT', `@resource '${name}' недоступен → используется встроенный fallback`);
         return null;
     }
 
@@ -1759,8 +1900,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         return 'Unknown';
     }
 
-    // --- Конфигурация по умолчанию ---
-    const defaultConfig = {
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 5  КОНФИГУРАЦИЯ                                               │
+    // │  defaultConfig = base values + USER_DEFAULTS (overrides).        │
+    // │  storage — обёртка над GM_getValue / GM_setValue.                │
+    // │  loadConfig() — загружает сохранённые настройки.                 │
+    // └──────────────────────────────────────────────────────────────────┘
+    // --- Конфигурация по умолчанию (объединяет базовые значения и USER_DEFAULTS) ---
+    const defaultConfig = Object.assign({
         hideChips: false,
         chipbarBgHeight: 10,
         hideChipbarBg: false,
@@ -1779,6 +1926,14 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         scrollOptimization: true,
         fixSidebar: true,
         hideEmptyBlocks: true,
+        cinemaModeOnWatch: false,
+        cinemaBgColor: '#0b0b14',
+        cinemaBlur: 6,
+        cinemaBrightness: 12,
+        cinemaShadow: 80,
+        cinemaPlayerWidth: 90,
+        cinemaCurtain: 0,
+        cinemaHideBelow: false,
         yandexFixNavigation: true,
         yandexFixScrollbar: true,
         yandexFixFullscreen: true,
@@ -1817,7 +1972,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         bgSize: 'cover',
         userCSS: '',
         stylePresets: {}
-    };
+    }, USER_DEFAULTS);
 
     // --- Безопасное хранилище для настроек ---
     const storage = {
@@ -1849,8 +2004,22 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     let config = (function() {
         try {
             const saved = storage.get('ytEnhancerConfig');
-            return saved ? {...defaultConfig, ...saved} : {...defaultConfig};
+            if (saved) {
+                // предупреждение: найди ключи где сохранённое НЕ совпадает с USER_DEFAULTS
+                const diffs = Object.entries(USER_DEFAULTS).filter(([k, v]) => k in saved && saved[k] !== v);
+                if (diffs.length) {
+                    dbg.notice('CONFIG', `сохранённый конфиг перекрывает USER_DEFAULTS по ${diffs.length} полям:`);
+                    diffs.forEach(([k, v]) => dbg.notice('CONFIG', `  ↳ ${k}:  default=${JSON.stringify(v)}  →  saved=${JSON.stringify(saved[k])}`));
+                    dbg.notice('CONFIG', '→ чтобы применить USER_DEFAULTS: нажми «Сброс настроек» в панели');
+                } else {
+                    dbg.ok('CONFIG', `сохранённый конфиг загружен (${Object.keys(saved).length} ключей) — совпадает с USER_DEFAULTS`);
+                }
+                return {...defaultConfig, ...saved};
+            }
+            dbg.log('CONFIG', 'сохранённых настроек нет → используются defaultConfig + USER_DEFAULTS (первый запуск)');
+            return {...defaultConfig};
         } catch (e) {
+            dbg.fail('CONFIG', 'ошибка при загрузке конфига — используется дефолтный:', e);
             return {...defaultConfig};
         }
     })();
@@ -1927,6 +2096,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         `, 'yt-enhancer-rf-warning');
     }
 
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 6  ФУНКЦИИ ЯДРА                                               │
+    // │  Все feature-функции: apply*, fix*, тема, фоновые изображения,   │
+    // │  пользовательский CSS, DOM-хелперы, MutationObserver, дебаунс.   │
+    // └──────────────────────────────────────────────────────────────────┘
     // --- Основные функции ---
 
     function applyMainFeatures() {
@@ -2287,7 +2461,10 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // --- Применение стилей ---
 
     function applyGlobalStyles() {
+        dbg.timeStart('generateStyles');
         const styles = generateStyles();
+        dbg.timeEnd('generateStyles', 'PERF');
+        dbg.ok('THEME', `тема: ${config.settingsStyle || 'youtube'}  •  enhancerTheme: ${config.enhancerTheme}  •  CSS: ${(styles.length / 1024).toFixed(1)} KB — применена`);
         addStyles(styles, 'yt-enhancer-main');
         cleanupSpacing();
     }
@@ -2726,7 +2903,10 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         let _themeCSS = _parseThemeCSS(themeRaw, extCSS ? themeStyle : null);
         // Fallback: if external CSS is stale (missing this theme), use _BUILTIN_THEMES
         if (!_themeCSS) {
+            dbg.notice('THEME', `тема '${themeStyle}' не найдена в extCSS → фоллбэк на _BUILTIN_THEMES`);
             _themeCSS = _parseThemeCSS(_getThemeRaw(themeStyle), null);
+        } else {
+            dbg.ok('THEME', `тема '${themeStyle}' распарсена: base=${_themeCSS.base.length}B  dark=${_themeCSS.dark.length}B  common=${_themeCSS.common.length}B`);
         }
         if (_themeCSS) {
             css += _themeCSS.base;
@@ -2943,6 +3123,12 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
     }
 
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 7  UI — ПАНЕЛЬ НАСТРОЕК                                       │
+    // │  createSettingsUI() — основное окно с вкладками General /        │
+    // │  Yandex Fixes / Settings. Все элементы управления, кнопки,       │
+    // │  футер, Save/Reset.                                               │
+    // └──────────────────────────────────────────────────────────────────┘
     // --- UI настроек ---
 
     function createSettingsUI() {
@@ -3453,6 +3639,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         mainSection.appendChild(createCheckbox('hideTopicShelves', L.hideTopicShelves, config.hideTopicShelves, L.hideTopicShelvesDesc, true));
         mainSection.appendChild(createCheckbox('hideRFSlowWarning', L.hideRFSlowWarning, config.hideRFSlowWarning, L.hideRFSlowWarningDesc));
         mainSection.appendChild(createCheckbox('fixChannelCard', L.fixChannelCard, config.fixChannelCard, L.fixChannelCardDesc));
+        mainSection.appendChild(createCheckbox('cinemaModeOnWatch', L.cinemaModeOnWatch, config.cinemaModeOnWatch, L.cinemaModeOnWatchDesc, true));
+
         mainSection.appendChild(createCheckbox('playlistModeFeature', L.playlistModeFeature, config.playlistModeFeature, L.playlistModeFeatureDesc));
         container.appendChild(mainSection);
 
@@ -3912,6 +4100,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         });
     }
 
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 8  UI — РЕДАКТОР СТИЛЕЙ                                       │
+    // │  createStyleEditor() — Color Editor, пресеты тем, фоновые        │
+    // │  изображения, Custom CSS. Полный визуальный редактор.            │
+    // └──────────────────────────────────────────────────────────────────┘
     // --- Style Editor (полный редактор стилей) ---
 
     function createStyleEditor() {
@@ -4833,11 +5026,20 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }, 10000);
     }
 
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 9  ИНТЕГРАЦИЯ С YOUTUBE                                       │
+    // │  Кнопка в шапке YouTube, режим плейлистов, позиционирование      │
+    // │  окна, SPA-навигация, Яндекс-специфичные CSS-фиксы.             │
+    // └──────────────────────────────────────────────────────────────────┘
     // --- Добавить кнопку в интерфейс YouTube ---
 
     function createEnhancerButton() {
         const header = document.querySelector('ytd-masthead #end');
-        if (!header || document.getElementById('yt-enhancer-btn')) return;
+        if (!header || document.getElementById('yt-enhancer-btn')) {
+            if (!header) dbg.notice('UI', 'createEnhancerButton: шапка YouTube ещё не готова — ytd-masthead #end не найден, повтор через observer');
+            return;
+        }
+        dbg.ok('UI', 'кнопка в шапке YouTube — создана и добавлена в DOM');
         const button = document.createElement('button');
         button.id = 'yt-enhancer-btn';
         button.title = 'YouTube Fix for Yandex';
@@ -4871,7 +5073,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
     function addYouTubeButton() {
         const debouncedCreate = debounce(createEnhancerButton, 200);
-        createManagedObserver(document.body, debouncedCreate, { childList: true, subtree: true });
+        createManagedObserver(document.body, () => {
+            if (!document.getElementById('yt-enhancer-btn')) debouncedCreate();
+        }, { childList: true, subtree: true });
         setTimeout(createEnhancerButton, 1000);
     }
 
@@ -4944,8 +5148,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // Принудительный H264 кодек (отключает VP9/AV1 для стабильности)
 
     function applyForceH264() {
-        if (!config.forceH264 || (isPlaylistModeActive && config.playlistModeFeature)) return;
-        if (_unsafeWin.__ytEnhancerH264Applied) return;
+        if (!config.forceH264 || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'forceH264 — отключено в настройках'); return; }
+        if (_unsafeWin.__ytEnhancerH264Applied) { dbg.skip('FIX', 'forceH264 — уже применён в этой сессии'); return; }
         _unsafeWin.__ytEnhancerH264Applied = true;
         const origCanPlayType = _unsafeWin.HTMLMediaElement.prototype.canPlayType;
         _unsafeWin.HTMLMediaElement.prototype.canPlayType = function(type) {
@@ -4967,8 +5171,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // Авто-закрытие попапа "Видео приостановлено"
 
     function applyFixAutoPause() {
-        if (!config.fixAutoPause || (isPlaylistModeActive && config.playlistModeFeature)) return;
-        if (_unsafeWin.__ytEnhancerAutoPauseApplied) return;
+        if (!config.fixAutoPause || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'fixAutoPause — отключено в настройках'); return; }
+        if (_unsafeWin.__ytEnhancerAutoPauseApplied) { dbg.skip('FIX', 'fixAutoPause — уже применён в этой сессии'); return; }
         _unsafeWin.__ytEnhancerAutoPauseApplied = true;
         const dismissPause = debounce(() => {
             // Кнопка "Да" / "Yes" в попапе "Видео приостановлено. Продолжить просмотр?"
@@ -5001,7 +5205,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // Фикс белой вспышки при навигации в темной теме
 
     function applyFixDarkFlash() {
-        if (!config.fixDarkFlash || (isPlaylistModeActive && config.playlistModeFeature)) return;
+        if (!config.fixDarkFlash || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'fixDarkFlash — отключено в настройках'); return; }
+        dbg.ok('FIX', 'fixDarkFlash — CSS предотвращения белой вспышки применён');
         addStyles(`
             /* Фиксируем фон страницы — предотвращаем белую вспышку */
             html[dark], html[dark] body,
@@ -5034,8 +5239,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // Фикс сетки на странице поиска
 
     function applyFixSearchGrid() {
-        if (!config.fixSearchGrid || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
-        if (!/\/results/.test(location.pathname)) return;
+        if (!config.fixSearchGrid || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'fixSearchGrid — отключено в настройках или не Яндекс Браузер'); return; }
+        if (!/\/results/.test(location.pathname)) { dbg.log('FIX', `fixSearchGrid — пропущен: текущая страница ${location.pathname} не является поиском`); return; }
+        dbg.ok('FIX', 'fixSearchGrid — сетка результатов поиска исправлена');
         addStyles(`
             ytd-search ytd-item-section-renderer #contents {
                 max-width: 100% !important;
@@ -5063,7 +5269,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // Фикс мини-плеера
 
     function applyFixMiniPlayer() {
-        if (!config.fixMiniPlayer || (isPlaylistModeActive && config.playlistModeFeature)) return;
+        if (!config.fixMiniPlayer || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'fixMiniPlayer — отключено в настройках'); return; }
+        dbg.ok('FIX', 'fixMiniPlayer — z-index мини-плеера исправлен');
         addStyles(`
             ytd-miniplayer {
                 z-index: 2020 !important;
@@ -5083,7 +5290,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // Оптимизация скролла
 
     function applyScrollOptimization() {
-        if (!config.scrollOptimization || (isPlaylistModeActive && config.playlistModeFeature)) return;
+        if (!config.scrollOptimization || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'scrollOptimization — отключено в настройках'); return; }
+        dbg.ok('FIX', 'scrollOptimization — content-visibility + GPU-ускорение применены');
         addStyles(`
             /* Оптимизация рендеринга при скролле */
             ytd-rich-item-renderer,
@@ -5112,7 +5320,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     // Фикс боковой панели
 
     function applyFixSidebar() {
-        if (!config.fixSidebar || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
+        if (!config.fixSidebar || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'fixSidebar — отключено или не Яндекс Браузер'); return; }
+        dbg.ok('FIX', 'fixSidebar — мерцание боковой панели устранено');
         addStyles(`
             /* Фикс пропадания/мерцания боковой панели */
             app-drawer#guide {
@@ -5139,8 +5348,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
 
     // Фикс SPA-навигации в Яндекс Браузере
     function applyYandexFixNavigation() {
-        if (!config.yandexFixNavigation || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) return;
-        if (_unsafeWin.__ytEnhancerNavFixApplied) return;
+        if (!config.yandexFixNavigation || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'yandexFixNavigation — отключено или не Яндекс Браузер'); return; }
+        if (_unsafeWin.__ytEnhancerNavFixApplied) { dbg.skip('FIX', 'yandexFixNavigation — уже применён в этой сессии'); return; }
+        dbg.ok('FIX', 'yandexFixNavigation — обработчик SPA-навигации установлен');
         _unsafeWin.__ytEnhancerNavFixApplied = true;
 
         // Яндекс Браузер иногда ломает SPA-навигацию YouTube, вызывая пропущенные popstate.
@@ -5445,6 +5655,1021 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         createManagedObserver(document.body, cleanEmptyRenderers, { childList: true, subtree: true });
     }
 
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 10 CINEMA MODE — РЕЖИМ КИНОТЕАТРА                             │
+    // │  applyCinemaMode(), buildCinemaCSS(), быстрые настройки,         │
+    // │  Ambient lighting, кнопки в плеере, боковые занавесы.            │
+    // └──────────────────────────────────────────────────────────────────┘
+    // --- Режим кинотеатра ---
+
+    function applyCinemaMode() {
+        const isWatchPage = /^\/watch/.test(location.pathname);
+
+        // --- Чистим предыдущее состояние ---
+        document.body.classList.remove('yt-enhancer-cinema-mode');
+        addStyles('', 'yt-enhancer-cinema-mode');
+        document.querySelectorAll('[id^="yt-enhancer-cinema-"], .yt-enhancer-cinema-ctrl-btn').forEach(el => el.remove());
+        if (_unsafeWin.__ytEnhancerCinemaVideoInterval) {
+            clearInterval(_unsafeWin.__ytEnhancerCinemaVideoInterval);
+            _unsafeWin.__ytEnhancerCinemaVideoInterval = null;
+        }
+        if (_unsafeWin.__ytEnhancerCinemaMouseMove) {
+            document.removeEventListener('mousemove', _unsafeWin.__ytEnhancerCinemaMouseMove);
+            _unsafeWin.__ytEnhancerCinemaMouseMove = null;
+        }
+        if (_unsafeWin.__ytEnhancerCinemaResizeHandler) {
+            window.removeEventListener('resize', _unsafeWin.__ytEnhancerCinemaResizeHandler);
+            _unsafeWin.__ytEnhancerCinemaResizeHandler = null;
+        }
+        if (_unsafeWin.__ytEnhancerCinemaResizeObs) {
+            _unsafeWin.__ytEnhancerCinemaResizeObs.disconnect();
+            _unsafeWin.__ytEnhancerCinemaResizeObs = null;
+        }
+        if (_unsafeWin.__ytEnhancerCinemaAmbilightRAF) {
+            cancelAnimationFrame(_unsafeWin.__ytEnhancerCinemaAmbilightRAF);
+            _unsafeWin.__ytEnhancerCinemaAmbilightRAF = null;
+        }
+        if (_unsafeWin.__ytEnhancerCinemaDragHandlers) {
+            const [_mm, _mu] = _unsafeWin.__ytEnhancerCinemaDragHandlers;
+            document.removeEventListener('mousemove', _mm);
+            document.removeEventListener('mouseup',   _mu);
+            _unsafeWin.__ytEnhancerCinemaDragHandlers = null;
+        }
+        document.documentElement.style.removeProperty('--yt-cinema-ctrl-scale');
+
+        if (!config.cinemaModeOnWatch || !isWatchPage) {
+            dbg.skip('CINEMA', `режим отключён (cinemaModeOnWatch=${config.cinemaModeOnWatch}, watch=${isWatchPage})`);
+            return;
+        }
+        if (_unsafeWin.__ytEnhancerCinemaDisabled) {
+            dbg.notice('CINEMA', 'режим временно выключен пользователем через быстрые настройки');
+            return;
+        }
+
+        dbg.ok('CINEMA', `запуск — bg=${config.cinemaBgColor}  blur=${config.cinemaBlur}px  ambient=${config.cinemaAmbient ? 'вкл' : 'выкл'}`);
+        document.body.classList.add('yt-enhancer-cinema-mode');
+
+        // --- Параметры из настроек (let — могут меняться через быстрые настройки) ---
+        let bg               = config.cinemaBgColor || '#0b0b14';
+        let blur             = Math.max(0, parseFloat(config.cinemaBlur) || 6);
+        let bright           = Math.max(0, Math.min(100, parseFloat(config.cinemaBrightness) || 12));
+        let shadow           = Math.max(0, parseFloat(config.cinemaShadow) || 80);
+        let pw               = Math.max(40, Math.min(100, parseFloat(config.cinemaPlayerWidth) || 90));
+        let curtain          = Math.max(0, Math.min(40, parseFloat(config.cinemaCurtain) || 0));
+        let hideBelow        = !!config.cinemaHideBelow;
+        let ambient          = !!config.cinemaAmbient;
+        let ambientIntensity = Math.max(10,  Math.min(100, parseFloat(config.cinemaAmbientIntensity) || 60));
+        let ambientBlur      = Math.max(10,  Math.min(120, parseFloat(config.cinemaAmbientBlur)      || 60));
+        let ambientSpread    = Math.max(110, Math.min(280, parseFloat(config.cinemaAmbientSpread)    || 160));
+        let ambientSaturate  = Math.max(100, Math.min(300, parseFloat(config.cinemaAmbientSaturate)  || 150));
+
+        // --- CSS-builder (вызывается при построении и при быстрых настройках) ---
+        const _buildCSS = (bgC, blurV, brightV, shadowV, pwV, curtainV, hideBelowV) => {
+            const brt  = (brightV / 100).toFixed(2);
+            const sSpr = Math.round(shadowV * 0.4);
+            const sB2  = Math.round(shadowV * 2.2);
+            const sO   = Math.round(shadowV * 0.22);
+            return `
+            /* === Cinema Mode v6 — YouTube Fix for Yandex === */
+
+            body.yt-enhancer-cinema-mode {
+                background: ${bgC} !important;
+                overflow:   hidden !important;
+            }
+            /* Скрыть полосы прокрутки везде */
+            body.yt-enhancer-cinema-mode::-webkit-scrollbar,
+            body.yt-enhancer-cinema-mode *::-webkit-scrollbar { display: none !important; }
+            body.yt-enhancer-cinema-mode,
+            body.yt-enhancer-cinema-mode ytd-app,
+            body.yt-enhancer-cinema-mode #page-manager,
+            body.yt-enhancer-cinema-mode ytd-watch-flexy {
+                scrollbar-width: none !important;
+                overflow: hidden !important;
+            }
+
+            /* Скрыть шапку */
+            body.yt-enhancer-cinema-mode #masthead-container,
+            body.yt-enhancer-cinema-mode ytd-masthead {
+                display: none !important;
+            }
+
+            /* Убрать отступы page-manager */
+            body.yt-enhancer-cinema-mode ytd-page-manager,
+            body.yt-enhancer-cinema-mode #page-manager {
+                margin:  0 !important;
+                padding: 0 !important;
+            }
+
+            /* Скрыть боковую навигацию */
+            body.yt-enhancer-cinema-mode tp-yt-app-drawer,
+            body.yt-enhancer-cinema-mode app-drawer,
+            body.yt-enhancer-cinema-mode #guide,
+            body.yt-enhancer-cinema-mode ytd-mini-guide-renderer {
+                display:   none !important;
+                width:     0    !important;
+                min-width: 0    !important;
+            }
+
+            /* Снять transform/filter/contain с ВСЕЙ цепочки родителей #player-container,
+               чтобы position:fixed было строго viewport-relative, а не относительно
+               parent'а с filter */
+            body.yt-enhancer-cinema-mode ytd-app,
+            body.yt-enhancer-cinema-mode ytd-page-manager,
+            body.yt-enhancer-cinema-mode #page-manager,
+            body.yt-enhancer-cinema-mode ytd-watch-flexy,
+            body.yt-enhancer-cinema-mode ytd-watch-flexy[theater],
+            body.yt-enhancer-cinema-mode #full-bleed-container,
+            body.yt-enhancer-cinema-mode #player-full-bleed-container {
+                filter:      none !important;
+                transform:   none !important;
+                will-change: auto !important;
+                contain:     none !important;
+            }
+
+            /* ytd-watch-flexy: без отступов и фона */
+            body.yt-enhancer-cinema-mode ytd-watch-flexy,
+            body.yt-enhancer-cinema-mode ytd-watch-flexy[theater] {
+                display:    block       !important;
+                background: transparent !important;
+                max-width:  100vw       !important;
+                padding:    0           !important;
+                margin:     0           !important;
+            }
+
+            /* ===== ЦЕНТРОВКА: #player-full-bleed-container — фиксированный полноэкранный flex-контейнер ===== */
+            body.yt-enhancer-cinema-mode #player-full-bleed-container {
+                position:        fixed       !important;
+                top:             0           !important;
+                left:            0           !important;
+                width:           100vw       !important;
+                height:          100vh       !important;
+                z-index:         9000        !important;
+                display:         flex        !important;
+                align-items:     center      !important;
+                justify-content: center      !important;
+                pointer-events:  none        !important;
+                background:      transparent !important;
+            }
+            body.yt-enhancer-cinema-mode #player-full-bleed-container > #player-container {
+                position:      relative     !important;
+                top:           auto         !important;
+                left:          auto         !important;
+                transform:     none         !important;
+                ${pwV >= 100 ? `
+                width:        100vw         !important;
+                height:       100vh         !important;
+                aspect-ratio: auto          !important;
+                ` : `
+                width:        min(${pwV}vw, calc(100vh * (16 / 9))) !important;
+                aspect-ratio: 16 / 9        !important;
+                height:       auto          !important;
+                `}
+                z-index:       auto         !important;
+                pointer-events: auto        !important;
+                box-sizing:    border-box   !important;
+                padding:       0            !important;
+                margin:        0            !important;
+                border-radius: ${pwV >= 100 ? '0' : '4px'} !important;
+                overflow:      visible      !important;
+                box-shadow:
+                    0  0       ${shadowV}px ${sSpr}px rgba(0,0,0,0.97),
+                    0  ${sO}px ${sB2}px  ${sO}px rgba(0,0,0,0.88),
+                    0 -${Math.round(sO / 2)}px ${shadowV}px ${Math.round(sSpr / 2)}px rgba(0,0,0,0.82) !important;
+            }
+            /* Атмосферная подсветка включена — тень с плеера убираем: свечение уже создаёт глубину */
+            body.yt-enhancer-cinema-ambient #player-full-bleed-container > #player-container {
+                box-shadow: none !important;
+            }
+            /* Скругление углов на видео-слое, но НЕ на хром-баре */
+            body.yt-enhancer-cinema-mode #player-full-bleed-container > #player-container .html5-video-container {
+                border-radius: ${pwV >= 100 ? '0' : '4px'} !important;
+                overflow:      hidden !important;
+            }
+
+            /* ytd-player и его контейнер заполняют #player-container */
+            body.yt-enhancer-cinema-mode #player-full-bleed-container > #player-container #ytd-player,
+            body.yt-enhancer-cinema-mode #player-full-bleed-container > #player-container #container.ytd-player {
+                width:  100% !important;
+                height: 100% !important;
+            }
+
+            /* movie_player: заполняет контейнер */
+            body.yt-enhancer-cinema-mode #movie_player {
+                width:  100% !important;
+                height: 100% !important;
+            }
+
+            /* Видео заполняет весь плеер */
+            body.yt-enhancer-cinema-mode #movie_player .html5-video-container {
+                width:  100% !important;
+                height: 100% !important;
+            }
+            body.yt-enhancer-cinema-mode #movie_player .html5-main-video,
+            body.yt-enhancer-cinema-mode #movie_player video.video-stream,
+            body.yt-enhancer-cinema-mode #movie_player video {
+                width:      100% !important;
+                height:     100% !important;
+                left:       0    !important;
+                top:        0    !important;
+                object-fit: contain !important;
+            }
+
+            /* Колонки скрыты за оверлеем; только отключаем взаимодействие */
+            body.yt-enhancer-cinema-mode #columns.ytd-watch-flexy {
+                pointer-events: none !important;
+                user-select:    none !important;
+            }
+
+            ${hideBelowV ? `
+            body.yt-enhancer-cinema-mode #below.ytd-watch-flexy {
+                display: none !important;
+            }` : ''}
+
+            ${curtainV > 0 ? `
+            #yt-enhancer-cinema-side-l, #yt-enhancer-cinema-side-r {
+                position: fixed; top: 0; bottom: 0; width: ${curtainV}vw;
+                pointer-events: none; z-index: 9800;
+            }
+            #yt-enhancer-cinema-side-l {
+                left: 0;
+                background: linear-gradient(to right, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.5) 55%, transparent 100%);
+            }
+            #yt-enhancer-cinema-side-r {
+                right: 0;
+                background: linear-gradient(to left, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.5) 55%, transparent 100%);
+            }` : ''}
+
+            /* ===== Кнопки в правом баре плеера ===== */
+            .yt-enhancer-cinema-ctrl-btn {
+                opacity:    0.85 !important;
+                cursor:     pointer !important;
+                transition: opacity 0.15s !important;
+            }
+            .yt-enhancer-cinema-ctrl-btn:hover { opacity: 1 !important; }
+            .yt-enhancer-cinema-ctrl-btn svg {
+                width: 22px !important; height: 22px !important;
+                display: block; margin: auto;
+            }
+            /* Толтип в стиле YouTube-плеера */
+            #yt-enhancer-cinema-tooltip {
+                position:       absolute !important;
+                background:     rgba(28,28,28,0.9) !important;
+                color:          #fff !important;
+                font-size:      12px !important;
+                font-family:    Roboto, Arial, sans-serif !important;
+                font-weight:    500 !important;
+                letter-spacing: 0.3px !important;
+                line-height:    1 !important;
+                padding:        5px 9px !important;
+                border-radius:  2px !important;
+                white-space:    nowrap !important;
+                pointer-events: none !important;
+                opacity:        0 !important;
+                transition:     opacity 0.1s !important;
+                z-index:        9999 !important;
+                transform:      translateX(-50%) !important;
+            }
+            #yt-enhancer-cinema-tooltip.yt-enhancer-cinema-tooltip-visible {
+                opacity: 1 !important;
+            }
+
+            /* ===== Компактный режим (pw < 50): скрыть бар, показывать при наведении ===== */
+            body.yt-enhancer-cinema-compact #movie_player .ytp-chrome-bottom {
+                opacity:        0    !important;
+                pointer-events: none !important;
+                transition:     opacity 0.2s !important;
+            }
+            body.yt-enhancer-cinema-compact #movie_player:hover .ytp-chrome-bottom {
+                opacity:        1    !important;
+                pointer-events: auto !important;
+            }
+
+            /* ===== Панель быстрых настроек ===== */
+            #yt-enhancer-cinema-qset {
+                position:      fixed !important;
+                z-index:       9100 !important;
+                background:    rgba(13,13,22,0.97) !important;
+                border:        1px solid rgba(255,255,255,0.12) !important;
+                border-radius: 12px !important;
+                padding:       16px 20px 14px !important;
+                min-width:     320px !important;
+                max-width:     400px !important;
+                box-shadow:    0 6px 36px rgba(0,0,0,0.75) !important;
+                color:         #ddd !important;
+                font:          13px/1.5 "YouTube Noto",Roboto,Arial,sans-serif !important;
+                user-select:   none !important;
+            }
+            #yt-enhancer-cinema-qset[hidden] { display: none !important; }
+            #yt-cinema-qset-header {
+                display: flex !important; align-items: center !important;
+                justify-content: space-between !important; margin-bottom: 14px !important;
+                cursor: grab !important;
+            }
+            #yt-cinema-qset-header:active { cursor: grabbing !important; }
+            #yt-cinema-qset-title {
+                font-weight: 600 !important; font-size: 14px !important; color: #fff !important;
+                pointer-events: none !important; flex: 1 !important;
+            }
+            #yt-cinema-qset-hbtns {
+                display: flex !important; align-items: center !important; gap: 2px !important;
+            }
+            #yt-cinema-qset-reset, #yt-cinema-qset-close {
+                background: none !important; border: none !important; color: #888 !important;
+                cursor: pointer !important; line-height: 1 !important;
+                padding: 3px 6px !important; border-radius: 4px !important;
+                transition: color 0.1s, background 0.1s !important; font-size: 14px !important;
+            }
+            #yt-cinema-qset-reset:hover, #yt-cinema-qset-close:hover {
+                color: #fff !important; background: rgba(255,255,255,0.1) !important;
+            }
+            #yt-cinema-qset-close { font-size: 18px !important; }
+            .yt-cq-section {
+                font-size: 10px !important; font-weight: 700 !important; color: #555 !important;
+                text-transform: uppercase !important; letter-spacing: 0.9px !important;
+                margin: 12px 0 8px !important;
+                border-top: 1px solid rgba(255,255,255,0.07) !important;
+                padding-top: 10px !important;
+            }
+            .yt-cq-row {
+                display: flex !important; align-items: center !important;
+                gap: 10px !important; margin-bottom: 10px !important;
+            }
+            .yt-cq-lbl {
+                flex: 0 0 140px !important; font-size: 12px !important; color: #bbb !important;
+            }
+            .yt-cq-val {
+                flex: 0 0 32px !important; text-align: right !important;
+                font-size: 12px !important; color: #fff !important; font-variant-numeric: tabular-nums !important;
+            }
+            .yt-cq-row input[type=range] {
+                flex: 1 !important; height: 4px !important;
+                cursor: pointer !important; accent-color: #f00 !important;
+            }
+            .yt-cq-row input[type=color] {
+                flex: none !important; width: 44px !important; height: 28px !important;
+                border: 1px solid rgba(255,255,255,0.2) !important; border-radius: 4px !important;
+                cursor: pointer !important; background: none !important; padding: 2px !important;
+            }
+            .yt-cq-row input[type=checkbox] { cursor: pointer !important; accent-color: #f00 !important; }
+            .yt-cq-row label { display: flex !important; align-items: center !important; gap: 6px !important; cursor: pointer !important; color: #ccc !important; font-size: 12px !important; }
+            #yt-cinema-qset-footer {
+                display: flex !important; gap: 8px !important;
+                margin-top: 14px !important; justify-content: flex-end !important;
+            }
+            .yt-cq-btn {
+                padding: 5px 14px !important; font-size: 12px !important;
+                border-radius: 6px !important; border: none !important;
+                cursor: pointer !important; font-weight: 500 !important;
+            }
+            #yt-cq-reset { background: rgba(255,255,255,0.1) !important; color: #ddd !important; }
+            #yt-cq-reset:hover { background: rgba(255,255,255,0.2) !important; }
+            #yt-cq-save { background: #c00 !important; color: #fff !important; }
+            #yt-cq-save:hover { background: #e00 !important; }
+            /* Ambilight canvas */
+            #yt-enhancer-cinema-ambilight {
+                position:       fixed !important;
+                left:           50%  !important;
+                top:            50%  !important;
+                transform:      translate(-50%, -50%) !important;
+                z-index:        8999 !important;
+                pointer-events: none !important;
+            }
+            /* Цветовой фон/размытие заблокированы при включённой подсветке */
+            #ytcq-ambient-lockable.locked {
+                opacity:        0.35 !important;
+                pointer-events: none !important;
+                transition:     opacity 0.2s !important;
+            }
+            `;
+        };
+
+        addStyles(_buildCSS(bg, blur, bright, shadow, pw, curtain, hideBelow), 'yt-enhancer-cinema-mode');
+
+        // --- Тёмный оверлей-фон с backdrop-blur (ниже плеера) ---
+        const _hexToRgba = (hex, a) => {
+            const c = hex.replace('#', '');
+            const [r, g, b] = c.length === 3
+                ? c.split('').map(x => parseInt(x + x, 16))
+                : [0, 2, 4].map(i => parseInt(c.slice(i, i + 2), 16));
+            return `rgba(${r},${g},${b},${a.toFixed(2)})`;
+        };
+        const _overlayStyle = (bgC, blurV, brightV) => {
+            const a = Math.max(0.05, 1 - brightV / 100);
+            const bgAlpha = /^#[0-9a-fA-F]{3,6}$/.test(bgC) ? _hexToRgba(bgC, a) : bgC;
+            return `position:fixed;top:0;left:0;width:100%;height:100%;background:${bgAlpha};backdrop-filter:blur(${blurV}px);-webkit-backdrop-filter:blur(${blurV}px);z-index:8998;pointer-events:none`;
+        };
+        const bgOverlay = document.createElement('div');
+        bgOverlay.id = 'yt-enhancer-cinema-bg';
+        bgOverlay.style.cssText = _overlayStyle(bg, blur, bright);
+        document.body.appendChild(bgOverlay);
+
+        // --- Включить YouTube-режим театра + заблокировать скролл ---
+        const watchFlexy = document.querySelector('ytd-watch-flexy');
+        const _hadTheater = watchFlexy ? watchFlexy.hasAttribute('theater') : false;
+        if (watchFlexy && !_hadTheater) watchFlexy.setAttribute('theater', '');
+
+        // Полная блокировка скролла страницы
+        document.documentElement.style.setProperty('overflow', 'hidden', 'important');
+        document.body.style.setProperty('overflow', 'hidden', 'important');
+
+        // --- Обработчик выхода ---
+        const _exitCinema = () => {
+            _unsafeWin.__ytEnhancerCinemaDisabled = true;
+            if (_unsafeWin.__ytEnhancerCinemaVideoInterval) {
+                clearInterval(_unsafeWin.__ytEnhancerCinemaVideoInterval);
+                _unsafeWin.__ytEnhancerCinemaVideoInterval = null;
+            }
+
+            // Убрать класс и CSS
+            document.body.classList.remove('yt-enhancer-cinema-mode');
+            addStyles('', 'yt-enhancer-cinema-mode');
+
+            // Восстановить скролл
+            document.documentElement.style.removeProperty('overflow');
+            document.body.style.removeProperty('overflow');
+
+            // Убрать inline-стили, выставленные fixVideoStyles
+            const _clearInline = (sel, props) => {
+                const el = document.querySelector(sel);
+                if (!el) return;
+                props.forEach(p => el.style.removeProperty(p));
+            };
+            _clearInline('#player-full-bleed-container', [
+                'position','top','left','width','height','z-index',
+                'display','align-items','justify-content','pointer-events','background'
+            ]);
+            _clearInline('#player-full-bleed-container > #player-container', [
+                'position','pointer-events','width','height','aspect-ratio','flex-shrink',
+                'z-index','box-sizing','padding','margin','border-radius','overflow','box-shadow'
+            ]);
+            _clearInline('#movie_player', ['width','height']);
+            ['#ytd-player','#container.ytd-player'].forEach(s =>
+                _clearInline(`#player-full-bleed-container > #player-container ${s}`, ['width','height']));
+            const vid = document.querySelector('#movie_player .html5-main-video, #movie_player video');
+            if (vid) ['width','height','left','top'].forEach(p => vid.style.removeProperty(p));
+
+            // Восстановить режим театра как было
+            if (!_hadTheater && watchFlexy) watchFlexy.removeAttribute('theater');
+
+            // Остановить ambilight + убрать drag-слушатели
+            if (_unsafeWin.__ytEnhancerCinemaAmbilightRAF) {
+                cancelAnimationFrame(_unsafeWin.__ytEnhancerCinemaAmbilightRAF);
+                _unsafeWin.__ytEnhancerCinemaAmbilightRAF = null;
+            }
+            if (_unsafeWin.__ytEnhancerCinemaDragHandlers) {
+                const [_mm, _mu] = _unsafeWin.__ytEnhancerCinemaDragHandlers;
+                document.removeEventListener('mousemove', _mm);
+                document.removeEventListener('mouseup',   _mu);
+                _unsafeWin.__ytEnhancerCinemaDragHandlers = null;
+            }
+
+            // Удалить оверлеи и кнопки
+            document.querySelectorAll('[id^="yt-enhancer-cinema-"], .yt-enhancer-cinema-ctrl-btn').forEach(el => el.remove());
+            document.body.classList.remove('yt-enhancer-cinema-compact', 'yt-enhancer-cinema-ambient');
+
+            // Снять CSS-переменную масштаба
+            document.documentElement.style.removeProperty('--yt-cinema-ctrl-scale');
+
+            // Отвязать обработчики размера окна
+            if (_unsafeWin.__ytEnhancerCinemaResizeHandler) {
+                window.removeEventListener('resize', _unsafeWin.__ytEnhancerCinemaResizeHandler);
+                _unsafeWin.__ytEnhancerCinemaResizeHandler = null;
+            }
+            if (_unsafeWin.__ytEnhancerCinemaResizeObs) {
+                _unsafeWin.__ytEnhancerCinemaResizeObs.disconnect();
+                _unsafeWin.__ytEnhancerCinemaResizeObs = null;
+            }
+
+            // Добавить кнопку «Войти в режим кинотеатра» в бар плеера.
+            // С retry — плеер может перерисоваться после снятия theater-атрибута.
+            const _tryInjectEnterBtn = (attemptsLeft) => {
+                if (attemptsLeft <= 0) return;
+                const _rc = document.querySelector('.ytp-right-controls');
+                if (!_rc) { setTimeout(() => _tryInjectEnterBtn(attemptsLeft - 1), 300); return; }
+                if (_rc.querySelector('.yt-enhancer-cinema-enter-btn')) return;
+                const _sb  = _rc.querySelector('.ytp-settings-button');
+                const _btn = document.createElement('button');
+                _btn.className = 'ytp-button yt-enhancer-cinema-enter-btn';
+                _btn.setAttribute('aria-label', L.cinemaEnterBtn || 'Enter Cinema Mode');
+                _btn.setAttribute('title', L.cinemaEnterBtn || 'Enter Cinema Mode');
+                _btn.style.cssText = 'width:36px;height:36px;opacity:0.85;cursor:pointer;flex-shrink:0;';
+                setInnerHTML(_btn, `<svg viewBox="0 0 24 24" fill="white" width="22" height="22" style="display:block;margin:auto" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zm-2 14H8V7h8v10zM6 7v2H4V7h2zm0 4v2H4v-2h2zm0 4v2H4v-2h2zm14-8h-2V7h2v2zm0 4h-2v-2h2v2zm0 4h-2v-2h2v2z"/></svg>`);
+                _btn.addEventListener('click', () => {
+                    _btn.remove();
+                    _unsafeWin.__ytEnhancerCinemaDisabled = false;
+                    applyCinemaMode();
+                });
+                // _sb может быть вложен в поддерево, а не прямым потомком _rc —
+                // в таком случае insertBefore бросает NotFoundError. Используем
+                // прямого предка кнопки настроек (который уже гарантированно дочерний _rc).
+                if (_sb && _sb.parentNode === _rc) {
+                    _rc.insertBefore(_btn, _sb);
+                } else {
+                    _rc.appendChild(_btn);
+                }
+            };
+            // Пробуем сразу, затем с короткими ретраями
+            _tryInjectEnterBtn(6);
+            setTimeout(() => _tryInjectEnterBtn(5), 150);
+        };
+
+        // --- Применить новые параметры без выхода из режима ---
+        const _applyParams = (bgC, blurV, brightV, shadowV, pwV, curtainV, hideBelowV,
+                               ambientV = ambient, ambientIntensityV = ambientIntensity,
+                               ambientBlurV = ambientBlur, ambientSpreadV = ambientSpread, ambientSaturateV = ambientSaturate) => {
+            bg = bgC; blur = blurV; bright = brightV; shadow = shadowV;
+            pw = pwV; curtain = curtainV; hideBelow = hideBelowV;
+            ambient = ambientV; ambientIntensity = ambientIntensityV;
+            ambientBlur = ambientBlurV; ambientSpread = ambientSpreadV; ambientSaturate = ambientSaturateV;
+            addStyles(_buildCSS(bgC, blurV, brightV, shadowV, pwV, curtainV, hideBelowV), 'yt-enhancer-cinema-mode');
+            const ov = document.getElementById('yt-enhancer-cinema-bg');
+            if (ov) ov.style.cssText = _overlayStyle(bgC, blurV, brightV);
+            // Немедленно пересчитать пиксельные размеры под новый pw
+            setTimeout(fixVideoStyles, 0);
+        };
+
+        // --- Панель быстрых настроек ---
+        const panel = document.createElement('div');
+        panel.id = 'yt-enhancer-cinema-qset';
+        panel.setAttribute('hidden', '');
+        const _mkRow = (lbl, input, showVal) => `
+            <div class="yt-cq-row">
+                <span class="yt-cq-lbl">${lbl}</span>
+                ${input}
+                ${showVal ? `<span class="yt-cq-val">${showVal}</span>` : ''}
+            </div>`;
+        setInnerHTML(panel, `
+            <div id="yt-cinema-qset-header">
+                <span id="yt-cinema-qset-title">${L.cinemaQuickSettings || 'Quick settings'}</span>
+                <div id="yt-cinema-qset-hbtns">
+                    <button id="yt-cinema-qset-reset" title="${L.cinemaPanelReset || 'Reset position'}">&#8635;</button>
+                    <button id="yt-cinema-qset-close" title="${L.cinemaClose || 'Close'}">&#x2715;</button>
+                </div>
+            </div>
+            <div class="yt-cq-section">${L.cinemaTuneSection || 'Cinema settings'}</div>
+            ${_mkRow(L.cinemaPlayerWidth || 'Width (vw)',
+                `<input type="range" id="ytcq-pw" min="40" max="100" step="1" value="${pw}">`,
+                `<span id="ytcq-pw-v">${pw}</span>`)}
+            ${_mkRow(L.cinemaCurtain || 'Side curtain (vw)',
+                `<input type="range" id="ytcq-curtain" min="0" max="40" step="1" value="${curtain}">`,
+                `<span id="ytcq-curtain-v">${curtain}</span>`)}
+            <div id="ytcq-ambient-lockable">
+            ${_mkRow(L.cinemaBlur || 'Blur (px)',
+                `<input type="range" id="ytcq-blur" min="0" max="30" step="1" value="${blur}">`,
+                `<span id="ytcq-blur-v">${blur}</span>`)}
+            ${_mkRow(L.cinemaBrightness || 'Brightness (%)',
+                `<input type="range" id="ytcq-bright" min="0" max="80" step="1" value="${bright}">`,
+                `<span id="ytcq-bright-v">${bright}</span>`)}
+            ${_mkRow(L.cinemaBgColor || 'Background',
+                `<input type="color" id="ytcq-bg" value="${bg}">`, '')}
+            </div>
+            ${_mkRow(L.cinemaShadow || 'Shadow (px)',
+                `<input type="range" id="ytcq-shadow" min="0" max="200" step="5" value="${shadow}">`,
+                `<span id="ytcq-shadow-v">${shadow}</span>`)}
+            ${_mkRow('',
+                `<label><input type="checkbox" id="ytcq-below" ${hideBelow ? 'checked' : ''}> ${L.cinemaHideBelow || 'Hide description & comments'}</label>`, '')}
+            <div class="yt-cq-section">${L.cinemaAmbient || 'Ambient lighting'}</div>
+            ${_mkRow('',
+                `<label><input type="checkbox" id="ytcq-ambient" ${ambient ? 'checked' : ''}> ${L.cinemaAmbient || 'Ambient lighting'}</label>`, '')}
+            ${_mkRow(L.cinemaAmbientIntensity || 'Glow intensity (%)',
+                `<input type="range" id="ytcq-ambient-intensity" min="10" max="100" step="5" value="${ambientIntensity}">`,
+                `<span id="ytcq-ambient-intensity-v">${ambientIntensity}</span>`)}
+            ${_mkRow(L.cinemaAmbientBlur || 'Glow blur (px)',
+                `<input type="range" id="ytcq-ambient-blur" min="10" max="120" step="5" value="${ambientBlur}">`,
+                `<span id="ytcq-ambient-blur-v">${ambientBlur}</span>`)}
+            ${_mkRow(L.cinemaAmbientSpread || 'Glow spread (%)',
+                `<input type="range" id="ytcq-ambient-spread" min="110" max="280" step="10" value="${ambientSpread}">`,
+                `<span id="ytcq-ambient-spread-v">${ambientSpread}</span>`)}
+            ${_mkRow(L.cinemaAmbientSaturate || 'Saturation (%)',
+                `<input type="range" id="ytcq-ambient-saturate" min="100" max="300" step="10" value="${ambientSaturate}">`,
+                `<span id="ytcq-ambient-saturate-v">${ambientSaturate}</span>`)}
+            <div id="yt-cinema-qset-footer">
+                <button class="yt-cq-btn" id="yt-cq-reset">${L.cinemaReset || 'Reset defaults'}</button>
+                <button class="yt-cq-btn" id="yt-cq-save">${L.cinemaSaveApply || 'Save &amp; Apply'}</button>
+            </div>
+        `);
+        document.body.appendChild(panel);
+
+        const _readPanel = () => ({
+            bg:               panel.querySelector('#ytcq-bg').value,
+            blur:             parseFloat(panel.querySelector('#ytcq-blur').value),
+            bright:           parseFloat(panel.querySelector('#ytcq-bright').value),
+            shadow:           parseFloat(panel.querySelector('#ytcq-shadow').value),
+            pw:               parseFloat(panel.querySelector('#ytcq-pw').value),
+            curtain:          parseFloat(panel.querySelector('#ytcq-curtain').value),
+            hideBelow:        panel.querySelector('#ytcq-below').checked,
+            ambient:          panel.querySelector('#ytcq-ambient').checked,
+            ambientIntensity: parseFloat(panel.querySelector('#ytcq-ambient-intensity').value),
+            ambientBlur:      parseFloat(panel.querySelector('#ytcq-ambient-blur').value),
+            ambientSpread:    parseFloat(panel.querySelector('#ytcq-ambient-spread').value),
+            ambientSaturate:  parseFloat(panel.querySelector('#ytcq-ambient-saturate').value)
+        });
+
+        // Обновление числовых меток при движении ползунка
+        ['pw', 'blur', 'bright', 'shadow', 'curtain', 'ambient-intensity', 'ambient-blur', 'ambient-spread', 'ambient-saturate'].forEach(id => {
+            const inp = panel.querySelector(`#ytcq-${id}`);
+            const lbl = panel.querySelector(`#ytcq-${id}-v`);
+            if (inp && lbl) inp.addEventListener('input', () => { lbl.textContent = inp.value; });
+        });
+        const _updateAmbientLock = () => {
+            const _on = panel.querySelector('#ytcq-ambient').checked;
+            const _g  = document.getElementById('ytcq-ambient-lockable');
+            if (_g) { if (_on) _g.classList.add('locked'); else _g.classList.remove('locked'); }
+        };
+        _updateAmbientLock();
+        panel.querySelector('#ytcq-ambient').addEventListener('change', _updateAmbientLock);
+        panel.querySelector('#yt-cinema-qset-close').addEventListener('click', () => {
+            panel.setAttribute('hidden', '');
+        });
+        panel.querySelector('#yt-cinema-qset-reset').addEventListener('click', () => {
+            delete config.cinemaPanelX;
+            delete config.cinemaPanelY;
+            storage.set('ytEnhancerConfig', config);
+            _positionPanel();
+        });
+        // Defaults для сброса (позиция панели НЕ сбрасывается)
+        const _cinemaDefaults = {
+            bg: '#0b0b14', blur: 6, bright: 12, shadow: 80, pw: 90, curtain: 0,
+            hideBelow: false, ambient: false, ambientIntensity: 60,
+            ambientBlur: 60, ambientSpread: 160, ambientSaturate: 150
+        };
+        const _applyToPanel = (d) => {
+            const s = (id, v) => { const el = panel.querySelector('#' + id); if (el) { el.value = v; const vEl = panel.querySelector('#' + id + '-v'); if (vEl) vEl.textContent = v; } };
+            s('ytcq-pw',               d.pw);              s('ytcq-curtain',           d.curtain);
+            s('ytcq-blur',             d.blur);             s('ytcq-bright',            d.bright);
+            s('ytcq-shadow',           d.shadow);
+            s('ytcq-ambient-intensity',d.ambientIntensity); s('ytcq-ambient-blur',       d.ambientBlur);
+            s('ytcq-ambient-spread',   d.ambientSpread);    s('ytcq-ambient-saturate',   d.ambientSaturate);
+            const bgEl = panel.querySelector('#ytcq-bg'); if (bgEl) bgEl.value = d.bg;
+            const belowEl = panel.querySelector('#ytcq-below'); if (belowEl) belowEl.checked = d.hideBelow;
+            const ambEl = panel.querySelector('#ytcq-ambient'); if (ambEl) { ambEl.checked = d.ambient; _updateAmbientLock(); }
+        };
+        panel.querySelector('#yt-cq-reset').addEventListener('click', () => {
+            _applyToPanel(_cinemaDefaults);
+            _applyParams(_cinemaDefaults.bg, _cinemaDefaults.blur, _cinemaDefaults.bright,
+                _cinemaDefaults.shadow, _cinemaDefaults.pw, _cinemaDefaults.curtain,
+                _cinemaDefaults.hideBelow, _cinemaDefaults.ambient, _cinemaDefaults.ambientIntensity,
+                _cinemaDefaults.ambientBlur, _cinemaDefaults.ambientSpread, _cinemaDefaults.ambientSaturate);
+        });
+        panel.querySelector('#yt-cq-save').addEventListener('click', () => {
+            const v = _readPanel();
+            _applyParams(v.bg, v.blur, v.bright, v.shadow, v.pw, v.curtain, v.hideBelow, v.ambient, v.ambientIntensity, v.ambientBlur, v.ambientSpread, v.ambientSaturate);
+            config.cinemaBgColor          = v.bg;
+            config.cinemaBlur             = v.blur;
+            config.cinemaBrightness       = v.bright;
+            config.cinemaShadow           = v.shadow;
+            config.cinemaPlayerWidth      = v.pw;
+            config.cinemaCurtain          = v.curtain;
+            config.cinemaHideBelow        = v.hideBelow;
+            config.cinemaAmbient          = v.ambient;
+            config.cinemaAmbientIntensity = v.ambientIntensity;
+            config.cinemaAmbientBlur      = v.ambientBlur;
+            config.cinemaAmbientSpread    = v.ambientSpread;
+            config.cinemaAmbientSaturate  = v.ambientSaturate;
+            storage.set('ytEnhancerConfig', config);
+            panel.setAttribute('hidden', '');
+        });
+
+        // --- Позиционирование и перетаскивание панели ---
+        const _positionPanel = () => {
+            panel.style.removeProperty('bottom');
+            panel.style.removeProperty('transform');
+            const px = config.cinemaPanelX, py = config.cinemaPanelY;
+            if (typeof px === 'number' && typeof py === 'number') {
+                panel.style.left = Math.max(0, Math.min(window.innerWidth  - 320, px)) + 'px';
+                panel.style.top  = Math.max(0, Math.min(window.innerHeight - 80,  py)) + 'px';
+            } else {
+                panel.style.left = Math.max(0, Math.round((window.innerWidth  - 400) / 2)) + 'px';
+                panel.style.top  = Math.max(0, Math.round((window.innerHeight - 520) / 2)) + 'px';
+            }
+        };
+        _positionPanel();
+
+        let _dragActive = false, _dragOX = 0, _dragOY = 0;
+        const _panelHeader = panel.querySelector('#yt-cinema-qset-header');
+        _panelHeader.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+            _dragActive = true;
+            const r = panel.getBoundingClientRect();
+            _dragOX = e.clientX - r.left;
+            _dragOY = e.clientY - r.top;
+            e.preventDefault();
+        });
+        const _onDragMove = (e) => {
+            if (!_dragActive) return;
+            panel.style.left = Math.max(0, Math.min(window.innerWidth  - 100, e.clientX - _dragOX)) + 'px';
+            panel.style.top  = Math.max(0, Math.min(window.innerHeight - 40,  e.clientY - _dragOY)) + 'px';
+        };
+        const _onDragUp = () => {
+            if (!_dragActive) return;
+            _dragActive = false;
+            config.cinemaPanelX = parseFloat(panel.style.left);
+            config.cinemaPanelY = parseFloat(panel.style.top);
+            storage.set('ytEnhancerConfig', config);
+        };
+        document.addEventListener('mousemove', _onDragMove);
+        document.addEventListener('mouseup',   _onDragUp);
+        _unsafeWin.__ytEnhancerCinemaDragHandlers = [_onDragMove, _onDragUp];
+
+        // --- Вставка кнопок в правый бар плеера ---
+        // _sessionId фиксирует этот конкретный вызов applyCinemaMode().
+        // Кнопки с другим sessionId — устаревшие (от прошлой SPA-навигации) и
+        // пересоздаются с актуальными замыканиями (_exitCinema, panel).
+        const _sessionId = String(Date.now());
+
+        // Толтип: единый элемент внутри #movie_player, позиционируется визит JS.
+        // Это идентично тому, как YouTube делает свои .ytp-tooltip.
+        const _getOrCreateTooltip = () => {
+            let tip = document.getElementById('yt-enhancer-cinema-tooltip');
+            if (!tip) {
+                tip = document.createElement('div');
+                tip.id = 'yt-enhancer-cinema-tooltip';
+                const mp = document.querySelector('#movie_player');
+                if (mp) mp.appendChild(tip);
+            }
+            return tip;
+        };
+        const _showTooltip = (btn) => {
+            const label = btn.getAttribute('aria-label');
+            if (!label) return;
+            const mp = document.querySelector('#movie_player');
+            if (!mp) return;
+            const tip = _getOrCreateTooltip();
+            tip.textContent = label;
+            const mpRect  = mp.getBoundingClientRect();
+            const btnRect = btn.getBoundingClientRect();
+            const leftPx   = Math.round(btnRect.left - mpRect.left + btnRect.width / 2);
+            const bottomPx = Math.round(mpRect.bottom - btnRect.top + 6);
+            tip.style.left   = leftPx + 'px';
+            tip.style.bottom = bottomPx + 'px';
+            tip.classList.add('yt-enhancer-cinema-tooltip-visible');
+        };
+        const _hideTooltip = () => {
+            const tip = document.getElementById('yt-enhancer-cinema-tooltip');
+            if (tip) tip.classList.remove('yt-enhancer-cinema-tooltip-visible');
+        };
+
+        const _injectCinemaBtns = () => {
+            if (!document.body.classList.contains('yt-enhancer-cinema-mode')) return;
+            const rightControls = document.querySelector('.ytp-right-controls');
+            if (!rightControls) return;
+            // Убрать кнопку «Войти», если вдруг осталась
+            rightControls.querySelectorAll('.yt-enhancer-cinema-enter-btn').forEach(el => el.remove());
+            const settingsBtn = document.querySelector('#movie_player .ytp-settings-button');
+            const ctrlParent  = settingsBtn ? settingsBtn.parentNode : rightControls;
+
+            // Убедиться, что tooltip-элемент существует
+            _getOrCreateTooltip();
+
+            // Кнопка «Выход» — пересоздаём если нет или устаревшая
+            const oldExit = rightControls.querySelector('.yt-enhancer-cinema-ctrl-btn[data-cact="exit"]');
+            if (!oldExit || oldExit.dataset.sessionId !== _sessionId) {
+                if (oldExit) oldExit.remove();
+                const btnExit = document.createElement('button');
+                btnExit.className = 'ytp-button yt-enhancer-cinema-ctrl-btn';
+                btnExit.dataset.cact = 'exit';
+                btnExit.dataset.sessionId = _sessionId;
+                btnExit.setAttribute('aria-label', L.cinemaModeExit || 'Exit Cinema Mode');
+                setInnerHTML(btnExit, `<svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 9l4-4v14l-4-4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2zm-8 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg>`);
+                btnExit.addEventListener('click', _exitCinema);
+                btnExit.addEventListener('mouseenter', () => _showTooltip(btnExit));
+                btnExit.addEventListener('mouseleave', _hideTooltip);
+                ctrlParent.insertBefore(btnExit, settingsBtn || null);
+            }
+
+            // Кнопка «Быстрые настройки» — пересоздаём если нет или устаревшая
+            const oldQset = rightControls.querySelector('.yt-enhancer-cinema-ctrl-btn[data-cact="qset"]');
+            if (!oldQset || oldQset.dataset.sessionId !== _sessionId) {
+                if (oldQset) oldQset.remove();
+                const btnQset = document.createElement('button');
+                btnQset.className = 'ytp-button yt-enhancer-cinema-ctrl-btn';
+                btnQset.dataset.cact = 'qset';
+                btnQset.dataset.sessionId = _sessionId;
+                btnQset.setAttribute('aria-label', L.cinemaQuickSettings || 'Quick settings');
+                setInnerHTML(btnQset, `<svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>`);
+                btnQset.addEventListener('click', () => {
+                    if (panel.hasAttribute('hidden')) panel.removeAttribute('hidden');
+                    else panel.setAttribute('hidden', '');
+                });
+                btnQset.addEventListener('mouseenter', () => _showTooltip(btnQset));
+                btnQset.addEventListener('mouseleave', _hideTooltip);
+                const exitBtn = ctrlParent.querySelector('.yt-enhancer-cinema-ctrl-btn[data-cact="exit"]');
+                ctrlParent.insertBefore(btnQset, exitBtn || settingsBtn || null);
+            }
+        };
+
+        // --- Вычислить целевые пиксельные размеры плеера ---
+        const _calcPlayerSize = () => {
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            if (pw >= 100) return { w: vw, h: vh };
+            const w = Math.round(Math.min(pw / 100 * vw, vh * 16 / 9));
+            return { w, h: Math.round(w * 9 / 16) };
+        };
+
+        // --- Атмосферная подсветка (Ambient light) ---
+        const _stopAmbilight = () => {
+            if (_unsafeWin.__ytEnhancerCinemaAmbilightRAF) {
+                cancelAnimationFrame(_unsafeWin.__ytEnhancerCinemaAmbilightRAF);
+                _unsafeWin.__ytEnhancerCinemaAmbilightRAF = null;
+            }
+            const _old = document.getElementById('yt-enhancer-cinema-ambilight');
+            if (_old) _old.remove();
+        };
+        const _startAmbilight = () => {
+            if (!ambient) { _stopAmbilight(); return; }
+            // Уже работает — обновить визуальные размеры
+            const _existing = document.getElementById('yt-enhancer-cinema-ambilight');
+            if (_existing && _unsafeWin.__ytEnhancerCinemaAmbilightRAF) {
+                const { w, h } = _calcPlayerSize();
+                _existing.style.setProperty('width',   Math.round(w * ambientSpread / 100) + 'px', 'important');
+                _existing.style.setProperty('height',  Math.round(h * ambientSpread / 100) + 'px', 'important');
+                _existing.style.setProperty('filter',  `blur(${ambientBlur}px) saturate(${ambientSaturate}%)`, 'important');
+                _existing.style.setProperty('opacity', (ambientIntensity / 100).toFixed(2), 'important');
+                return;
+            }
+            _stopAmbilight();
+            const _video = document.querySelector('#movie_player .html5-main-video, #movie_player video');
+            if (!_video) return;
+            const { w, h } = _calcPlayerSize();
+            const _scale = 0.2;
+            const _cw = Math.max(2, Math.round(w * _scale));
+            const _ch = Math.max(2, Math.round(h * _scale));
+            const _canvas = document.createElement('canvas');
+            _canvas.id     = 'yt-enhancer-cinema-ambilight';
+            _canvas.width  = _cw;
+            _canvas.height = _ch;
+            _canvas.style.setProperty('width',   Math.round(w * ambientSpread / 100) + 'px', 'important');
+            _canvas.style.setProperty('height',  Math.round(h * ambientSpread / 100) + 'px', 'important');
+            _canvas.style.setProperty('filter',  `blur(${ambientBlur}px) saturate(${ambientSaturate}%)`, 'important');
+            _canvas.style.setProperty('opacity', (ambientIntensity / 100).toFixed(2), 'important');
+            document.body.appendChild(_canvas);
+            const _ctx = _canvas.getContext('2d');
+            const _draw = () => {
+                if (!document.body.classList.contains('yt-enhancer-cinema-mode') || !ambient) {
+                    _stopAmbilight(); return;
+                }
+                if (_video.readyState >= 2) {
+                    try { _ctx.drawImage(_video, 0, 0, _cw, _ch); } catch (_e) {}
+                }
+                _unsafeWin.__ytEnhancerCinemaAmbilightRAF = requestAnimationFrame(_draw);
+            };
+            _unsafeWin.__ytEnhancerCinemaAmbilightRAF = requestAnimationFrame(_draw);
+        };
+
+        // --- JS-fallback: фиксируем инлайн-стили + переинъекция кнопок ---
+        const fixVideoStyles = () => {
+            if (!document.body.classList.contains('yt-enhancer-cinema-mode')) return;
+            // Flex-контейнер: fixed 100% viewport
+            const pfc = document.querySelector('#player-full-bleed-container');
+            if (pfc) {
+                pfc.style.setProperty('position',        'fixed',  'important');
+                pfc.style.setProperty('top',             '0',      'important');
+                pfc.style.setProperty('left',            '0',      'important');
+                pfc.style.setProperty('width',           '100vw',  'important');
+                pfc.style.setProperty('height',          '100vh',  'important');
+                pfc.style.setProperty('z-index',         '9000',   'important');
+                pfc.style.setProperty('display',         'flex',   'important');
+                pfc.style.setProperty('align-items',     'center', 'important');
+                pfc.style.setProperty('justify-content', 'center', 'important');
+                pfc.style.setProperty('pointer-events',  'none',   'important');
+            }
+            // Явные пиксельные размеры — YouTube не сможет переписать CSS min()
+            const { w: targetW, h: targetH } = _calcPlayerSize();
+            const pc = document.querySelector('#player-full-bleed-container > #player-container');
+            if (pc) {
+                pc.style.setProperty('position',       'relative',       'important');
+                pc.style.setProperty('pointer-events', 'auto',           'important');
+                pc.style.setProperty('width',          targetW + 'px',   'important');
+                pc.style.setProperty('height',         targetH + 'px',   'important');
+                pc.style.setProperty('flex-shrink',    '0',              'important');
+            }
+            // Принудить movie_player к тем же размерам
+            const mp = document.querySelector('#movie_player');
+            if (mp) {
+                mp.style.setProperty('width',  targetW + 'px', 'important');
+                mp.style.setProperty('height', targetH + 'px', 'important');
+            }
+            const ytdPlayer = document.querySelector('#player-full-bleed-container > #player-container #ytd-player');
+            if (ytdPlayer) {
+                ytdPlayer.style.setProperty('width',  '100%', 'important');
+                ytdPlayer.style.setProperty('height', '100%', 'important');
+            }
+            const ytdCont = document.querySelector('#player-full-bleed-container > #player-container #container.ytd-player');
+            if (ytdCont) {
+                ytdCont.style.setProperty('width',  '100%', 'important');
+                ytdCont.style.setProperty('height', '100%', 'important');
+            }
+            const video = document.querySelector('#movie_player .html5-main-video, #movie_player video');
+            if (video) {
+                video.style.setProperty('width',  '100%', 'important');
+                video.style.setProperty('height', '100%', 'important');
+                video.style.setProperty('left',   '0',    'important');
+                video.style.setProperty('top',    '0',    'important');
+            }
+            _injectCinemaBtns();
+
+            // pw < 50: скрыть контролы по умолчанию, показывать при наведении
+            if (pw < 50) document.body.classList.add('yt-enhancer-cinema-compact');
+            else document.body.classList.remove('yt-enhancer-cinema-compact');
+
+            // Атмосферная подсветка: класс на body — CSS снимает box-shadow плеера
+            if (ambient) document.body.classList.add('yt-enhancer-cinema-ambient');
+            else document.body.classList.remove('yt-enhancer-cinema-ambient');
+
+            // Атмосферная подсветка
+            _startAmbilight();
+
+            // Сказать YouTube-плееру, что размер изменился — он пересчитает
+            // позиции progress-bar, кнопок и градиента. Флаг защищает от рекурсии.
+            if (!_unsafeWin.__ytEnhancerCinemaSyntheticResize) {
+                _unsafeWin.__ytEnhancerCinemaSyntheticResize = true;
+                window.dispatchEvent(new Event('resize'));
+                setTimeout(() => { _unsafeWin.__ytEnhancerCinemaSyntheticResize = false; }, 50);
+            }
+        };
+        // Немедленный вызов
+        fixVideoStyles();
+
+        // После того как контейнер плеера появился в DOM, YouTube ещё несколько раз
+        // делает собственный layout и перезаписывает наши инлайн-стили.
+        // Решение: при монтировании запускаем плотную серию fixVideoStyles (0/50/150/400ms)
+        // — только один раз при монтировании, без постоянного наблюдения.
+        const _onPlayerMounted = () => {
+            if (!document.body.classList.contains('yt-enhancer-cinema-mode')) return;
+            fixVideoStyles();
+            setTimeout(fixVideoStyles, 50);
+            setTimeout(fixVideoStyles, 150);
+            setTimeout(fixVideoStyles, 400);
+        };
+
+        if (document.querySelector('#player-full-bleed-container > #player-container')) {
+            // Контейнер уже в DOM (прямой переход или быстрый SPA)
+            _onPlayerMounted();
+        } else {
+            // Ждём монтирования, после — отключаемся
+            const _obsMount = new MutationObserver(() => {
+                if (document.querySelector('#player-full-bleed-container > #player-container')) {
+                    _obsMount.disconnect();
+                    _unsafeWin.__ytEnhancerCinemaResizeObs = null;
+                    _onPlayerMounted();
+                }
+            });
+            _obsMount.observe(document.body, { childList: true, subtree: true });
+            _unsafeWin.__ytEnhancerCinemaResizeObs = _obsMount;
+        }
+
+        // YouTube стреляет когда плеер смонтирован и данные страницы готовы
+        const _onYtPlayerReady = () => {
+            if (document.body.classList.contains('yt-enhancer-cinema-mode')) fixVideoStyles();
+        };
+        document.addEventListener('yt-player-updated',    _onYtPlayerReady, { once: true });
+        document.addEventListener('yt-page-data-updated', _onYtPlayerReady, { once: true });
+
+        // Страховочный интервал (редкие edge-cases: resize после полноэкранного и т.п.)
+        _unsafeWin.__ytEnhancerCinemaVideoInterval = setInterval(fixVideoStyles, 2000);
+
+        // --- Window resize: пересчёт при изменении размера окна ---
+        // Пропускаем синтетические resize, которые сами и отправили
+        const _onWinResize = () => {
+            if (_unsafeWin.__ytEnhancerCinemaSyntheticResize) return;
+            if (document.body.classList.contains('yt-enhancer-cinema-mode')) fixVideoStyles();
+        };
+        _unsafeWin.__ytEnhancerCinemaResizeHandler = _onWinResize;
+        window.addEventListener('resize', _onWinResize, { passive: true });
+
+        // --- Быстрое переключение при SPA-навигации ---
+        if (!_unsafeWin.__ytEnhancerCinemaNavListenerSet) {
+            _unsafeWin.__ytEnhancerCinemaNavListenerSet = true;
+            // yt-navigate-start: сразу применяем класс + CSS, чтобы не было моргания
+            document.addEventListener('yt-navigate-start', (e) => {
+                const dest = e && e.detail && (e.detail.url || e.detail.endpoint);
+                const destStr = dest ? (typeof dest === 'string' ? dest : JSON.stringify(dest)) : '';
+                const goingToWatch = /\/watch/.test(destStr) || /^\/watch/.test(location.pathname);
+                if (config.cinemaModeOnWatch && goingToWatch && !_unsafeWin.__ytEnhancerCinemaDisabled) {
+                    document.body.classList.add('yt-enhancer-cinema-mode');
+                }
+            });
+            // yt-navigate-finish: полная активация без ожидания debounce
+            document.addEventListener('yt-navigate-finish', () => {
+                if (config.cinemaModeOnWatch && /^\/watch/.test(location.pathname) && !_unsafeWin.__ytEnhancerCinemaDisabled) {
+                    applyCinemaMode();
+                }
+            });
+        }
+
+        // --- Боковые занавесы (если включены) ---
+        if (curtain > 0) {
+            ['l', 'r'].forEach(side => {
+                const el = document.createElement('div');
+                el.id = 'yt-enhancer-cinema-side-' + side;
+                document.body.appendChild(el);
+            });
+        }
+    }
+
+
+
 
     // Применение всех новых фиксов
 
@@ -5462,23 +6687,56 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         applyYandexFixPlayerControls();
         applyExtraYandexFixes();
         applyHideEmptyBlocks();
+        applyCinemaMode();
     }
 
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │  § 11 ИНИЦИАЛИЗАЦИЯ — ТОЧКА ВХОДА                                │
+    // │  applyNewFixes(), init() — запускают все функции.                │
+    // │  DOMContentLoaded / run-at: document-start — точка входа.        │
+    // └──────────────────────────────────────────────────────────────────┘
     // --- Инициализация ---
 
     function init() {
         if (_initDone) return;
         _initDone = true;
+
+        // Инициализируем debug первым — поседу консолью и показываем баннер
+        dbg.init(config.debugMode, '4.4.6');
+        dbg.ok('INIT', `браузер: ${isYandexBrowser() ? '✓ Яндекс Браузер' : 'Chrome/другой'}  •  OS: ${getOS()}  •  язык: ${config.language || 'auto'}  •  debugMode: ${config.debugMode}`);
+        dbg.dumpConfig(config);
+        dbg.separator();
+
+        dbg.timeStart('init_total');
+
+        dbg.timeStart('applyGlobalStyles');
         applyGlobalStyles();
+        dbg.timeEnd('applyGlobalStyles', 'PERF');
+
+        dbg.timeStart('applyMainFeatures');
         applyMainFeatures();
+        dbg.timeEnd('applyMainFeatures', 'FIX');
+
+        dbg.timeStart('applyYandexFixes');
         applyYandexFixes();
+        dbg.timeEnd('applyYandexFixes', 'FIX');
+
+        dbg.timeStart('applyNewFixes');
         applyNewFixes();
+        dbg.timeEnd('applyNewFixes', 'FIX');
+
         hideRFSlowWarning();
+        dbg.log('UI', 'кнопка в шапке YouTube: ожидаем готовности DOM (#end в ytd-masthead)...');
         addYouTubeButton();
         checkPlaylistMode();
+
+        dbg.timeEnd('init_total', 'PERF');
+        dbg.separator('скрипт загружен');
+
         // Оптимизированный наблюдатель для SPA-навигации
         let lastUrl = location.href;
         const debouncedSpaHandler = debounce(() => {
+            dbg.log('NAV', `SPA-переход → ${location.pathname}  (${location.hostname})`);
             checkPlaylistMode();
             applyGlobalStyles();
             applyMainFeatures();
@@ -5489,7 +6747,11 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         createManagedObserver(document, () => {
             const currentUrl = location.href;
             if (currentUrl !== lastUrl) {
+                // Сбрасываем флаг временного выхода из кино-режима при переходе на другую страницу
+                _unsafeWin.__ytEnhancerCinemaDisabled = false;
                 lastUrl = currentUrl;
+                // Кинотеатр запускаем сразу (не через debounce) — ждём yt-navigate-finish
+                // Остальное — через debounce чтобы не бить частыми обновлениями DOM
                 requestAnimationFrame(debouncedSpaHandler);
             }
         }, {
@@ -5503,8 +6765,9 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             setInterval(cleanupSpacing, 30000);
         }
     }
+    // Запускаем сразу без задержки если DOM готов, иначе ждём DOMContentLoaded
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        setTimeout(init, 100);
+        init();
     } else {
         document.addEventListener('DOMContentLoaded', init);
         window.addEventListener('load', init);
