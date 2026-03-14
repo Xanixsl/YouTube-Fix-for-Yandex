@@ -16,11 +16,12 @@ Click it to open the full settings panel — no browser extensions, no popups, j
 <td align="center"><b>🌍 Yandex Fixes</b><br/><sub>SPA navigation, fullscreen artifacts,<br/>page overflow, player controls</sub></td>
 <td align="center"><b>🎨 Style Editor</b><br/><sub>13 themes, custom CSS,<br/>backgrounds, color builder</sub></td>
 <td align="center"><b>🖥️ Interface</b><br/><sub>Compact mode, hide Shorts,<br/>video grid, chip controls</sub></td>
+<td align="center"><b>🎬 Cinema Mode</b><br/><sub>Dark centered player, ambient<br/>glow, in-player quick settings</sub></td>
 </tr></table>
 
 <br/>
 
-<sub>👥 Visitors</sub><br/><br/>
+<sub>👥 Visitors</sub><br/>
 <a href="https://github.com/Xanixsl/YouTube-Fix-for-Yandex">
   <img src="https://count.getloli.com/@Xanixsl-YouTube-Fix-for-Yandex?name=Xanixsl-YouTube-Fix-for-Yandex&theme=booru-lewd&padding=1&offset=0&align=center&scale=1&pixelated=1&darkmode=0" alt="Visitors" />
 </a>
@@ -34,7 +35,7 @@ Click it to open the full settings panel — no browser extensions, no popups, j
 [![Installs](https://img.shields.io/badge/Installs-5.8k%2B-238636?style=for-the-badge&logo=tampermonkey&logoColor=white&labelColor=0d1117)](https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/youtube-fix-yandex.user.js)
 
 <br/>
-<sub>📋 Quick Navigation</sub><br/><br/>
+<sub>📋 Quick Navigation</sub><br/>
 
 [![README RU](https://img.shields.io/badge/-README__RU-CE3228?style=for-the-badge&logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxyZWN0IGZpbGw9IiNmZmYiIHdpZHRoPSI5IiBoZWlnaHQ9IjIiLz48cmVjdCBmaWxsPSIjMDAzOUE2IiB5PSIyIiB3aWR0aD0iOSIgaGVpZ2h0PSIyIi8+PHJlY3QgZmlsbD0iI0Q1MkIxRSIgeT0iNCIgd2lkdGg9IjkiIGhlaWdodD0iMiIvPjwvc3ZnPg==&labelColor=0d1117)](doc/README_RU.md)&nbsp;
 [![Install](https://img.shields.io/badge/📥_Install-Guide-238636?style=for-the-badge&labelColor=0d1117)](#-installation)&nbsp;
@@ -46,11 +47,11 @@ Click it to open the full settings panel — no browser extensions, no popups, j
 
 ---
 
-## 🖼 Screenshots
+## 📸 Screenshots
 
 <p align="center">
   <sub>🌍 Gear button — appears in the YouTube top bar, next to the +Create button and your profile icon</sub><br/><br/>
-  <img src="https://github.com/user-attachments/assets/107aca06-5722-4201-ac93-eea26ff20aee" width="1000" height="auto" alt="Panel button on YouTube page"/>
+  <img src="https://github.com/user-attachments/assets/107aca06-5722-4201-ac93-eea26ff20aee" width="600" height="auto" alt="Panel button on YouTube page"/>
 </p>
 
 <p align="center">
@@ -117,6 +118,7 @@ The settings panel has **3 tabs**:
 | Fix channel card | Fixes the sliding channel card on all channel tabs |
 | Restore chips on Videos tab | Ensures sorting chips are always visible on channel pages |
 | Playlists on channels | Restores playlists to channel pages |
+| Cinema mode on watch pages | Auto-enters Cinema Mode when opening a video: centers the player on a dark background, hides header, sidebar and navigation. Configure via the sliders (≡) button in player controls; exit via the camera button |
 
 **Bug Fixes**
 
@@ -178,6 +180,29 @@ A full built-in visual editor with 4 tabs:
 
 ---
 
+### 🎬 Cinema Mode
+
+Enabled via the **Cinema mode on watch pages** toggle in the **General** tab, Interface section. When active, automatically enters Cinema Mode on every watch page — centering the player on a dark background, hiding the header, sidebar and navigation.
+
+**In-player quick-settings panel** — click the sliders button (≡) in the top-right player controls:
+
+| Parameter | Description |
+|-----------|-------------|
+| Background color | Dark canvas color behind the centered player |
+| Blur (px) | Gaussian blur on background elements behind the player |
+| Brightness (%) | Background brightness — 0 is pitch black, 80 is semi-visible |
+| Shadow spread (px) | Dark shadow radiating from player edges |
+| Max player width (vw) | Player width limit as % of viewport (100 = fullscreen) |
+| Side curtain (vw) | Dark gradient curtains on screen edges (0 = disabled) |
+| Hide description & comments | Removes the area below the player |
+| Ambient lighting | Samples video frame colors and glows them behind the player |
+
+Panel footer: **Reset defaults** · **Save & Apply** · **Close**
+
+> Exit via the **camera button** (old camera icon). After exiting, an **Enter Cinema Mode** button appears in the player controls for easy re-entry without reloading.
+
+---
+
 ## 🤝 Contributing
 
 | Document | Description |
@@ -198,14 +223,14 @@ A full built-in visual editor with 4 tabs:
 
 ---
 
-## � Technical Details
+## 🔩 Technical Details
 
 ### 📄 Script Metadata
 
 | Property | Value |
 |----------|-------|
 | Script name | `YouTube Fix for Yandex` |
-| Version | `4.4.5` |
+| Version | `4.4.6` |
 | Author | [Xanixsl](https://github.com/Xanixsl) |
 | Namespace | `https://github.com/Xanixsl/YouTube-Fix-for-Yandex` |
 | License | All Rights Reserved |
@@ -223,8 +248,8 @@ A full built-in visual editor with 4 tabs:
 
 | Metric | Value |
 |--------|-------|
-| Total lines of code | ~5 515 |
-| File size | ~283 KB |
+| Total lines of code | ~6 560 |
+| File size | ~348 KB |
 | Functions | 73 |
 | MutationObserver instances | 7 |
 | CSS custom properties (`--yt-*`) | 49 |
@@ -257,7 +282,7 @@ A full built-in visual editor with 4 tabs:
 
 ---
 
-## �💻 Compatibility
+## 💻 Compatibility
 
 | Browser | Support |
 |---------|---------|
