@@ -132,7 +132,7 @@ Major sections use a box-style header:
 ```js
 // ┌──────────────────────────────────────────────────────────────────┐
 // │  § N  SECTION NAME                                               │
-// │  Brief description of what this section contains.               │
+// │  Brief description of what this section contains.                │
 // └──────────────────────────────────────────────────────────────────┘
 ```
 
