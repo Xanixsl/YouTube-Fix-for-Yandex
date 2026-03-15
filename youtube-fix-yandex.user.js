@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Fix for Yandex
 // @namespace https://github.com/Xanixsl/YouTube-Fix-for-Yandex
-// @version      4.4.6
+// @version      4.4.6-special
 // @description  Оптимизация и исправления YouTube для Яндекс Браузера: сетка, производительность, интерфейс, фикс пустых блоков, кодеков, авто-паузы, скролла, нативный YouTube UI
 // @author       Xanix
 // @match        https://www.youtube.com/*
@@ -31,7 +31,7 @@
     'use strict';
 
     // ╔══════════════════════════════════════════════════════════════════╗
-    // ║          YouTube Fix for Yandex  •  v4.4.6  •  by Xanix         ║
+    // ║        YouTube Fix for Yandex  •  v4.4.6-special  •  by Xanix     ║
     // ║    github.com/Xanixsl/YouTube-Fix-for-Yandex                     ║
     // ╠══════════════════════════════════════════════════════════════════╣
     // ║  СОДЕРЖИМОЕ                                                       ║
@@ -72,6 +72,17 @@
         fixAutoPause:        true,   // Авто-закрытие попапа «Видео приостановлено»
         fixDarkFlash:        true,   // Фикс белой вспышки при навигации в тёмной теме
         fixSearchGrid:       true,   // Фикс сетки видео на странице поиска
+        searchGridColumns:   1,      // Количество колонок в результатах поиска (1–5)
+        searchCompactThumb:  false,  // Компактные превью на странице поиска
+        searchHideEpisodes:  false,  // Скрывать блок эпизодов (ytd-expandable-metadata-renderer)
+        searchCardSpacing:         2,      // Отступ между карточками в поиске (px)
+        searchCardSpacingEnabled:  false,  // Включить свой отступ между карточками
+        searchHideNewBadge:        false,  // Скрывать пометку «Новинка» на карточках поиска
+        searchHideSnippet:         false,  // Скрывать текст описания под видео в поиске
+        searchHideShortsResults:   false,  // Скрывать Shorts из результатов поиска
+        searchHideChannels:        false,  // Скрывать каналы из результатов поиска
+        searchHidePlaylists:       false,  // Скрывать плейлисты из результатов поиска
+        searchRowSpacing:          10,     // Отступ между рядами при 3–4 колонках (px)
         fixMiniPlayer:       true,   // Фикс наложения мини-плеера (z-index)
         scrollOptimization:  true,   // Оптимизация скролла (меньше подтормаживаний)
         fixSidebar:          true,   // Фикс глитчей боковой панели при навигации
@@ -118,6 +129,10 @@
     const _managedStyles = new Map();
     const _observers     = [];
 
+    // Наблюдатель за lockup-атрибутами в поиске
+    let _searchGridObserver  = null;
+    let _searchGridFixPending = false;
+
     // (autoRedirectToFeatured отключён — YouTube убрал /featured, бесконечный редирект)
 
     // ── Debug-шина ────────────────────────────────────────────────────────────
@@ -148,7 +163,7 @@
     // --- Мультиязычность (встроенные данные + опциональное обновление из @resource / GitHub API) ---
     const _BUILTIN_LANGS = {
         en: {
-            title: "YouTube Fix for Yandex", version: "v4.4.6",
+            title: "YouTube Fix for Yandex", version: "v4.4.6-special",
             tabs: ["General", "Yandex Fixes", "Settings"], tabsNoYandex: ["General", "Settings"],
             save: "Save settings", reset: "Reset settings",
             saved: "Settings saved! Page will reload...", reseted: "Settings reset! Page will reload...",
@@ -169,6 +184,18 @@
             fixAutoPause: "Auto-dismiss 'Video paused' popup", fixAutoPauseDesc: "Automatically clicks continue when YouTube pauses video",
             fixDarkFlash: "Fix dark theme flash", fixDarkFlashDesc: "Prevents white flash during page navigation in dark theme",
             fixSearchGrid: "Fix search results grid", fixSearchGridDesc: "Corrects video grid layout on search results page",
+            searchGridColumns: "Search result columns", searchGridColumnsDesc: "Number of video columns on the search results page (1–5)",
+            searchCompactThumb: "Compact search thumbnails", searchCompactThumbDesc: "Makes video thumbnails smaller on the search page to fit more results",
+            searchHideEpisodes: "Hide episode panels", searchHideEpisodesDesc: "Hides the 'Matching episode' chapter panels under search results to keep the list compact",
+            searchCardSpacing: "Card spacing", searchCardSpacingDesc: "Vertical gap between video cards in search results (px)",
+            searchCardSpacingEnabled: "Custom card spacing", searchCardSpacingEnabledDesc: "Override vertical spacing between video cards in search results",
+            searchHideNewBadge: "Hide 'New' badge", searchHideNewBadgeDesc: "Hides the 'New' label on search result video cards",
+            searchHideSnippet: "Hide description snippet", searchHideSnippetDesc: "Hides the description preview text under search result videos",
+            searchHideShortsResults: "Hide Shorts from search", searchHideShortsResultsDesc: "Hides Short videos from search results",
+            searchHideChannels: "Hide channels from search", searchHideChannelsDesc: "Hides channel cards from search results",
+            searchHidePlaylists: "Hide playlists from search", searchHidePlaylistsDesc: "Hides playlist cards from search results",
+            searchRowSpacing: "Column gap (3–4 cols)", searchRowSpacingDesc: "Horizontal gap between columns when 3 or 4 columns are active (px)",
+            searchRowSpacingAuto: "Auto gap", searchRowSpacingAutoDesc: "Automatically calculate the optimal column gap based on screen width and column count",
             fixMiniPlayer: "Fix mini-player overlay", fixMiniPlayerDesc: "Fixes z-index issues with YouTube mini-player",
             scrollOptimization: "Smooth scroll optimization", scrollOptimizationDesc: "Reduces scroll stuttering on feed pages",
             fixSidebar: "Fix sidebar rendering", fixSidebarDesc: "Fixes sidebar display glitches during navigation",
@@ -243,11 +270,12 @@
             styleEditorClose: "Close",
             warning: 'Full version available only in <a href="https://browser.yandex.com/?lang=en" target="_blank" style="color: var(--yt-spec-brand-button-background, #065fd4); text-decoration: none; font-weight: bold;">Yandex Browser</a>.',
             languageButton: "Language", ru: "Russian", en: "English", newMark: "new", expMark: "exp",
+            showNewBadgesForever: "Always show 'New' badges", showNewBadgesForeverDesc: "When enabled, 'new' labels on settings options are shown permanently. When disabled, they auto-hide after 3 days from first view.",
             playlistModeNotification: "Playlists on Channels feature is enabled, browser optimization is disabled!",
             exitPlaylistModeNotification: "Extension will reload in {seconds} seconds to restore functionality"
         },
         ru: {
-            title: "YouTube Fix for Yandex", version: "v4.4.6",
+            title: "YouTube Fix for Yandex", version: "v4.4.6-спец.",
             tabs: ["Общее", "Яндекс-Фиксы", "Настройки"], tabsNoYandex: ["Общее", "Настройки"],
             save: "Сохранить настройки", reset: "Сбросить настройки",
             saved: "Настройки сохранены! Страница будет перезагружена...", reseted: "Настройки сброшены! Страница будет перезагружена...",
@@ -268,6 +296,18 @@
             fixAutoPause: "Авто-закрытие 'Видео приостановлено'", fixAutoPauseDesc: "Автоматически нажимает продолжить, когда YouTube ставит видео на паузу",
             fixDarkFlash: "Фикс вспышки темной темы", fixDarkFlashDesc: "Устраняет белую вспышку при навигации в темной теме",
             fixSearchGrid: "Фикс сетки поиска", fixSearchGridDesc: "Исправляет сетку видео на странице результатов поиска",
+            searchGridColumns: "Колонок в результатах поиска", searchGridColumnsDesc: "Количество колонок видео на странице поиска (1–5)",
+            searchCompactThumb: "Компактные превью поиска", searchCompactThumbDesc: "Уменьшает превью видео на странице поиска для отображения большего числа результатов",
+            searchHideEpisodes: "Скрыть панели эпизодов", searchHideEpisodesDesc: "Скрывает блоки 'Совпадение с эпизодом' под видео в результатах поиска для компактного отображения",
+            searchCardSpacing: "Отступ между карточками", searchCardSpacingDesc: "Вертикальный отступ между видео-карточками в результатах поиска (в px)",
+            searchCardSpacingEnabled: "Свой отступ между карточками", searchCardSpacingEnabledDesc: "Переопределяет вертикальный отступ между карточками в результатах поиска",
+            searchHideNewBadge: "Скрыть пометку «Новинка»", searchHideNewBadgeDesc: "Скрывает значок «Новинка» на видео в результатах поиска",
+            searchHideSnippet: "Скрыть описание", searchHideSnippetDesc: "Скрывает текст описания под видео в результатах поиска",
+            searchHideShortsResults: "Скрыть Shorts в поиске", searchHideShortsResultsDesc: "Скрывает короткие видео Shorts из результатов поиска",
+            searchHideChannels: "Скрыть каналы в поиске", searchHideChannelsDesc: "Скрывает карточки каналов из результатов поиска",
+            searchHidePlaylists: "Скрыть плейлисты в поиске", searchHidePlaylistsDesc: "Скрывает карточки плейлистов из результатов поиска",
+            searchRowSpacing: "Отступ между рядами (3–4 кол.)", searchRowSpacingDesc: "Горизонтальный отступ между колонками при 3 или 4 колонках (в px)",
+            searchRowSpacingAuto: "Авто-зазор", searchRowSpacingAutoDesc: "Автоматически рассчитывать оптимальный зазор между колонками по ширине экрана и количеству колонок",
             fixMiniPlayer: "Фикс мини-плеера", fixMiniPlayerDesc: "Исправляет проблемы наложения мини-плеера",
             scrollOptimization: "Оптимизация скролла", scrollOptimizationDesc: "Уменьшает подтормаживания при прокрутке ленты",
             fixSidebar: "Фикс боковой панели", fixSidebarDesc: "Устраняет глитчи боковой панели при навигации",
@@ -342,6 +382,7 @@
             styleEditorClose: "Закрыть",
             warning: 'Полная версия расширения доступна только в <a href="https://browser.yandex.com/?lang=ru" target="_blank" style="color: var(--yt-spec-brand-button-background, #065fd4); text-decoration: none; font-weight: bold;">Яндекс Браузере</a>.',
             languageButton: "Язык", ru: "Русский", en: "Английский", newMark: "новое", expMark: "эксп",
+            showNewBadgesForever: "Всегда показывать пометки «новое»", showNewBadgesForeverDesc: "Если включено — пометки «новое» висят вечно до ручного отключения. Если выключено — пометки автоматически скрываются через 3 дня с первого просмотра.",
             playlistModeNotification: "Включена функция Плейлисты на каналах, оптимизация браузера отключена!",
             exitPlaylistModeNotification: "Расширение перезагрузится через {seconds} секунды для восстановления функций"
         }
@@ -1922,6 +1963,18 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         fixAutoPause: true,
         fixDarkFlash: true,
         fixSearchGrid: true,
+        searchGridColumns: 1,
+        searchCompactThumb: false,
+        searchHideEpisodes: false,
+        searchCardSpacing: 2,
+        searchCardSpacingEnabled: false,
+        searchHideNewBadge: false,
+        searchHideSnippet: false,
+        searchHideShortsResults: false,
+        searchHideChannels: false,
+        searchHidePlaylists: false,
+        searchRowSpacing: 10,
+        searchRowSpacingAuto: true,
         fixMiniPlayer: true,
         scrollOptimization: true,
         fixSidebar: true,
@@ -1971,7 +2024,8 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         bgBlur: 0,
         bgSize: 'cover',
         userCSS: '',
-        stylePresets: {}
+        stylePresets: {},
+        showNewBadgesForever: false   // Показывать пометки «новое» всегда (без 3-дневного таймера)
     }, USER_DEFAULTS);
 
     // --- Безопасное хранилище для настроек ---
@@ -3498,6 +3552,17 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         resetBtn.addEventListener('click', _disconnectOnClose);
     }
 
+    // --- Таймер пометок «новое» (модульный уровень, доступен всем вкладкам) ---
+    // Если showNewBadgesForever=true — показывает вечно; иначе авто-прячет через 3 дня с первого просмотра.
+    const _NEW_BADGE_TTL = 259200000; // 3 дня в мс
+    const _isNewBadgeVisible = (id) => {
+        if (config.showNewBadgesForever) return true;
+        const _key = 'newBadgeTs_' + id;
+        let _ts = storage.get(_key);
+        if (_ts === null) { _ts = Date.now(); storage.set(_key, _ts); }
+        return (Date.now() - _ts) < _NEW_BADGE_TTL;
+    };
+
     // --- Основная вкладка ---
 
     function createGeneralTab(container) {
@@ -3539,7 +3604,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             labelEl.style.userSelect = 'none';
             labelEl.style.fontWeight = '500';
             labelDiv.appendChild(labelEl);
-            if (isNew) {
+            if (isNew && _isNewBadgeVisible(id)) {
                 const newMark = document.createElement('span');
                 newMark.textContent = L.newMark;
                 newMark.className = 'yt-enhancer-badge';
@@ -3653,6 +3718,171 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         fixesSection.appendChild(createCheckbox('scrollOptimization', L.scrollOptimization, config.scrollOptimization, L.scrollOptimizationDesc, true));
         fixesSection.appendChild(createCheckbox('hideEmptyBlocks', L.hideEmptyBlocks, config.hideEmptyBlocks, L.hideEmptyBlocksDesc, true));
         container.appendChild(fixesSection);
+
+        // --- Section 3: Search results layout ---
+        const searchSection = section(L.fixSearchGrid, L.fixSearchGridDesc);
+        // Чекбокс-включатель функции
+        const searchGridCb = createCheckbox('fixSearchGrid', L.fixSearchGrid, config.fixSearchGrid, L.fixSearchGridDesc, true);
+        searchSection.appendChild(searchGridCb);
+        // Ввод количества колонок
+        const colsRow = createNumInput('searchGridColumns', L.searchGridColumns, config.searchGridColumns || 1, 1, 5, L.searchGridColumnsDesc);
+        searchSection.appendChild(colsRow);
+        const compactThumbCb = createCheckbox('searchCompactThumb', L.searchCompactThumb, config.searchCompactThumb, L.searchCompactThumbDesc, true);
+        searchSection.appendChild(compactThumbCb);
+        const hideEpisodesCb = createCheckbox('searchHideEpisodes', L.searchHideEpisodes, config.searchHideEpisodes, L.searchHideEpisodesDesc, true);
+        searchSection.appendChild(hideEpisodesCb);
+        // Отступ между карточками: чекбокс-включатель + числовое поле
+        const spacingEnabledCb = createCheckbox('searchCardSpacingEnabled', L.searchCardSpacingEnabled, config.searchCardSpacingEnabled, L.searchCardSpacingEnabledDesc, true);
+        searchSection.appendChild(spacingEnabledCb);
+        const spacingRow = createNumInput('searchCardSpacing', L.searchCardSpacing, config.searchCardSpacing ?? 2, 0, 32, L.searchCardSpacingDesc);
+        searchSection.appendChild(spacingRow);
+        const _setSpacingRowEnabled = (en) => {
+            spacingRow.style.opacity = en ? '1' : '0.4';
+            spacingRow.style.pointerEvents = en ? '' : 'none';
+        };
+        _setSpacingRowEnabled(config.searchCardSpacingEnabled);
+        spacingEnabledCb.querySelector('input[type=checkbox]').addEventListener('change', function() {
+            _setSpacingRowEnabled(this.checked);
+        });
+        const hideNewBadgeCb = createCheckbox('searchHideNewBadge', L.searchHideNewBadge, config.searchHideNewBadge, L.searchHideNewBadgeDesc, true);
+        searchSection.appendChild(hideNewBadgeCb);
+        const hideSnippetCb = createCheckbox('searchHideSnippet', L.searchHideSnippet, config.searchHideSnippet, L.searchHideSnippetDesc, true);
+        searchSection.appendChild(hideSnippetCb);
+        const hideShortsResultsCb = createCheckbox('searchHideShortsResults', L.searchHideShortsResults, config.searchHideShortsResults, L.searchHideShortsResultsDesc, true);
+        searchSection.appendChild(hideShortsResultsCb);
+        const hideChannelsCb = createCheckbox('searchHideChannels', L.searchHideChannels, config.searchHideChannels, L.searchHideChannelsDesc, true);
+        hideChannelsCb.querySelector('input[type=checkbox]').addEventListener('change', function() { config.searchHideChannels = this.checked; GM_setValue('searchHideChannels', this.checked); applyHideShorts(); });
+        searchSection.appendChild(hideChannelsCb);
+        const hidePlaylistsCb = createCheckbox('searchHidePlaylists', L.searchHidePlaylists, config.searchHidePlaylists, L.searchHidePlaylistsDesc, true);
+        hidePlaylistsCb.querySelector('input[type=checkbox]').addEventListener('change', function() { config.searchHidePlaylists = this.checked; GM_setValue('searchHidePlaylists', this.checked); applyHideShorts(); });
+        searchSection.appendChild(hidePlaylistsCb);
+        // Отступ между рядами — только при cols 3 или 4
+        const _rowSpacingMax = () => Math.max(100, Math.round(document.documentElement.clientWidth || window.innerWidth || 1920));
+        // Чекбокс "Авто"
+        const rowSpacingAutoCb = createCheckbox('searchRowSpacingAuto', L.searchRowSpacingAuto, config.searchRowSpacingAuto !== false, L.searchRowSpacingAutoDesc, true);
+        searchSection.appendChild(rowSpacingAutoCb);
+        // Поле ручного ввода
+        const rowSpacingRow = createNumInput('searchRowSpacing', L.searchRowSpacing, Math.max(1, config.searchRowSpacing ?? 10), 1, _rowSpacingMax(), L.searchRowSpacingDesc);
+        searchSection.appendChild(rowSpacingRow);
+        const _rsInput = rowSpacingRow.querySelector('input[type=number]');
+        // Подсказка об ошибке
+        let _rsHint = document.createElement('div');
+        _rsHint.style.cssText = 'display:none;font-size:0.78em;color:#e53935;margin-top:2px;width:100%;order:3;flex-basis:100%;';
+        rowSpacingRow.style.flexWrap = 'wrap';
+        rowSpacingRow.appendChild(_rsHint);
+        const _rsSetError = (msg) => {
+            _rsInput.style.borderColor = '#e53935';
+            _rsInput.style.outline = '1px solid #e53935';
+            _rsHint.textContent = msg;
+            _rsHint.style.display = 'block';
+        };
+        const _rsClearError = () => {
+            _rsInput.style.borderColor = '';
+            _rsInput.style.outline = '';
+            _rsHint.style.display = 'none';
+        };
+        // При потере фокуса: валидация + автокоррекция
+        _rsInput.addEventListener('blur', function() {
+            const curMax = _rowSpacingMax();
+            this.max = curMax;
+            let v = parseInt(this.value);
+            if (isNaN(v) || v < 1) {
+                _rsSetError(`Минимальное значение: 1. Установлено 1.`);
+                this.value = 1;
+                setTimeout(_rsClearError, 3000);
+            } else if (v > curMax) {
+                _rsSetError(`Максимальное значение: ${curMax}px. Установлено ${curMax}.`);
+                this.value = curMax;
+                setTimeout(_rsClearError, 3000);
+            } else {
+                _rsClearError();
+            }
+            // Реальное время: обновляем CSS без перезагрузки
+            config.searchRowSpacing = parseInt(this.value) || 10;
+            config.searchRowSpacingAuto = false;
+            applyFixSearchGrid();
+        });
+        _rsInput.addEventListener('input', _rsClearError);
+        // Функция показа расчётного значения в поле
+        const _rsRefreshAutoPreview = (cols) => {
+            if (config.searchRowSpacingAuto !== false) {
+                const autoVal = (cols === 3 || cols === 4) ? _calcAutoRowSpacing(cols) : 10;
+                _rsInput.value = autoVal;
+            }
+        };
+        // Динамическое состояние авто/ручной режим
+        const _rsSetAutoMode = (isAuto, currentCols) => {
+            _rsInput.disabled = isAuto;
+            rowSpacingRow.style.opacity = isAuto ? '0.7' : '1';
+            if (isAuto) {
+                _rsInput.style.opacity = '0.5';
+                _rsInput.title = 'Авторасчёт';
+                _rsRefreshAutoPreview(currentCols);
+            } else {
+                _rsInput.style.opacity = '1';
+                _rsInput.title = '';
+            }
+            _rsClearError();
+        };
+        // Чекбокс "Авто" → переключаем режим, сразу применяем CSS
+        rowSpacingAutoCb.querySelector('input[type=checkbox]').addEventListener('change', function() {
+            const currentCols = parseInt(colsRow.querySelector('input[type=number]').value) || 1;
+            config.searchRowSpacingAuto = this.checked;
+            _rsSetAutoMode(this.checked, currentCols);
+            applyFixSearchGrid();
+        });
+        // Инициализация состояния
+        _rsSetAutoMode(config.searchRowSpacingAuto !== false, parseInt(config.searchGridColumns) || 1);
+        const _setRowSpacingVisible = (cols) => {
+            const active = cols === 3 || cols === 4;
+            const showOpacity = active ? '1' : '0.4';
+            rowSpacingAutoCb.style.opacity = showOpacity;
+            rowSpacingAutoCb.style.pointerEvents = active ? '' : 'none';
+            rowSpacingRow.style.opacity = active ? (config.searchRowSpacingAuto !== false ? '0.7' : '1') : '0.4';
+            rowSpacingRow.style.pointerEvents = active ? '' : 'none';
+            // Обновляем авто-превью при смене числа колонок
+            if (active) _rsRefreshAutoPreview(cols);
+        };
+        _setRowSpacingVisible(parseInt(config.searchGridColumns) || 1);
+        colsRow.querySelector('input[type=number]').addEventListener('input', function() {
+            const c = parseInt(this.value) || 1;
+            _setRowSpacingVisible(c);
+            // Реальное время: применяем новые колонки сразу
+            config.searchGridColumns = c;
+            applyFixSearchGrid();
+        });
+        // Блокируем все суб-контролы когда главная функция выключена
+        const _setSearchDepsEnabled = (enabled) => {
+            colsRow.style.opacity = enabled ? '1' : '0.4';
+            colsRow.style.pointerEvents = enabled ? '' : 'none';
+            compactThumbCb.style.opacity = enabled ? '1' : '0.4';
+            compactThumbCb.style.pointerEvents = enabled ? '' : 'none';
+            hideEpisodesCb.style.opacity = enabled ? '1' : '0.4';
+            hideEpisodesCb.style.pointerEvents = enabled ? '' : 'none';
+            spacingEnabledCb.style.opacity = enabled ? '1' : '0.4';
+            spacingEnabledCb.style.pointerEvents = enabled ? '' : 'none';
+            _setSpacingRowEnabled(enabled && !!config.searchCardSpacingEnabled);
+            hideNewBadgeCb.style.opacity = enabled ? '1' : '0.4';
+            hideNewBadgeCb.style.pointerEvents = enabled ? '' : 'none';
+            hideSnippetCb.style.opacity = enabled ? '1' : '0.4';
+            hideSnippetCb.style.pointerEvents = enabled ? '' : 'none';
+            hideShortsResultsCb.style.opacity = enabled ? '1' : '0.4';
+            hideShortsResultsCb.style.pointerEvents = enabled ? '' : 'none';
+            if (enabled) {
+                _setRowSpacingVisible(parseInt(config.searchGridColumns) || 1);
+            } else {
+                rowSpacingRow.style.opacity = '0.4';
+                rowSpacingRow.style.pointerEvents = 'none';
+            }
+        };
+        _setSearchDepsEnabled(config.fixSearchGrid);
+        searchGridCb.querySelector('input[type=checkbox]').addEventListener('change', function() {
+            config.fixSearchGrid = this.checked;
+            _setSearchDepsEnabled(this.checked);
+            applyFixSearchGrid();
+            applyHideShorts();
+        });
+        container.appendChild(searchSection);
     }
 
     // --- Яндекс вкладка (Яндекс-Фиксы) ---
@@ -3696,7 +3926,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             labelEl.style.userSelect = 'none';
             labelEl.style.fontWeight = '500';
             labelDiv.appendChild(labelEl);
-            if (isNew) {
+            if (isNew && _isNewBadgeVisible(id)) {
                 const newMark = document.createElement('span');
                 newMark.textContent = L.newMark;
                 newMark.className = 'yt-enhancer-badge';
@@ -3862,6 +4092,36 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
             return sectionDiv;
         };
+        // ── Пометки «новое» ──────────────────────────────────────────────
+        const newBadgesSection = section(L.showNewBadgesForever);
+        const newBadgesForeverCb = (() => {
+            const div = document.createElement('div');
+            div.style.cssText = 'display:flex;align-items:flex-start;margin-bottom:12px;';
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = 'showNewBadgesForever';
+            input.checked = config.showNewBadgesForever;
+            input.style.cssText = 'margin-right:10px;margin-top:3px;';
+            const lblDiv = document.createElement('div');
+            const lbl = document.createElement('label');
+            lbl.htmlFor = 'showNewBadgesForever';
+            lbl.textContent = L.showNewBadgesForever;
+            lbl.style.cssText = 'user-select:none;font-weight:500;';
+            lblDiv.appendChild(lbl);
+            const desc = document.createElement('div');
+            desc.textContent = L.showNewBadgesForeverDesc;
+            desc.style.cssText = 'font-size:0.85em;color:var(--enhancer-tab-inactive,#888);margin-top:4px;';
+            lblDiv.appendChild(desc);
+            div.appendChild(input);
+            div.appendChild(lblDiv);
+            input.addEventListener('change', function() {
+                config.showNewBadgesForever = this.checked;
+                storage.set('ytEnhancerConfig', config);
+            });
+            return div;
+        })();
+        newBadgesSection.appendChild(newBadgesForeverCb);
+        container.appendChild(newBadgesSection);
         const thumbSection = section(L.thumbSection, L.thumbDesc);
         const thumbSelect = document.createElement('select');
         thumbSelect.id = 'customThumbnailSize';
@@ -5236,36 +5496,325 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             }
         `, 'yt-enhancer-dark-flash');
     }
+    // Авторасчёт column-gap: 3 кол → ~9% ширины, 4 кол → ~4.5%
+    function _calcAutoRowSpacing(cols) {
+        const available = Math.max(300, (document.documentElement.clientWidth || window.innerWidth || 1366) - 32);
+        const factor = cols === 3 ? 0.09 : 0.045;
+        return Math.max(1, Math.round(available * factor));
+    }
+
     // Фикс сетки на странице поиска
 
-    function applyFixSearchGrid() {
-        if (!config.fixSearchGrid || !isYandexBrowser() || (isPlaylistModeActive && config.playlistModeFeature)) { dbg.skip('FIX', 'fixSearchGrid — отключено в настройках или не Яндекс Браузер'); return; }
-        if (!/\/results/.test(location.pathname)) { dbg.log('FIX', `fixSearchGrid — пропущен: текущая страница ${location.pathname} не является поиском`); return; }
-        dbg.ok('FIX', 'fixSearchGrid — сетка результатов поиска исправлена');
-        addStyles(`
-            ytd-search ytd-item-section-renderer #contents {
-                max-width: 100% !important;
+    // Авторасчёт column-gap: 3 кол → ~10.5% ширины («፰140px на 1366»), 4 кол → ~5%
+    function _calcAutoRowSpacing(cols) {
+        const available = Math.max(300, (document.documentElement.clientWidth || window.innerWidth || 1366) - 32);
+        const factor = cols === 3 ? 0.105 : 0.05;
+        return Math.max(1, Math.round(available * factor));
+    }
+
+    // Убирает атрибут lockup="true" с элементов поиска (Яндекс его проставляет для card-режима)
+    function _fixSearchLockupAttrs() {
+        _searchGridFixPending = false;
+        document.querySelectorAll(
+            'ytd-search ytd-video-renderer[lockup],' +
+            'ytd-search ytd-channel-renderer[lockup],' +
+            'ytd-search ytd-playlist-renderer[lockup]'
+        ).forEach(el => el.removeAttribute('lockup'));
+    }
+
+    function _startSearchLockupObserver() {
+        if (_searchGridObserver) return;
+        const root = document.querySelector('ytd-search') || document.body;
+        _searchGridObserver = new MutationObserver(() => {
+            if (!_searchGridFixPending) {
+                _searchGridFixPending = true;
+                requestAnimationFrame(_fixSearchLockupAttrs);
             }
-            ytd-search ytd-video-renderer,
-            ytd-search ytd-channel-renderer,
-            ytd-search ytd-playlist-renderer {
+        });
+        _searchGridObserver.observe(root, {
+            childList: true, subtree: true,
+            attributes: true, attributeFilter: ['lockup']
+        });
+    }
+
+    function _stopSearchLockupObserver() {
+        if (_searchGridObserver) {
+            _searchGridObserver.disconnect();
+            _searchGridObserver = null;
+        }
+        _searchGridFixPending = false;
+    }
+
+    function applyFixSearchGrid() {
+        const wantFixGrid = config.fixSearchGrid && isYandexBrowser() && !(isPlaylistModeActive && config.playlistModeFeature);
+        const cols = Math.max(1, Math.min(5, parseInt(config.searchGridColumns) || 1));
+        // Колонки и компактный режим — только когда функция явно включена
+        const wantColumns = config.fixSearchGrid && cols > 1;
+        const wantCompact = config.fixSearchGrid && !!config.searchCompactThumb;
+        const wantHideEpisodes = config.fixSearchGrid && !!config.searchHideEpisodes;
+        const wantCardSpacing = config.fixSearchGrid && !!config.searchCardSpacingEnabled;
+        const wantHideNewBadge = config.fixSearchGrid && !!config.searchHideNewBadge;
+        const wantHideSnippet  = config.fixSearchGrid && !!config.searchHideSnippet;
+        const wantHideShortsResults = false; // управляется через applyHideShorts()
+        const wantRowSpacing   = config.fixSearchGrid && (cols === 3 || cols === 4);
+        const spacing = Math.max(0, Math.min(32, parseInt(config.searchCardSpacing) || 2));
+        const rowSpacing = Math.max(1, parseInt(config.searchRowSpacing) || 10);
+
+        if (!config.fixSearchGrid) {
+            _stopSearchLockupObserver();
+            addStyles('', 'yt-enhancer-search-grid');
+            dbg.skip('FIX', 'fixSearchGrid — функция отключена');
+            return;
+        }
+        if (!wantFixGrid && !wantColumns && !wantCompact && !wantHideEpisodes && !wantCardSpacing && !wantHideNewBadge && !wantHideSnippet) {
+            _stopSearchLockupObserver();
+            addStyles('', 'yt-enhancer-search-grid');
+            dbg.skip('FIX', 'fixSearchGrid — все опции отключены');
+            return;
+        }
+        if (!/\/results/.test(location.pathname)) {
+            _stopSearchLockupObserver();
+            dbg.log('FIX', `fixSearchGrid — пропущен: текущая страница ${location.pathname} не является поиском`);
+            return;
+        }
+
+        // JS-подход: убираем lockup-атрибут и следим за новыми элементами
+        if (wantFixGrid) {
+            _fixSearchLockupAttrs();
+            _startSearchLockupObserver();
+        } else {
+            _stopSearchLockupObserver();
+        }
+
+        dbg.ok('FIX', `fixSearchGrid — применено cols=${cols} compact=${wantCompact} fixGrid=${wantFixGrid}`);
+        addStyles(`
+            /* ── Расширяем страницу поиска на всю ширину ── */
+            ytd-search #container.ytd-search,
+            ytd-two-column-search-results-renderer #primary {
                 max-width: 100% !important;
-                width: 100% !important;
+                min-width: 0 !important;
+                padding: 0 16px !important;
             }
             ytd-search #page-manager {
                 margin-left: 0 !important;
                 padding-left: 0 !important;
             }
-            ytd-search #container.ytd-search {
-                max-width: 100% !important;
-                padding: 0 24px !important;
+
+            /* ── Фикс тултипа описания: скрываем всплывающую подсказку (текст уже виден) ── */
+            ytd-search .metadata-snippet-container-one-line tp-yt-paper-tooltip,
+            ytd-search .metadata-snippet-container tp-yt-paper-tooltip {
+                display: none !important;
             }
-            ytd-two-column-search-results-renderer #primary {
+
+            ${wantCardSpacing ? `
+            /* ── Настраиваемый отступ между карточками ── */
+            ytd-search ytd-video-renderer,
+            ytd-search ytd-video-renderer[lockup],
+            ytd-search ytd-channel-renderer,
+            ytd-search ytd-playlist-renderer {
+                margin-bottom: ${spacing}px !important;
+                margin-top: 0 !important;
+            }
+            ytd-search ytd-item-section-renderer {
+                margin-bottom: ${spacing}px !important;
+                padding-bottom: 0 !important;
+            }
+            ` : ''}
+
+            ${wantFixGrid ? `
+            /* ── Принудительный список: убираем Grid/Card-рендер Яндекс Браузера ── */
+            ytd-search ytd-section-list-renderer #contents,
+            ytd-search ytd-item-section-renderer #contents,
+            ytd-search ytd-item-section-renderer #contents.ytd-item-section-renderer {
+                display: block !important;
+                max-width: 100% !important;
+                grid-template-columns: unset !important;
+                grid-template-rows: unset !important;
+            }
+            ytd-search ytd-video-renderer,
+            ytd-search ytd-video-renderer[lockup],
+            ytd-search ytd-channel-renderer,
+            ytd-search ytd-playlist-renderer {
+                display: ${wantColumns ? 'inline-block' : 'block'} !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                margin-bottom: 8px !important;
+            }
+            /* ── Направление карточки: вертикаль при колонках, горизонталь при одной ── */
+            ytd-search ytd-video-renderer #dismissible,
+            ytd-search ytd-video-renderer[lockup] #dismissible,
+            ytd-search ytd-video-renderer[lockup] #dismissible.ytd-video-renderer,
+            ytd-search ytd-channel-renderer #dismissible,
+            ytd-search ytd-channel-renderer[lockup] #dismissible {
+                display: flex !important;
+                flex-direction: ${wantColumns ? 'column' : 'row'} !important;
+                align-items: ${wantColumns ? 'stretch' : 'flex-start'} !important;
+                flex-wrap: nowrap !important;
+            }
+            /* Превью: задаём ширину, всё остальное — YouTube сам */
+            ytd-search ytd-video-renderer ytd-thumbnail,
+            ytd-search ytd-video-renderer[lockup] ytd-thumbnail {
+                flex: 0 0 ${wantColumns ? 'auto' : '246px'} !important;
+                width: ${wantColumns ? '100%' : '246px'} !important;
                 max-width: 100% !important;
                 min-width: 0 !important;
+                display: block !important;
             }
+            /* Текстовый блок: занимает всё оставшееся пространство */
+            ytd-search ytd-video-renderer .text-wrapper,
+            ytd-search ytd-video-renderer[lockup] .text-wrapper,
+            ytd-search ytd-video-renderer[lockup] .text-wrapper.ytd-video-renderer {
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                width: 100% !important;
+                overflow: hidden !important;
+                padding: ${wantColumns ? '6px 6px 0' : '0'} !important;
+                box-sizing: border-box !important;
+            }
+            /* Название видео: не обрезать, переносить */
+            ytd-search ytd-video-renderer #video-title,
+            ytd-search ytd-video-renderer[lockup] #video-title {
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: unset !important;
+                display: -webkit-box !important;
+                -webkit-line-clamp: ${wantColumns ? '2' : '3'} !important;
+                -webkit-box-orient: vertical !important;
+                overflow: hidden !important;
+            }
+            ` : ''}
+
+            ${wantColumns ? `
+            /* ── Газетные колонки: элементы текут СВЕРХУ ВНИЗ, затем в следующую колонку ── */
+            ytd-search ytd-item-section-renderer #contents {
+                column-count: ${cols} !important;
+                column-gap: ${wantRowSpacing ? rowSpacing : 12}px !important;
+            }
+            ytd-search ytd-video-renderer,
+            ytd-search ytd-channel-renderer,
+            ytd-search ytd-playlist-renderer {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                display: inline-block !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                margin-bottom: 8px !important;
+                vertical-align: top !important;
+            }
+            ` : ''}
+
+            ${wantCompact ? `
+            /* ── Компактные превью ── */
+            ytd-search ytd-video-renderer ytd-thumbnail,
+            ytd-search ytd-video-renderer[lockup] ytd-thumbnail {
+                ${wantColumns
+                    ? 'max-height: 100px !important; overflow: hidden !important;'
+                    : 'flex: 0 0 120px !important; width: 120px !important; max-width: 120px !important;'}
+            }
+            ` : ''}
+
+            ${wantHideEpisodes ? `
+            /* ── Скрыть блоки «Совпадение с эпизодом» ── */
+            ytd-search ytd-video-renderer #expandable-metadata,
+            ytd-search ytd-video-renderer ytd-expandable-metadata-renderer {
+                display: none !important;
+            }
+            ` : ''}
+
+            ${wantHideNewBadge ? `
+            /* ── Скрыть пометку «Новинка» ── */
+            ytd-search ytd-video-renderer #badges ytd-badge-supported-renderer,
+            ytd-search ytd-video-renderer ytd-badge-supported-renderer {
+                display: none !important;
+            }
+            ` : ''}
+
+            ${wantHideSnippet ? `
+            /* ── Скрыть описание под видео ── */
+            ytd-search ytd-video-renderer .metadata-snippet-container-one-line,
+            ytd-search ytd-video-renderer .metadata-snippet-container {
+                display: none !important;
+            }
+            ` : ''}
         `, 'yt-enhancer-search-grid');
     }
+    // Глобальное скрытие Shorts по всему YouTube (lenta, search, filter chips)
+    function applyHideShorts() {
+        if (!config.searchHideShortsResults) {
+            addStyles('', 'yt-enhancer-hide-shorts');
+            dbg.skip('FIX', 'hideShorts — отключено');
+            return;
+        }
+        dbg.ok('FIX', 'hideShorts — глобальное скрытие Shorts активировано');
+        addStyles(`
+            /* ── Shorts в результатах поиска ── */
+            /* Шорты в обычном виде (ytd-video-renderer) */
+            ytd-search ytd-video-renderer:has(a[href^="/shorts/"]),
+            ytd-search ytd-video-renderer:has(ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]),
+            /* Шорты в формате reels (отдельные элементы) */
+            ytd-search ytd-reel-item-renderer,
+            /* Kevlar: yt-lockup-view-model (новый формат карточек шортсов) */
+            ytd-search yt-lockup-view-model:has(a[href^="/shorts/"]),
+            ytd-search ytd-shorts-lockup-view-model,
+            ytd-search ytd-rich-item-renderer:has(a[href^="/shorts/"]),
+            /* Mobile/Kevlar: grid-shelf-view-model с ytm-shorts-lockup-view-model-v2 */
+            ytd-search grid-shelf-view-model,
+            ytd-search ytm-shorts-lockup-view-model-v2,
+            ytd-search ytm-shorts-lockup-view-model,
+            /* Кнопка «Ещё»/«Свернуть» — выносится YT в произвольный контейнер, глобально */
+            .ytGridShelfViewModelGridShelfBottomButtonContainer,
+            /* Весь ytd-item-section-renderer если содержит любой из форматов шортсов */
+            ytd-search ytd-item-section-renderer:has(ytd-reel-item-renderer),
+            ytd-search ytd-item-section-renderer:has(yt-lockup-view-model a[href^="/shorts/"]),
+            ytd-search ytd-item-section-renderer:has(ytd-shorts-lockup-view-model),
+            ytd-search ytd-item-section-renderer:has(grid-shelf-view-model),
+            ytd-search ytd-item-section-renderer:has(ytm-shorts-lockup-view-model-v2) {
+                display: none !important;
+            }
+
+            /* ── Каналы в результатах поиска ── */
+            ${config.searchHideChannels ? `
+            ytd-search ytd-channel-renderer,
+            ytd-search ytd-item-section-renderer:has(ytd-channel-renderer) {
+                display: none !important;
+            }` : ''}
+
+            /* ── Плейлисты в результатах поиска ── */
+            ${config.searchHidePlaylists ? `
+            ytd-search .yt-lockup-view-model--collection-stack-2,
+            ytd-search .yt-lockup-view-model--collection-stack-1,
+            ytd-search ytd-lockup-view-model-comp-renderer,
+            ytd-search ytd-item-section-renderer:has(.yt-lockup-view-model--collection-stack-2),
+            ytd-search ytd-item-section-renderer:has(.yt-lockup-view-model--collection-stack-1) {
+                display: none !important;
+            }` : ''}
+
+            /* ── Фильтр «Shorts» в панели фильтров поиска ── */
+            ytd-search-filter-renderer:has(#label[title*="Shorts"]),
+            ytd-search-filter-renderer:has(a[href*="EgIQCQ"]) {
+                display: none !important;
+            }
+
+            /* ── Shorts-полка на главной странице и подписках ── */
+            ytd-reel-shelf-renderer,
+            ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
+            ytd-rich-section-renderer:has(ytd-rich-shelf-renderer:has(a[href^="/shorts/"])) {
+                display: none !important;
+            }
+
+            /* ── Секция «Shorts» в боковой панели ── */
+            ytd-guide-entry-renderer a[href="/shorts"],
+            ytd-mini-guide-entry-renderer a[href="/shorts"] {
+                display: none !important;
+            }
+            ytd-guide-entry-renderer:has(a[href="/shorts"]),
+            ytd-mini-guide-entry-renderer:has(a[href="/shorts"]) {
+                display: none !important;
+            }
+        `, 'yt-enhancer-hide-shorts');
+    }
+
     // Фикс мини-плеера
 
     function applyFixMiniPlayer() {
@@ -5665,10 +6214,23 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
     function applyCinemaMode() {
         const isWatchPage = /^\/watch/.test(location.pathname);
 
+        // --- Guard: если режим уже активен на этой же URL — не делать полный teardown/rebuild.
+        // YouTube у длинных видео (30+ мин) может несколько раз стрелять yt-navigate-finish,
+        // что вызывает мерцание из-за повторного cлома и пересборки всего Cinema Mode.
+        if (document.body.classList.contains('yt-enhancer-cinema-mode') &&
+            !_unsafeWin.__ytEnhancerCinemaDisabled &&
+            _unsafeWin.__ytEnhancerCinemaVideoInterval &&
+            _unsafeWin.__ytEnhancerCinemaLastUrl === location.href) {
+            dbg.skip('CINEMA', 'уже активен на этой URL — пропускаем повторную инициализацию');
+            return;
+        }
+
         // --- Чистим предыдущее состояние ---
         document.body.classList.remove('yt-enhancer-cinema-mode');
         addStyles('', 'yt-enhancer-cinema-mode');
         document.querySelectorAll('[id^="yt-enhancer-cinema-"], .yt-enhancer-cinema-ctrl-btn').forEach(el => el.remove());
+        // Сбрасываем lastUrl — иначе guard при forward-навигации может ошибочно пропустить полный rebuild
+        _unsafeWin.__ytEnhancerCinemaLastUrl = null;
         if (_unsafeWin.__ytEnhancerCinemaVideoInterval) {
             clearInterval(_unsafeWin.__ytEnhancerCinemaVideoInterval);
             _unsafeWin.__ytEnhancerCinemaVideoInterval = null;
@@ -5695,7 +6257,30 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             document.removeEventListener('mouseup',   _mu);
             _unsafeWin.__ytEnhancerCinemaDragHandlers = null;
         }
+        if (_unsafeWin.__ytEnhancerCinemaTheaterObs) {
+            _unsafeWin.__ytEnhancerCinemaTheaterObs.disconnect();
+            _unsafeWin.__ytEnhancerCinemaTheaterObs = null;
+        }
+        if (_unsafeWin.__ytEnhancerCinemaPageDataHandler) {
+            document.removeEventListener('yt-page-data-updated', _unsafeWin.__ytEnhancerCinemaPageDataHandler);
+            _unsafeWin.__ytEnhancerCinemaPageDataHandler = null;
+        }
         document.documentElement.style.removeProperty('--yt-cinema-ctrl-scale');
+        // Снимаем inline overflow + все дополнительные body-классы + inline-стили плеера
+        document.documentElement.style.removeProperty('overflow');
+        document.body.style.removeProperty('overflow');
+        document.body.classList.remove('yt-enhancer-cinema-compact', 'yt-enhancer-cinema-ambient');
+        // Сбрасываем inline-стили, выставленные fixVideoStyles на элементах плеера.
+        // Без этого position:fixed / z-index:9000 остаются на элементах при переходе на
+        // каналы / плейлисты / шорты и т.п., ломая их вёрстку и мешая повторному запуску.
+        const _ctr = (sel, props) => { const _e = document.querySelector(sel); if (_e) props.forEach(p => _e.style.removeProperty(p)); };
+        _ctr('#player-full-bleed-container', ['position','top','left','width','height','z-index','display','align-items','justify-content','pointer-events','background']);
+        _ctr('#player-full-bleed-container > #player-container', ['position','pointer-events','width','height','aspect-ratio','flex-shrink','z-index','box-sizing','padding','margin','border-radius','overflow','box-shadow']);
+        _ctr('#movie_player', ['width','height']);
+        _ctr('#player-full-bleed-container > #player-container #ytd-player', ['width','height']);
+        _ctr('#player-full-bleed-container > #player-container #container.ytd-player', ['width','height']);
+        const _vReset = document.querySelector('#movie_player .html5-main-video, #movie_player video');
+        if (_vReset) ['width','height','left','top'].forEach(p => _vReset.style.removeProperty(p));
 
         if (!config.cinemaModeOnWatch || !isWatchPage) {
             dbg.skip('CINEMA', `режим отключён (cinemaModeOnWatch=${config.cinemaModeOnWatch}, watch=${isWatchPage})`);
@@ -6068,6 +6653,35 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         const _hadTheater = watchFlexy ? watchFlexy.hasAttribute('theater') : false;
         if (watchFlexy && !_hadTheater) watchFlexy.setAttribute('theater', '');
 
+        // Следим за атрибутом theater — YouTube при загрузке длинных видео (30+ мин)
+        // может его сбросить несколько раз пока грузит метаданные/чаптеры/превью.
+        const _attachTheaterObs = (wf) => {
+            if (!wf) return;
+            const _tObs = new MutationObserver(() => {
+                if (document.body.classList.contains('yt-enhancer-cinema-mode') && !wf.hasAttribute('theater')) {
+                    wf.setAttribute('theater', '');
+                }
+            });
+            _tObs.observe(wf, { attributes: true, attributeFilter: ['theater'] });
+            _unsafeWin.__ytEnhancerCinemaTheaterObs = _tObs;
+        };
+        if (watchFlexy) {
+            _attachTheaterObs(watchFlexy);
+        } else {
+            // ytd-watch-flexy ещё не в DOM — дождёмся появления
+            const _flexyWait = new MutationObserver(() => {
+                const wf = document.querySelector('ytd-watch-flexy');
+                if (wf) {
+                    _flexyWait.disconnect();
+                    if (!wf.hasAttribute('theater')) wf.setAttribute('theater', '');
+                    _attachTheaterObs(wf);
+                }
+            });
+            _flexyWait.observe(document.body, { childList: true, subtree: true });
+            // Оборачиваем чтобы cleanup работал одинаково
+            _unsafeWin.__ytEnhancerCinemaTheaterObs = { disconnect: () => _flexyWait.disconnect() };
+        }
+
         // Полная блокировка скролла страницы
         document.documentElement.style.setProperty('overflow', 'hidden', 'important');
         document.body.style.setProperty('overflow', 'hidden', 'important');
@@ -6122,6 +6736,15 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
                 document.removeEventListener('mouseup',   _mu);
                 _unsafeWin.__ytEnhancerCinemaDragHandlers = null;
             }
+            if (_unsafeWin.__ytEnhancerCinemaTheaterObs) {
+                _unsafeWin.__ytEnhancerCinemaTheaterObs.disconnect();
+                _unsafeWin.__ytEnhancerCinemaTheaterObs = null;
+            }
+            if (_unsafeWin.__ytEnhancerCinemaPageDataHandler) {
+                document.removeEventListener('yt-page-data-updated', _unsafeWin.__ytEnhancerCinemaPageDataHandler);
+                _unsafeWin.__ytEnhancerCinemaPageDataHandler = null;
+            }
+            _unsafeWin.__ytEnhancerCinemaLastUrl = null;
 
             // Удалить оверлеи и кнопки
             document.querySelectorAll('[id^="yt-enhancer-cinema-"], .yt-enhancer-cinema-ctrl-btn').forEach(el => el.remove());
@@ -6624,7 +7247,16 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
             if (document.body.classList.contains('yt-enhancer-cinema-mode')) fixVideoStyles();
         };
         document.addEventListener('yt-player-updated',    _onYtPlayerReady, { once: true });
-        document.addEventListener('yt-page-data-updated', _onYtPlayerReady, { once: true });
+        // Для длинных видео yt-page-data-updated может стрелять несколько раз —
+        // используем debounce вместо { once: true } чтобы не пропустить поздние обновления
+        const _onPageDataUpdated = debounce(() => {
+            if (document.body.classList.contains('yt-enhancer-cinema-mode')) fixVideoStyles();
+        }, 250);
+        document.addEventListener('yt-page-data-updated', _onPageDataUpdated);
+        _unsafeWin.__ytEnhancerCinemaPageDataHandler = _onPageDataUpdated;
+
+        // Сохраняем URL — используется в guard при повторных вызовах (напр. yt-navigate-finish)
+        _unsafeWin.__ytEnhancerCinemaLastUrl = location.href;
 
         // Страховочный интервал (редкие edge-cases: resize после полноэкранного и т.п.)
         _unsafeWin.__ytEnhancerCinemaVideoInterval = setInterval(fixVideoStyles, 2000);
@@ -6641,20 +7273,30 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         // --- Быстрое переключение при SPA-навигации ---
         if (!_unsafeWin.__ytEnhancerCinemaNavListenerSet) {
             _unsafeWin.__ytEnhancerCinemaNavListenerSet = true;
-            // yt-navigate-start: сразу применяем класс + CSS, чтобы не было моргания
+            // yt-navigate-start: сразу предварительно убираем класс + CSS + overflow,
+            // чтобы не было моргания и страница не оставалась заблокированной.
             document.addEventListener('yt-navigate-start', (e) => {
                 const dest = e && e.detail && (e.detail.url || e.detail.endpoint);
                 const destStr = dest ? (typeof dest === 'string' ? dest : JSON.stringify(dest)) : '';
-                const goingToWatch = /\/watch/.test(destStr) || /^\/watch/.test(location.pathname);
-                if (config.cinemaModeOnWatch && goingToWatch && !_unsafeWin.__ytEnhancerCinemaDisabled) {
-                    document.body.classList.add('yt-enhancer-cinema-mode');
+                // Используем только destStr — НЕ location.pathname, иначе при нажатии «Назад»
+                // goingToWatch = true (т.к. текущая страница ещё /watch) → класс добавляется ошибочно
+                const goingToWatch = /\/watch/.test(destStr);
+                if (!goingToWatch) {
+                    // Уходим не на /watch — немедленно убираем класс, CSS и overflow,
+                    // чтобы страница назначения не появлялась с кино-фоном
+                    document.body.classList.remove('yt-enhancer-cinema-mode', 'yt-enhancer-cinema-compact', 'yt-enhancer-cinema-ambient');
+                    addStyles('', 'yt-enhancer-cinema-mode');
+                    document.documentElement.style.removeProperty('overflow');
+                    document.body.style.removeProperty('overflow');
                 }
+                // Не добавляем класс заранее — applyCinemaMode() в yt-navigate-finish
+                // займётся этим после полной загрузки страницы.
+                // Добавление класса до CSS приводило к тёмному фону без плеера в первые доли секунды.
             });
-            // yt-navigate-finish: полная активация без ожидания debounce
+            // yt-navigate-finish: полная активация/деактивация через applyCinemaMode()
+            // applyCinemaMode() сам разберётся: /watch → активировать, иначе → teardown
             document.addEventListener('yt-navigate-finish', () => {
-                if (config.cinemaModeOnWatch && /^\/watch/.test(location.pathname) && !_unsafeWin.__ytEnhancerCinemaDisabled) {
-                    applyCinemaMode();
-                }
+                applyCinemaMode();
             });
         }
 
@@ -6668,9 +7310,6 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         }
     }
 
-
-
-
     // Применение всех новых фиксов
 
     function applyNewFixes() {
@@ -6678,6 +7317,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         applyFixAutoPause();
         applyFixDarkFlash();
         applyFixSearchGrid();
+        applyHideShorts();
         applyFixMiniPlayer();
         applyScrollOptimization();
         applyFixSidebar();
@@ -6702,7 +7342,7 @@ ytd-popup-container *, ytd-menu-popup-renderer *, tp-yt-paper-listbox * {
         _initDone = true;
 
         // Инициализируем debug первым — поседу консолью и показываем баннер
-        dbg.init(config.debugMode, '4.4.6');
+        dbg.init(config.debugMode, '4.4.6-special');
         dbg.ok('INIT', `браузер: ${isYandexBrowser() ? '✓ Яндекс Браузер' : 'Chrome/другой'}  •  OS: ${getOS()}  •  язык: ${config.language || 'auto'}  •  debugMode: ${config.debugMode}`);
         dbg.dumpConfig(config);
         dbg.separator();
