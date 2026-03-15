@@ -2,6 +2,21 @@
 //  YouTube Fix for Yandex  —  Debug Module
 //  src/debug.js   •   v4.4.6   •   by Xanix
 // ==============================================================================
+//
+//  ПОДКЛЮЧЕНИЕ (локальная разработка, Tampermonkey):
+//    Раскомментируй строку @require в заголовке скрипта и укажи свой путь:
+//
+//      // @require  file:///C:/Users/ИМЯ/Desktop/YouTube-Fix-for-Yandex-main/src/debug.js
+//
+//    Или через GitHub (кэшируется при установке):
+//      // @require  https://raw.githubusercontent.com/Xanixsl/YouTube-Fix-for-Yandex/main/src/debug.js
+//
+//  АКТИВАЦИЯ:
+//    В USER_DEFAULTS установи:  debugMode: true
+//
+//  ВАЖНО: этот файл не входит в production-сборку скрипта.
+//         @require строка в заголовке закомментирована по умолчанию.
+// ==============================================================================
 
 /* global unsafeWindow, performance */
 /* jshint esversion: 8 */
