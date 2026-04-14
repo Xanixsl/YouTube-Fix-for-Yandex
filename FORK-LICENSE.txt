@@ -1,35 +1,83 @@
-FORK LICENSE
+================================================================================
+                              FORK LICENSE
+         YouTube Fix for Yandex — by Xanixsl
+         https://github.com/Xanixsl/YouTube-Fix-for-Yandex
+================================================================================
 
-You are free to:
-- Fork this repository and create your own modified versions.
-- Make any changes or improvements to the code.
+This document defines the terms under which you are permitted to fork,
+copy, modify, and redistribute this project or any derivative work based
+on it.
 
-You MUST:
-- Clearly attribute the original author of the script (nickname "Xanixsl" and a link to the
-  original repository https://github.com/Xanixsl/YouTube-Fix-for-Yandex) in all public forks
-  and derivative works.
-- Keep this license file (or a direct translation of it) in your forked or modified repository.
-- Mention the original author in the README.
+--------------------------------------------------------------------------------
+1. PERMISSIONS
+--------------------------------------------------------------------------------
 
-Any violation of these terms may result in revocation of the right to use, fork, or modify
-this code.
+You ARE FREE to:
 
----
+  - Fork this repository and create your own modified versions.
+  - Make any changes, improvements, or additions to the code.
+  - Distribute your modified version publicly (e.g. on GitHub, Greasyfork,
+    or other platforms).
+  - Use the code for personal or non-commercial purposes without restriction,
+    as long as attribution requirements below are satisfied.
 
-РУССКИЙ ВАРИАНТ / RUSSIAN SECTION
+--------------------------------------------------------------------------------
+2. MANDATORY REQUIREMENTS (ATTRIBUTION)
+--------------------------------------------------------------------------------
 
-ФОРК ЛИЦЕНЗИЯ
+You MUST, without exception:
 
-Вы можете:
-- Форкать этот репозиторий и создавать собственные модифицированные версии.
-- Вносить любые изменения или улучшения в код.
+  a) CREDIT THE ORIGINAL AUTHOR in every public fork and derivative work.
+     Attribution MUST include:
+       - Author's nickname: Xanixsl
+       - Link to the original repository:
+         https://github.com/Xanixsl/YouTube-Fix-for-Yandex
 
-ВЫ ОБЯЗАНЫ:
-- Явно указывать оригинального автора скрипта (ник "Xanixsl" и ссылку на оригинальный
-  репозиторий https://github.com/Xanixsl/YouTube-Fix-for-Yandex) во всех публичных форках
-  и производных работах.
-- Сохранять этот файл лицензии (или прямой перевод) в форке или модифицированном репозитории.
-- Упоминать автора в README.
+  b) INCLUDE ATTRIBUTION IN THE README of your fork or derivative project.
+     The attribution section must be clearly visible and not buried in code
+     comments or hidden files.
 
-Любое несоблюдение этих условий может привести к отзыву права на использование или
-модификацию этого кода.
+  c) KEEP THIS LICENSE FILE in your forked or modified repository.
+     You may include a translated version of this file alongside the original,
+     but the original English version must always be present or directly linked.
+
+  d) DO NOT MISREPRESENT authorship. You must not claim to be the original
+     creator of this script or present the work as entirely your own without
+     acknowledging the original source.
+
+--------------------------------------------------------------------------------
+3. RESTRICTIONS
+--------------------------------------------------------------------------------
+
+You MUST NOT:
+
+  - Remove or obscure attribution to the original author.
+  - Publish a fork that implies the original author endorses or is affiliated
+    with your modifications without explicit written permission.
+  - Re-license this work under terms that would eliminate attribution
+    requirements for future users.
+
+--------------------------------------------------------------------------------
+4. DISCLAIMER
+--------------------------------------------------------------------------------
+
+This software is provided "as is", without warranty of any kind, express or
+implied. The original author (Xanixsl) is not responsible for any damage,
+data loss, or other issues arising from the use or misuse of this script or
+any derivative works based on it.
+
+--------------------------------------------------------------------------------
+5. ENFORCEMENT
+--------------------------------------------------------------------------------
+
+Any violation of these terms may result in:
+
+  - Revocation of your right to use, fork, or modify this code.
+  - A formal request to remove non-compliant forks or derivative works from
+    public platforms.
+
+--------------------------------------------------------------------------------
+
+For the Russian version of this license, see: doc/FORK-LICENSE.ru.txt
+
+================================================================================
