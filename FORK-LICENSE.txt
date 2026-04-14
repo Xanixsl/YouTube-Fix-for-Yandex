@@ -1,0 +1,35 @@
+FORK LICENSE
+
+You are free to:
+- Fork this repository and create your own modified versions.
+- Make any changes or improvements to the code.
+
+You MUST:
+- Clearly attribute the original author of the script (nickname "Xanixsl" and a link to the
+  original repository https://github.com/Xanixsl/YouTube-Fix-for-Yandex) in all public forks
+  and derivative works.
+- Keep this license file (or a direct translation of it) in your forked or modified repository.
+- Mention the original author in the README.
+
+Any violation of these terms may result in revocation of the right to use, fork, or modify
+this code.
+
+---
+
+РУССКИЙ ВАРИАНТ / RUSSIAN SECTION
+
+ФОРК ЛИЦЕНЗИЯ
+
+Вы можете:
+- Форкать этот репозиторий и создавать собственные модифицированные версии.
+- Вносить любые изменения или улучшения в код.
+
+ВЫ ОБЯЗАНЫ:
+- Явно указывать оригинального автора скрипта (ник "Xanixsl" и ссылку на оригинальный
+  репозиторий https://github.com/Xanixsl/YouTube-Fix-for-Yandex) во всех публичных форках
+  и производных работах.
+- Сохранять этот файл лицензии (или прямой перевод) в форке или модифицированном репозитории.
+- Упоминать автора в README.
+
+Любое несоблюдение этих условий может привести к отзыву права на использование или
+модификацию этого кода.
